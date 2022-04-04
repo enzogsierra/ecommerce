@@ -1,0 +1,42 @@
+<div th:include="layout::header"> </div>
+
+<!-- content -->
+<main class="container">
+    <h1 class="my-4">Spring eCommerce <small class="text-muted">Productos</small></h1>
+
+    <ol class="breadcrumb p-2 bg-light rounded">
+        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+        <li class="breadcrumb-item active">Ver productos</li>
+    </ol>
+    
+    <a th:href="@{/productos/crear}" class="btn btn-primary">Crear producto</a>
+    
+    <h2 class="mt-4">Productos</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Inventario</th>
+                <th>Precio</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a th:href="@{/productos/editar}" class="btn btn-warning">Editar</a>
+                    <a th:href="@{/productos/borrar}" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+<!-- content/ -->
+
+<div th:include="layout::footer"> </div>
