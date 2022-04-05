@@ -1,0 +1,51 @@
+<div th:include="layout::header"> </div>
+
+<!-- content -->
+<main class="container">
+    <h1 class="my-4">Crear Producto</h1>
+
+    <ol class="breadcrumb p-2 bg-light rounded">
+        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/productos}">Ver productos</a>
+        <li class="breadcrumb-item active">Crear producto</li>
+    </ol>
+    
+    <form th:action="@{/productos/crear}" method="POST" enctype="multipart/form-data">
+        <p class="mt-4 text-muted">* Todos los campos son obligatorios</p>
+        
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre del producto" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" placeholder="" id="descripcion" name="descripcion" style="height: 100px" required></textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="cantidad" class="form-label">Cantidad</label>
+            <input type="number" class="form-control" id="cantidad" name="cantidad" placeholder="1" min="1" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="precio" class="form-label">Precio</label>
+            
+            <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" id="precio" name="precio" step="0.1" min="0" required>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="imagen" class="form-label">Imagen</label>
+            <input type="file" class="form-control" id="imagen">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a class="btn btn-outline-secondary" th:href="@{/productos}">Volver</a>
+    </form>
+</main>
+<!-- content/ -->
+
+<div th:include="layout::footer"> </div>
