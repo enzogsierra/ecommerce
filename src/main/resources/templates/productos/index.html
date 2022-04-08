@@ -29,7 +29,7 @@
                 <td th:text="${producto.descripcion}"></td>
                 <td th:text="${producto.cantidad}"></td>
                 <td th:text="${producto.precio}"></td>
-                <td>
+                <td class="d-flex gap-2">
                     <a th:href="@{/productos/editar/{id} (id = ${producto.id})}" class="btn btn-warning">Editar</a>
                     <a th:href="@{/productos/eliminar/{id} (id = ${producto.id})}" class="btn btn-danger" id="btn-delete-product">Eliminar</a>
                 </td>

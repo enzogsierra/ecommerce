@@ -2,8 +2,10 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
+import com.example.ecommerce.service.ImageService;
 import com.example.ecommerce.service.ProductoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.IOException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Controller
@@ -20,6 +24,9 @@ public class ProductoController
 {
     @Autowired
     private ProductoService productoService;
+    
+    @Autowired
+    private ImageService image;
     
     //
     @GetMapping("")
@@ -37,16 +44,16 @@ public class ProductoController
     }
     
     @PostMapping("/crear")
-    public String create_POST(Producto producto) throws JsonProcessingException
-    {
-        /*ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(producto);
-        System.out.println("Producto = " + json);*/
-        
+    public String create_POST(Producto producto, @RequestParam("imagen") MultipartFile file) throws IOException
+    {   
         Usuario usuario = new Usuario(1, "", "", "", "", "", "", "", "");
         producto.setUsuario(usuario);
-        productoService.save(producto);
         
+        // Imagen
+        String imageName = image.saveImage(file);
+        producto.setImagen(imageName);
+        
+        productoService.save(producto);
         return "redirect:/productos";
     }
     
@@ -62,8 +69,19 @@ public class ProductoController
     }
     
     @PostMapping("/editar")
-    public String editar_POST(Producto producto)
+    public String editar_POST(Producto producto, @RequestParam("imagen") MultipartFile file) throws IOException
     {  
+        if(file.isEmpty()) // La imagen no cambia
+        {
+            Producto tmp = productoService.findById(producto.getId()).get();
+            producto.setImagen(tmp.getImagen());
+        }
+        else // La imagen cambia
+        {
+            String imageName = image.saveImage(file);
+            producto.setImagen(imageName);
+        }
+        
         productoService.update(producto);
         return "redirect:/productos";
     }
