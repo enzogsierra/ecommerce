@@ -13,13 +13,17 @@
                     <h2 class="card-title" th:text="${producto.nombre}"></h2>
                 
                     <form th:action="@{/carrito}" method="POST">
+                        <input type="hidden" name="id" th:value="${producto.id}">
+                        
                         <ul class="list-group">
                             <li class="list-group-item">
                                 <p class="m-0 fs-3" th:text="'$ ' + ${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></p>
                             </li>
+                            
                             <li class="list-group-item">
                                 <p th:text="${producto.descripcion}"></p>
                             </li>
+                            
                             <li class="list-group-item">
                                 <label for="cantidad" class="form-label">Cantidad</label>
                                 <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" value="1">
