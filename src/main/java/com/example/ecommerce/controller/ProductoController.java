@@ -3,7 +3,6 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.service.ImageService;
-import com.example.ecommerce.service.ProductoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.Optional;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.ecommerce.service.IProductoService;
 
 
 @Controller
@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProductoController 
 {
     @Autowired
-    private ProductoService productoService;
+    private IProductoService productoService;
     
     @Autowired
     private ImageService image;

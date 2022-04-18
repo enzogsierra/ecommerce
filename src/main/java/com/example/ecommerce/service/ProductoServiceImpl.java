@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class ProductoServiceImpl implements ProductoService
+public class ProductoServiceImpl implements IProductoService
 {
     @Autowired
     private ProductoRepository productoRepository;

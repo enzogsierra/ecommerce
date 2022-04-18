@@ -4,8 +4,6 @@ import com.example.ecommerce.model.DetalleOrden;
 import com.example.ecommerce.model.Orden;
 import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
-import com.example.ecommerce.service.ProductoService;
-import com.example.ecommerce.service.iUsuarioService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,16 +15,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.example.ecommerce.service.IProductoService;
+import com.example.ecommerce.service.IUsuarioService;
 
 
 @Controller
 public class PublicController 
 {
     @Autowired
-    private ProductoService productoService;
+    private IProductoService productoService;
     
     @Autowired
-    private iUsuarioService usuarioService;
+    private IUsuarioService usuarioService;
     
             
     

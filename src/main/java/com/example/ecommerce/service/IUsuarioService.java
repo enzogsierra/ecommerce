@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface iUsuarioService 
+public interface IUsuarioService 
 {
     public List<Usuario> all();
     public Optional<Usuario> findById(int id);

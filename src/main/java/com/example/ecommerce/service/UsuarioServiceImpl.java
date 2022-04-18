@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class iUsuarioServiceImpl implements iUsuarioService
+public class UsuarioServiceImpl implements IUsuarioService
 {
     @Autowired
     private UsuarioRepository usuarioRepository;
