@@ -27,12 +27,13 @@ public class OrdenServiceImpl implements IOrdenService
     }
     
     
+    @Override
     public String generateOrderNumber()
     {
         int n;
         List<Orden> ordenes = all();
         
-        if(ordenes.isEmpty()) n = 0;
+        if(ordenes.isEmpty()) n = 1;
         else
         { 
             List<Integer> numbers = new ArrayList<>();
