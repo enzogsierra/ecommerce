@@ -3,7 +3,9 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.model.DetalleOrden;
 import com.example.ecommerce.model.Orden;
 import com.example.ecommerce.model.Producto;
+import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.service.ProductoService;
+import com.example.ecommerce.service.iUsuarioService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +24,11 @@ public class PublicController
 {
     @Autowired
     private ProductoService productoService;
+    
+    @Autowired
+    private iUsuarioService usuarioService;
+    
+            
     
     // Almacena los detalles de la orden
     List<DetalleOrden> detalles = new ArrayList<>();
@@ -65,23 +72,24 @@ public class PublicController
         DetalleOrden detalleOrden = new DetalleOrden();
         Optional<Producto> opt = productoService.findById(id);
         Producto producto = opt.get();
-        double total;
         
-        //
-        detalleOrden.setNombre(producto.getNombre());
-        detalleOrden.setCantidad(cantidad);
-        detalleOrden.setPrecio(producto.getPrecio() * cantidad);
-        detalleOrden.setProducto(producto);
-        detalles.add(detalleOrden);
-        
-        total = detalles.stream().mapToDouble(dt -> dt.getPrecio()).sum();
-        orden.setTotal(total);
+        // Verificar que el producto a añadir no esté en el carrito
+        boolean isInList = detalles.stream().anyMatch(p -> p.getProducto().getId() == producto.getId());
+        if(!isInList)
+        {
+            detalleOrden.setNombre(producto.getNombre());
+            detalleOrden.setCantidad(cantidad);
+            detalleOrden.setPrecio(producto.getPrecio() * cantidad);
+            detalleOrden.setProducto(producto);
+            detalles.add(detalleOrden);
+
+            double total = detalles.stream().mapToDouble(dt -> dt.getPrecio()).sum();
+            orden.setTotal(total);
+        }
         
         return "redirect:/carrito";
     }
     
-    
-    //
     @GetMapping("/carrito-eliminar/{id}")
     public String removeProductFromCart(@PathVariable Integer id)
     {
@@ -100,5 +108,16 @@ public class PublicController
         double total =  detalles.stream().mapToDouble(dt -> dt.getTotal()).sum();
         orden.setTotal(total);
         return "redirect:/carrito";
+    }
+    
+    @GetMapping("/orden")
+    public String orden(Model model)
+    {
+        Usuario usuario = usuarioService.findById(1).get();
+        
+        model.addAttribute("detalles", detalles);
+        model.addAttribute("orden", orden);
+        model.addAttribute("usuario", usuario);
+        return "public/orden";
     }
 }

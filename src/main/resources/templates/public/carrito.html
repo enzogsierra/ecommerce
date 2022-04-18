@@ -40,9 +40,9 @@
             </table>
             
             <div th:unless="${detalles.isEmpty()}" class="text-end">
-                <button type="button" class="btn btn-primary">
+                <a th:href="@{/orden}" class="btn btn-primary">
                     Comprar
-                </button>
+                </a>
             </div>
         </div>
     </div>
