@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.ecommerce.service.IProductoService;
 import com.example.ecommerce.service.IUsuarioService;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -152,5 +153,17 @@ public class PublicController
         orden = new Orden();
         detalles.clear();
         return "redirect:/";
+    }
+    
+    
+    //
+    @PostMapping("/buscar")
+    public String buscar(@RequestParam String busqueda, Model model)
+    {
+        List<Producto> productos = productoService.all().stream().filter(p -> p.getNombre().contains(busqueda)).collect(Collectors.toList());
+        
+        model.addAttribute("productos", productos);
+        model.addAttribute("busqueda", busqueda);
+        return "public/index";
     }
 }

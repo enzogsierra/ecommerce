@@ -9,7 +9,19 @@
 </main>   
 
 <section class="container">
-    <div class="row">
+    <!-- Sin productos -->
+    <div th:if="${productos.isEmpty()}">
+        <h2 th:if="${busqueda != null}" class="text-center my-4">
+            No hay resultados para la búsqueda '<span th:text="${busqueda}"></span>'<br>
+            Intenta con otro término.
+        </h2>
+        <h2 th:unless="${busqueda != null}" class="text-center my-4">
+            Aún no hay productos creados.
+        </h2>
+    </div>
+    
+    <!-- Con productos -->
+    <div th:unless="${productos.isEmpty()}" class="row">
         <div th:each="producto: ${productos}" class="col-lg-3 col-md-6 mb-4">
             <a class="card h-100 text-decoration-none text-black" th:href="@{/producto/{id} (id = ${producto.id})}">
                 <div class="border-bottom">

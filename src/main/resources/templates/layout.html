@@ -16,8 +16,8 @@
                     <div class="d-flex align-items-center gap-2">
                         <a th:href="@{/}" class="fs-2 navbar-brand text-white">Spring eCommerce</a>
 
-                        <form th:action="@{/}" method="POST" class="d-flex gap-1 my-2">
-                            <input type="text" class="form-control w-auto" placeholder="Buscar" autocomplete="off">
+                        <form th:action="@{/buscar}" method="POST" class="d-flex gap-1 my-2">
+                            <input type="text" class="form-control w-auto" placeholder="Buscar" name="busqueda" autocomplete="off" required>
                             <button type="submit" class="btn btn-primary">Buscar</button>
                         </form>
                     </div>
