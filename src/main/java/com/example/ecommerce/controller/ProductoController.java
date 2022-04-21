@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.ecommerce.service.IProductoService;
+import com.example.ecommerce.service.IUsuarioService;
+import javax.servlet.http.HttpSession;
 
 
 @Controller
@@ -23,12 +25,16 @@ import com.example.ecommerce.service.IProductoService;
 public class ProductoController 
 {
     @Autowired
+    private IUsuarioService usuarioService;
+    
+    @Autowired
     private IProductoService productoService;
     
     @Autowired
     private ImageService image;
+
     
-    //
+    
     @GetMapping("")
     public String index(Model model)
     {
@@ -44,9 +50,10 @@ public class ProductoController
     }
     
     @PostMapping("/crear")
-    public String create_POST(Producto producto, @RequestParam("imagenFile") MultipartFile file) throws IOException
+    public String create_POST(Producto producto, @RequestParam("imagenFile") MultipartFile file, HttpSession session) throws IOException
     {   
-        Usuario usuario = new Usuario(1, "", "", "", "", "", "", "", "");
+        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
+        Usuario usuario = usuarioService.findById(userId).get();
         producto.setUsuario(usuario);
         
         // Imagen
@@ -69,7 +76,7 @@ public class ProductoController
     }
     
     @PostMapping("/editar")
-    public String editar_POST(Producto producto, @RequestParam("imagen") MultipartFile file) throws IOException
+    public String editar_POST(Producto producto, @RequestParam("imagenFile") MultipartFile file) throws IOException
     {  
         Producto tmp = productoService.findById(producto.getId()).get();
         if(file.isEmpty()) // La imagen no cambia

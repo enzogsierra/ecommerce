@@ -44,63 +44,14 @@ public class PublicController
     
     // Datos de la orden
     Orden orden = new Orden();
-    
-    
-    
-    // Registro/inicio de sesion
-    @GetMapping("/signup")
-    public String signup(Model model)
-    {
-        return "public/signup";
-    }
-    
-    @PostMapping("/signup")
-    public String signup_POST(Usuario usuario)
-    {
-        usuario.setTipo("USER");
-        usuarioService.save(usuario);
-        
-        return "redirect:/";
-    }
-    
-    @GetMapping("/login")
-    public String login(Model model)
-    {
-        return "public/login";
-    }
-    
-    @PostMapping("/login")
-    public String login_POST(Model model, Usuario usuario, HttpSession session)
-    {
-        Optional<Usuario> auth = usuarioService.findByEmail(usuario.getEmail());
-        
-        if(!auth.isPresent()) // Verificar email
-        {
-            model.addAttribute("email", usuario.getEmail());
-            model.addAttribute("error_email", 1);
-            return "public/login";
-        }
-        if(!usuario.getPassword().equals(auth.get().getPassword())) // Verificar contraseña
-        {
-            model.addAttribute("email", usuario.getEmail());
-            model.addAttribute("password", usuario.getPassword());
-            model.addAttribute("error_password", 1);
-            return "public/login";
-        }
-        
-        //
-        session.setAttribute("usuario.id", auth.get().getId());
-        
-        //
-        return auth.get().getTipo().equals("ADMIN") ? ("redirect:/admin") : ("redirect:/");
-    }
    
     
     
     //
     @GetMapping("/")
-    public String index(Model model)
+    public String index(Model model, HttpSession session)
     {
+        System.out.println("Sesion: " + session.getAttribute("usuario.id"));
         model.addAttribute("productos", productoService.all());
         return "public/index";
     }
@@ -172,9 +123,10 @@ public class PublicController
     
     
     @GetMapping("/orden")
-    public String orden(Model model)
+    public String orden(Model model, HttpSession session)
     {
-        Usuario usuario = usuarioService.findById(1).get();
+        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
+        Usuario usuario = usuarioService.findById(userId).get();
         
         model.addAttribute("detalles", detalles);
         model.addAttribute("orden", orden);
@@ -183,9 +135,10 @@ public class PublicController
     }
     
     @GetMapping("/guardar-orden")
-    public String saveOrder()
+    public String saveOrder(HttpSession session)
     {
-        Usuario usuario = usuarioService.findById(1).get();
+        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
+        Usuario usuario = usuarioService.findById(userId).get();
         
         Date fechaCreacion = new Date();
         orden.setFechaCreacion(fechaCreacion);
