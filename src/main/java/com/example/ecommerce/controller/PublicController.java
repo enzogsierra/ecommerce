@@ -37,13 +37,30 @@ public class PublicController
     @Autowired
     private IDetalleOrdenService detalleOrdenService;
     
-            
     
     // Almacena los detalles de la orden
     List<DetalleOrden> detalles = new ArrayList<>();
     
     // Datos de la orden
     Orden orden = new Orden();
+    
+    
+    
+    // Registro/inicio de sesion
+    @GetMapping("/signup")
+    public String signup(Model model)
+    {
+        return "public/signup";
+    }
+    
+    @PostMapping("/signup")
+    public String signup_POST(Usuario usuario)
+    {
+        usuario.setTipo("USER");
+        usuarioService.save(usuario);
+        
+        return "redirect:/";
+    }
     
     
     //

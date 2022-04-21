@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>E-commerce - Java Spring</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <header class="bg-dark py-3">
+            <div class="container d-flex align-items-center justify-content-between gap-4">
+                <div class="d-flex align-items-center gap-2">
+                    <a th:href="@{/}" class="fs-2 navbar-brand text-white">Spring eCommerce</a>
+                </div>
+            </div>
+        </header>
+        
+        <!-- -->
+        
+        <main class="container-md my-4">
+            <div class="py-3 px-4 card m-auto" style="width: 100%; max-width: 30rem;">    
+                <h1 class="text-center mb-4">Registro</h1>
+                
+                <form th:action="@{/signup}" method="POST">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="apellido" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" id="apellido" name="apellido" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion" required>
+                    </div>
+                    
+                    <button type="submit" class="my-2 btn btn-primary w-100">Registrarse</button>
+                    <a th:href="login" class="btn btn-outline-secondary w-100">Iniciar sesión</a>
+                </form>
+            </div>
+        </main>>
+        <!-- -->
+        
+        <footer class="bg-dark text-white py-4">
+            <div class="container">
+                <p class="m-0 text-center">Copyright &COPY; Spring eCommerce 2022</p>   
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        <script src="/app.js"></script>
+    </body>
+</html>

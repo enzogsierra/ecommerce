@@ -6,6 +6,7 @@
         "th:include": {},
         "th:unless": {},
         "th:each": {},
-        "th:href": {}
+        "th:href": {},
+        "th:fragment": {}
     }
 }

@@ -27,7 +27,7 @@ public class UsuarioServiceImpl implements IUsuarioService
 
     @Override
     public void save(Usuario usuario) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        usuarioRepository.save(usuario);
     }
 
     @Override
