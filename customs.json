@@ -5,6 +5,7 @@
         "th:text": {},
         "th:include": {},
         "th:unless": {},
+        "th:action": {},
         "th:each": {},
         "th:href": {},
         "th:fragment": {}

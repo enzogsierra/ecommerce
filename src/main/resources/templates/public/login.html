@@ -22,32 +22,27 @@
         
         <main class="container-md my-4">
             <div class="py-3 px-4 card m-auto" style="width: 100%; max-width: 30rem;">    
-                <h1 class="text-center mb-4">Registro</h1>
+                <h1 class="text-center mb-4">Iniciar sesión</h1>
                 
-                <form th:action="@{/signup}" method="POST">
+                <form th:action="@{/login}" method="POST">
                     <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="apellido" class="form-label">Apellido</label>
-                        <input type="text" class="form-control" id="apellido" name="apellido" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <label for="email" class="form-label">Correo electrónico</label>
+                        
+                        <input th:if="${email}" type="email" class="form-control" id="email" name="email" th:value="${email}" required>
+                        <input th:unless="${email}" type="email" class="form-control" id="email" name="email" required>
+                        
+                        <div th:if="${error_email}" class="form-text text-danger">El correo electrónico ingresado no está registrado.</div>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Contraseña</label>
+                        
                         <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="direccion" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" required>
+                        
+                        <div th:if="${error_password}" class="form-text text-danger">La contraseña ingresada no coincide con el correo electrónico. Intenta otra vez.</div>
                     </div>
                     
-                    <button type="submit" class="my-2 btn btn-success w-100">Crear cuenta</button>
-                    <a th:href="@{/login}" class="btn btn-outline-primary w-100">Iniciar sesión</a>
+                    <button type="submit" class="my-2 btn btn-primary w-100">Iniciar sesión</button>
+                    <a th:href="@{/signup}" class="btn btn-outline-success w-100">Regístrate!</a>
                 </form>
             </div>
         </main>>

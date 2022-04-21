@@ -20,6 +20,7 @@ import com.example.ecommerce.service.IProductoService;
 import com.example.ecommerce.service.IUsuarioService;
 import java.util.Date;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpSession;
 
 
 @Controller
@@ -61,6 +62,39 @@ public class PublicController
         
         return "redirect:/";
     }
+    
+    @GetMapping("/login")
+    public String login(Model model)
+    {
+        return "public/login";
+    }
+    
+    @PostMapping("/login")
+    public String login_POST(Model model, Usuario usuario, HttpSession session)
+    {
+        Optional<Usuario> auth = usuarioService.findByEmail(usuario.getEmail());
+        
+        if(!auth.isPresent()) // Verificar email
+        {
+            model.addAttribute("email", usuario.getEmail());
+            model.addAttribute("error_email", 1);
+            return "public/login";
+        }
+        if(!usuario.getPassword().equals(auth.get().getPassword())) // Verificar contraseña
+        {
+            model.addAttribute("email", usuario.getEmail());
+            model.addAttribute("password", usuario.getPassword());
+            model.addAttribute("error_password", 1);
+            return "public/login";
+        }
+        
+        //
+        session.setAttribute("usuario.id", auth.get().getId());
+        
+        //
+        return auth.get().getTipo().equals("ADMIN") ? ("redirect:/admin") : ("redirect:/");
+    }
+   
     
     
     //

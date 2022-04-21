@@ -7,10 +7,11 @@ import java.util.Optional;
 
 public interface IUsuarioService 
 {
-    public List<Usuario> all();
-    public Optional<Usuario> findById(int id);
+    List<Usuario> all();
+    Optional<Usuario> findById(int id);
+    Optional<Usuario> findByEmail(String email);
     
-    public void save(Usuario usuario);
-    public void update(Usuario usuario);
-    public void delete(int id);
+    void save(Usuario usuario);
+    void update(Usuario usuario);
+    void delete(int id);
 }
