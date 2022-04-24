@@ -25,6 +25,7 @@
                     <!-- LoggedIn user -->
                     <div th:if="${isLoggedIn}">
                         <nav class="d-flex align-items-center gap-3">
+                            <a th:href="@{/compras}" class="flex-grow-1 text-decoration-none text-light">Compras</a>
                             <a th:href="@{/carrito}" class="flex-grow-1 text-decoration-none text-light">Ver Carrito</a>
                             
                             <!-- Admin user -->

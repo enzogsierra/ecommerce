@@ -1,6 +1,7 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.model.Orden;
+import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.repository.OrdenRepository;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -24,6 +25,13 @@ public class OrdenServiceImpl implements IOrdenService
     @Override
     public void save(Orden orden) {
         ordenRepository.save(orden);
+    }
+
+    
+    @Override
+    public List<Orden> findByUsuario(Usuario usuario)
+    {
+        return ordenRepository.findByUsuario(usuario);
     }
     
     

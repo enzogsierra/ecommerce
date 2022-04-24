@@ -58,7 +58,7 @@ public class PublicController
 
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("isAdmin", isAdmin);
-    } 
+    }
 
     
     //
@@ -81,6 +81,7 @@ public class PublicController
         return "public/producto";
     }
     
+
     //
     @GetMapping("/carrito")
     public String carrito(Model model)
@@ -135,6 +136,7 @@ public class PublicController
     }
     
     
+    //
     @GetMapping("/orden")
     public String orden(Model model, HttpSession session)
     {
@@ -182,5 +184,23 @@ public class PublicController
         model.addAttribute("productos", productos);
         model.addAttribute("busqueda", busqueda);
         return "public/index";
+    }
+
+
+    //
+    @GetMapping("/compras")
+    public String compras(Model model, HttpSession session)
+    {
+        // Obtener usuario.id
+        Object usuario_id = session.getAttribute("usuario.id");
+        Integer userId = (usuario_id == null) ? (0) : (Integer.parseInt(usuario_id.toString()));
+        
+        // Obtener las compras del usuario
+        Usuario usuario = usuarioService.findById(userId).get();
+        List<Orden> ordenes = ordenService.findByUsuario(usuario);
+
+        
+        model.addAttribute("ordenes", ordenes);
+        return "public/compras";
     }
 }
