@@ -35,7 +35,7 @@ public class ProductoController
 
     
     
-    @GetMapping("")
+    @GetMapping(value = {"", "/"})
     public String index(Model model)
     {
         model.addAttribute("productos", productoService.all());

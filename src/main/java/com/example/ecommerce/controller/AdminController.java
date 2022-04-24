@@ -18,7 +18,7 @@ public class AdminController
     private IProductoService productoService;
     
     
-    @GetMapping("/")
+    @GetMapping(value = {"", "/"})
     public String index(Model model)
     {
         List<Producto> productos = productoService.all();

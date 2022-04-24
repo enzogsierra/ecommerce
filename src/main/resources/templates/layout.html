@@ -22,27 +22,38 @@
                         </form>
                     </div>
 
-                    <nav class="d-flex align-items-center gap-3">
-                        <a th:href="@{/carrito}" class="flex-grow-1 text-decoration-none text-light">Carrito</a>
-                        <a th:href="@{/login}" class="flex-grow-1 text-decoration-none text-light">Iniciar sesión</a>
-                        
-                        <div class="dropdown flex-grow-1">
-                            <button 
-                                class="btn btn-secondary dropdown-toggle" 
-                                type="button" 
-                                id="dropdownAdminNav"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                                >
-                                Admin
-                            </button>
+                    <!-- LoggedIn user -->
+                    <div th:if="${isLoggedIn}">
+                        <nav class="d-flex align-items-center gap-3">
+                            <a th:href="@{/carrito}" class="flex-grow-1 text-decoration-none text-light">Ver Carrito</a>
                             
-                            <ul class="dropdown-menu" aria-labelledby="dropdownAdminNav">
-                                <li><a th:href="@{/productos}" class="dropdown-item">Productos</a></li>
-                            </ul>
-                            
-                        </div>
-                    </nav>
+                            <!-- Admin user -->
+                            <div th:if="${isAdmin}" class="dropdown flex-grow-1">
+                                <button 
+                                    class="btn btn-secondary dropdown-toggle" 
+                                    type="button" 
+                                    id="dropdownAdminNav"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    >
+                                    Admin
+                                </button>
+                                
+                                <ul class="dropdown-menu" aria-labelledby="dropdownAdminNav">
+                                    <li><a th:href="@{/productos}" class="dropdown-item">Productos</a></li>
+                                </ul>
+                                
+                            </div>
+                        </nav>
+                    </div>
+
+                    <!-- Not logged in user -->
+                    <div th:unless="${isLoggedIn}">
+                        <nav class="d-flex align-items-center gap-2">
+                            <a th:href="@{/login}" class="btn btn-outline-light">Iniciar sesión</a>
+                            <a th:href="@{/signup}" class="btn btn-outline-success">Crear cuenta</a>
+                        </nav>
+                    </div>
                 </div>
             </header>
 </div>

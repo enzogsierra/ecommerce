@@ -60,6 +60,7 @@ public class AuthController
         
         //
         session.setAttribute("usuario.id", auth.get().getId());
+        session.setAttribute("usuario.tipo", auth.get().getTipo());
         
         //
         return auth.get().getTipo().equals("ADMIN") ? ("redirect:/admin") : ("redirect:/");

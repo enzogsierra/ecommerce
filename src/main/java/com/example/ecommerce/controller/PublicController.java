@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,20 +39,32 @@ public class PublicController
     @Autowired
     private IDetalleOrdenService detalleOrdenService;
     
-    
     // Almacena los detalles de la orden
     List<DetalleOrden> detalles = new ArrayList<>();
     
     // Datos de la orden
     Orden orden = new Orden();
    
-    
+
+    // Atributos globales
+    @ModelAttribute("mainAttributes")
+    public void mainAttributes(Model model, HttpSession session)
+    {
+        Object usuario_id = session.getAttribute("usuario.id");
+        Object usuario_tipo = session.getAttribute("usuario.tipo");
+
+        Boolean isLoggedIn = (usuario_id == null) ? (false) : (!usuario_id.toString().equals("0"));
+        Boolean isAdmin = (usuario_tipo == null) ? (false) : (usuario_tipo.toString().equals("ADMIN"));
+
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("isAdmin", isAdmin);
+    } 
+
     
     //
-    @GetMapping("/")
+    @GetMapping(value = {"", "/"})
     public String index(Model model, HttpSession session)
     {
-        System.out.println("Sesion: " + session.getAttribute("usuario.id"));
         model.addAttribute("productos", productoService.all());
         return "public/index";
     }
