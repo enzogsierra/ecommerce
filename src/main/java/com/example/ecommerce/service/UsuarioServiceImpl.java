@@ -17,7 +17,7 @@ public class UsuarioServiceImpl implements IUsuarioService
     
     @Override
     public List<Usuario> all() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return usuarioRepository.findAll();
     }
 
     @Override

@@ -1,0 +1,35 @@
+<div th:include="layout::header"> </div>
+
+<!-- content -->
+<main class="container">
+    <h3 class="mt-4">Usuarios</h3> 
+
+    <div class="card my-4">
+        <div class="card-body">        
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre y apellido</th>
+                        <th>Email</th>
+                        <th>Dirección</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="usuario: ${usuarios}">
+                        <td th:text="${usuario.nombre}"></td>
+                        <td th:text="${usuario.email}"></td>
+                        <td th:text="${usuario.direccion}"></td>
+                        <!-- <td th:text="'$ ' + ${#numbers.formatDecimal(usuario.total, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                        <td>
+                            <a th:href="@{/detalles/{id} (id = ${usuario.id})}" class="btn btn-primary">Ver detalles</a>
+                        </td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+<!-- content/ -->
+
+<div th:include="layout::footer"> </div>

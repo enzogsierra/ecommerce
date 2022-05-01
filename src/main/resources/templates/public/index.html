@@ -24,7 +24,7 @@
     <div th:unless="${productos.isEmpty()}" class="row">
         <div th:each="producto: ${productos}" class="col-lg-3 col-md-6 mb-4">
             <a class="card h-100 text-decoration-none text-black" th:href="@{/producto/{id} (id = ${producto.id})}">
-                <div class="border-bottom">
+                <div class="p-2 border-bottom">
                     <img th:src="@{/images/{img} (img = ${producto.imagen})}" class="card-img-top" alt="producto">
                 </div>
                 <div class="card-body">
