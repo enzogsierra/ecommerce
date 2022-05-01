@@ -68,6 +68,18 @@ public class PublicController
         model.addAttribute("productos", productoService.all());
         return "public/index";
     }
+
+
+    //
+    @PostMapping("/buscar")
+    public String buscar(@RequestParam String busqueda, Model model)
+    {
+        List<Producto> productos = productoService.all().stream().filter(p -> p.getNombre().contains(busqueda)).collect(Collectors.toList());
+        
+        model.addAttribute("productos", productos);
+        model.addAttribute("busqueda", busqueda);
+        return "public/index";
+    }
     
     
     //
@@ -172,18 +184,6 @@ public class PublicController
         orden = new Orden();
         detalles.clear();
         return "redirect:/";
-    }
-    
-    
-    //
-    @PostMapping("/buscar")
-    public String buscar(@RequestParam String busqueda, Model model)
-    {
-        List<Producto> productos = productoService.all().stream().filter(p -> p.getNombre().contains(busqueda)).collect(Collectors.toList());
-        
-        model.addAttribute("productos", productos);
-        model.addAttribute("busqueda", busqueda);
-        return "public/index";
     }
 
 
