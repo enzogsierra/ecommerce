@@ -22,7 +22,7 @@
                         <td th:text="${orden.fechaCreacion}"></td>
                         <td th:text="'$ ' + ${#numbers.formatDecimal(orden.total, 0, 'DEFAULT', 0, 'POINT')}"></td>
                         <td>
-                            <a href="#">Ver</a>
+                            <a th:href="@{/detalles/{id} (id = ${orden.id})}" class="btn btn-primary">Ver detalles</a>
                         </td>
                     </tr>
                 </tbody>

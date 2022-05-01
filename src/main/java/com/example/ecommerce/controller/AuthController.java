@@ -65,4 +65,13 @@ public class AuthController
         //
         return auth.get().getTipo().equals("ADMIN") ? ("redirect:/admin") : ("redirect:/");
     }
+
+    
+    @GetMapping("/logout")
+    public String logout(HttpSession session)
+    {
+        session.removeAttribute("usuario.id");
+        session.removeAttribute("usuario.tipo");
+        return "redirect:/";
+    }
 }

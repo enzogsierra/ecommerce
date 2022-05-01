@@ -193,14 +193,28 @@ public class PublicController
     {
         // Obtener usuario.id
         Object usuario_id = session.getAttribute("usuario.id");
-        Integer userId = (usuario_id == null) ? (0) : (Integer.parseInt(usuario_id.toString()));
-        
+
+        if(usuario_id == null) // Verificar que el usuario esté logueado
+        {
+            return "redirect:/login";
+        }
+
         // Obtener las compras del usuario
+        Integer userId = Integer.parseInt(usuario_id.toString());
         Usuario usuario = usuarioService.findById(userId).get();
         List<Orden> ordenes = ordenService.findByUsuario(usuario);
 
         
         model.addAttribute("ordenes", ordenes);
         return "public/compras";
+    }
+
+    @GetMapping("/detalles/{id}")
+    public String detalles(Model model, @PathVariable Integer id)
+    {
+        Orden orden = ordenService.findById(id).get();
+
+        model.addAttribute("detalles", orden.getDetalle());
+        return "public/detalles";
     }
 }

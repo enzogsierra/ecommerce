@@ -1,0 +1,31 @@
+<div th:include="layout::header"> </div>
+
+<!-- content -->
+<main class="container">
+    <h3 class="mt-4">Compras</h3> 
+
+    <div class="card my-4">
+        <div class="card-body">        
+            <table class="table" id="products-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="detalle: ${detalles}">
+                        <td th:text="${detalle.nombre}"></td>
+                        <td th:text="${#numbers.formatDecimal(detalle.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                        <td th:text="'$ ' + ${#numbers.formatDecimal(detalle.precio, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+<!-- content/ -->
+
+<div th:include="layout::footer"> </div>
