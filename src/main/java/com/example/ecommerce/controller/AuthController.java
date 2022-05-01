@@ -5,6 +5,7 @@ import com.example.ecommerce.service.IUsuarioService;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,8 @@ public class AuthController
 {
     @Autowired
     private IUsuarioService usuarioService;
+
+    BCryptPasswordEncoder passEncode = new BCryptPasswordEncoder();
     
     
     @GetMapping("/signup")
@@ -28,7 +31,9 @@ public class AuthController
     public String signup_POST(Usuario usuario)
     {
         usuario.setTipo("USER");
+        usuario.setPassword(passEncode.encode(usuario.getPassword())); // Encriptar la clave del usuario
         usuarioService.save(usuario);
+        
         
         return "redirect:/";
     }
