@@ -35,9 +35,21 @@ public class SpringBootSecurity extends WebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception
     {
+        String publicResources[] = new String[] // URLs y resources públicos para todos los usuarios
+        {
+            "/", // Home
+            // "/buscar", // Buscador de productos - parece ser no necesario incluirlo
+            "/app.js", // Script
+            "/style.css", // CSS
+            "/images/**", // Imagenes de productos
+            "/producto/**" // Vista de producto especifico
+        };
+
         http.csrf().disable()
             .authorizeRequests()
-                .antMatchers("/admin/**", "/productos/**").hasRole("ADMIN") // Proteger las rutas /admin y /productos
+                .antMatchers(publicResources).permitAll() // Rutas disponibles para cualquier usuario/visitante
+                .antMatchers("/admin/**", "/productos/**").hasRole("ADMIN") // Rutas protegidas - solo pueden acceder quienes tengan el rol "ADMIN"
+                .anyRequest().authenticated() // Todas las demás rutas - disponible solo para usuarios logueados
                 .and()
             .formLogin()
                 .loginPage("/login")
