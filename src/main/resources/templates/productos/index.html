@@ -26,9 +26,9 @@
             <tbody>
                 <tr th:each="producto: ${productos}">
                     <td th:text="${producto.nombre}"></td>
-                    <td th:text="${producto.descripcion}"></td>
+                    <td th:text="${#strings.abbreviate(producto.descripcion, 64)}"></td>
                     <td th:text="${producto.cantidad}"></td>
-                    <td th:text="${producto.precio}"></td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></td>
                     <td class="d-flex gap-2">
                         <a th:href="@{/productos/editar/{id} (id = ${producto.id})}" class="btn btn-warning">Editar</a>
                         <a th:href="@{/productos/eliminar/{id} (id = ${producto.id})}" class="btn btn-danger" id="btn-delete-product">Eliminar</a>
