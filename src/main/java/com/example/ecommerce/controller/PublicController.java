@@ -143,7 +143,7 @@ public class PublicController
         }
         detalles = newList; // Actualizar carrito
         
-        double total =  detalles.stream().mapToDouble(dt -> dt.getTotal()).sum(); // Sumar el precio de todos los productos en el carrito
+        double total =  detalles.stream().mapToDouble(dt -> dt.getPrecio()).sum(); // Sumar el precio de todos los productos en el carrito
         orden.setTotal(total); // Actualizar precio total
         return "redirect:/carrito";
     }

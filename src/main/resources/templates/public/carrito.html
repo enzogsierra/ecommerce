@@ -14,6 +14,7 @@
             <table th:unless="${detalles.isEmpty()}" class="mt-4 table">
                 <thead>
                     <tr>
+                        <th scope="col">Imagen</th>
                         <th scope="col">Producto</th>
                         <th scope="col">Cantidad</th>
                         <th scope="col">Precio</th>
@@ -23,6 +24,9 @@
 
                 <tbody>
                     <tr th:each="detalle: ${detalles}">
+                        <td class="text-center">
+                            <img th:src="@{/images/{img} (img = ${detalle.producto.imagen})}" class="product-img-mini" alt="producto">
+                        </td>
                         <td th:text="${detalle.nombre}" class="fw-bold"></td>
                         <td th:text="${#numbers.formatDecimal(detalle.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
                         <td th:text="'$ ' + ${#numbers.formatDecimal(detalle.precio, 0, 'DEFAULT', 0, 'POINT')}"></td>
@@ -34,6 +38,7 @@
                     <tr class="fs-3">
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td>Total</td>
                         <td th:text="'$ ' + ${#numbers.formatDecimal(orden.total, 0, 'DEFAULT', 0, 'POINT')}" class="text-end"></td>
                     </tr>
@@ -41,9 +46,7 @@
             </table>
             
             <div th:unless="${detalles.isEmpty()}" class="text-end">
-                <a th:href="@{/orden}" class="btn btn-primary">
-                    Comprar
-                </a>
+                <a th:href="@{/orden}" class="btn btn-primary">Generar orden</a>
             </div>
         </div>
     </div>

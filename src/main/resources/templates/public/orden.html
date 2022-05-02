@@ -2,8 +2,7 @@
 
 <!-- content -->
 <main class="container">
-    <h1 class="display-inline">Spring e-Commerce</h1>
-    <p>holi</p>
+    <h3 class="mt-4">Confirmar compra</h3>
     
     <div class="card my-4">
         <div class="card-body p-4">
@@ -41,13 +40,13 @@
                 <div class="col-lg-3">
                     <h4 class="card-title">Resumen</h4>
                     
-                    <ul class="list-group">
+                    <ul class="list-group my-2">
                         <li class="list-group-item">
-                            <p>Total: <span th:text="'$ ' + ${#numbers.formatDecimal(orden.total, 0, 'DEFAULT', 0, 'POINT')}" class="fw-bold"></span></p>
+                            <p class="my-2">Total: <span th:text="'$ ' + ${#numbers.formatDecimal(orden.total, 0, 'DEFAULT', 0, 'POINT')}" class="fw-bold"></span></p>
                         </li>
                     </ul>
                     
-                    <a th:href="@{/guardar-orden}" class="mt-2 btn btn-primary w-100">Generar</a>
+                    <a th:href="@{/guardar-orden}" class="mt-2 btn btn-primary w-100">Comprar</a>
                 </div>
             </div>
         </div>
