@@ -1,17 +1,12 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.model.Producto;
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.example.ecommerce.service.IOrdenService;
 import com.example.ecommerce.service.IProductoService;
 import com.example.ecommerce.service.IUsuarioService;
@@ -46,24 +41,24 @@ public class AdminController
     }
     
     
-    //
-    @GetMapping(value = {"", "/"}) // Lista todos los productos
+    // Muestra todos los productos
+    @GetMapping(value = {"", "/"})
     public String index(Model model) 
     {
         model.addAttribute("productos", productoService.all());
         return "admin/index";
     }
 
-    //
-    @GetMapping("/usuarios") // Lista todos los usuarios
+    // Muestra todos los usuarios
+    @GetMapping("/usuarios")
     public String usuarios(Model model)
     {
         model.addAttribute("usuarios", usuarioService.all());
         return "admin/usuarios";
     }
 
-    //
-    @GetMapping("/ordenes") // Lista todas las ordenes
+    // Muestra todas las ordenes
+    @GetMapping("/ordenes")
     public String ordenes(Model model)
     {
         model.addAttribute("ordenes", ordenService.all());

@@ -2,14 +2,15 @@
 
 <!-- content -->
 <main class="container">
-    <div class="card my-2">
+    <h3 class="mt-4">Carrito</h3>
+
+    <div class="card my-4">
         <div class="card-body">
-            <h2>Carrito</h2>
-            
             <div th:if="${detalles.isEmpty()}" class="my-4 text-center">
                 <p class="m-0 mb-2">Aún no hay productos añadidos al carrito</p>
-                <a th:href="@{/}" class="btn btn-primary">Ver productos</a>
+                <a th:href="@{/}" class="btn btn-primary">Explorar productos</a>
             </div>
+            
             <table th:unless="${detalles.isEmpty()}" class="mt-4 table">
                 <thead>
                     <tr>

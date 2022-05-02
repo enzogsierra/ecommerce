@@ -2,14 +2,9 @@
 
 <!-- content -->
 <main class="container">
-    <h1 class="my-4">Spring eCommerce <small class="text-muted">Productos</small></h1>
-
-    <ol class="breadcrumb p-2 bg-light rounded">
-        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-        <li class="breadcrumb-item active">Ver productos</li>
-    </ol>
+    <h3 class="mt-4">Productos</h3>
     
-    <a th:href="@{/productos/crear}" class="btn btn-primary">Crear producto</a>
+    <a th:href="@{/productos/crear}" class="btn btn-primary mt-3">Crear producto</a>
     
     <div th:if="${productos.isEmpty()}">
         <p class="text-center my-3">Aún no hay productos creados</p>

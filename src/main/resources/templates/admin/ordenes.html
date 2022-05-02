@@ -5,8 +5,11 @@
     <h3 class="mt-4">Compras</h3> 
 
     <div class="card my-4">
-        <div class="card-body">        
-            <table class="table" id="products-table">
+        <div class="card-body">   
+            <div th:if="${ordenes.isEmpty()}" class="text-center">
+                <p class="my-3">Aún no se han realizado compras</p>
+            </div>     
+            <table th:unless="${ordenes.isEmpty()}" class="table" id="products-table">
                 <thead>
                     <tr>
                         <th>No. de orden</th>
