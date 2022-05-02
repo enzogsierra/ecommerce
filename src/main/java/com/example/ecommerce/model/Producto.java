@@ -1,5 +1,6 @@
 package com.example.ecommerce.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,10 +16,17 @@ public class Producto
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String nombre;
+
+    @Column(length = 2048)
     private String descripcion;
+
+    @Column(length = 41) // 36 caracteres por el randomUUID + extension (.jpg, .webp)
     private String imagen;
+
     private double precio;
+
     private int cantidad;
     
     @ManyToOne

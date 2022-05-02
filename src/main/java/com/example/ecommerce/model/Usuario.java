@@ -1,6 +1,8 @@
 package com.example.ecommerce.model;
 
 import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,13 +18,26 @@ public class Usuario
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(length = 64)
     private String nombre;
+
+    @Column(length = 64)
     private String apellido;
+
+    @Column(length = 62) // 62 caracteres debido al hash
     private String password;
+
+    //@Column(length = 320) // 320 máximos de un email
     private String email;
+
+    @Column(length = 15) // Máximo de caracteres de un número de celular
     private String telefono;
+
     private String direccion;
+
     private String tipo;
+
     
     @OneToMany(mappedBy = "usuario")
     private List<Producto> productos;
