@@ -1,4 +1,4 @@
-package com.example.ecommerce.service;
+package com.example.ecommerce.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +18,13 @@ public class SpringBootSecurity extends WebSecurityConfigurerAdapter
     @Autowired
     private UserDetailsService userDetailService;
 
+    @Bean
+    public BCryptPasswordEncoder getEncoder()
+    {
+        return new BCryptPasswordEncoder();
+    }
+
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception
     {
@@ -28,17 +35,21 @@ public class SpringBootSecurity extends WebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception
     {
-        http.csrf().disable().authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN") // Proteger las rutas /admin/ solo para usuarios con rol "ADMIN"
-                .antMatchers("/productos/**").hasRole("ADMIN") // ..
-                .and().formLogin().loginPage("/login") // Dar la ruta donde se loguea el usuario
-                .permitAll() // El resto de rutas son públicas para todos los usuarios
-                .defaultSuccessUrl("/login"); // Luego de que el usuario haya logueado, enviarlo a esta ruta
-    }
-
-    @Bean
-    public BCryptPasswordEncoder getEncoder()
-    {
-        return new BCryptPasswordEncoder();
-    }
+        http.csrf().disable()
+            .authorizeRequests()
+                .antMatchers("/admin/**", "/productos/**").hasRole("ADMIN") // Proteger las rutas /admin y /productos
+                .and()
+            .formLogin()
+                .loginPage("/login")
+                //.failureUrl("/login?error")
+                .defaultSuccessUrl("/login_success")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .permitAll()
+                .and()
+            .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+            ;
+    }    
 }

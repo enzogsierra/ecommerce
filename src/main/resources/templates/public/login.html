@@ -23,6 +23,8 @@
         <main class="container-md my-4">
             <div class="py-3 px-4 card m-auto" style="width: 100%; max-width: 30rem;">    
                 <h1 class="text-center mb-4">Iniciar sesión</h1>
+
+                <div th:if="${param.error}" class="mb-2 form-text text-danger">Correo electrónico o contraseña incorrectos.</div>
                 
                 <form th:action="@{/login}" method="POST">
                     <div class="mb-3">
@@ -31,14 +33,14 @@
                         <input th:if="${email}" type="email" class="form-control" id="email" name="email" th:value="${email}" required>
                         <input th:unless="${email}" type="email" class="form-control" id="email" name="email" required>
                         
-                        <div th:if="${error_email}" class="form-text text-danger">El correo electrónico ingresado no está registrado.</div>
+                        <!-- <div th:if="${error_email}" class="form-text text-danger">El correo electrónico ingresado no está registrado.</div> -->
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Contraseña</label>
                         
                         <input type="password" class="form-control" id="password" name="password" required>
                         
-                        <div th:if="${error_password}" class="form-text text-danger">La contraseña ingresada no coincide con el correo electrónico. Intenta otra vez.</div>
+                        <!-- <div th:if="${error_password}" class="form-text text-danger">La contraseña ingresada no coincide con el correo electrónico. Intenta otra vez.</div> -->
                     </div>
                     
                     <button type="submit" class="my-2 btn btn-primary w-100">Iniciar sesión</button>

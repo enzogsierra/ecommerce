@@ -11,7 +11,7 @@ public interface IUsuarioService
     Optional<Usuario> findById(int id);
     Optional<Usuario> findByEmail(String email);
     
-    void save(Usuario usuario);
+    Usuario save(Usuario usuario);
     void update(Usuario usuario);
     void delete(int id);
 }

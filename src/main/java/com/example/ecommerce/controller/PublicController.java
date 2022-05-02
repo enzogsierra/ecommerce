@@ -65,6 +65,9 @@ public class PublicController
     @GetMapping(value = {"", "/"})
     public String index(Model model, HttpSession session)
     {
+        System.out.println("Usuario ID: " + session.getAttribute("usuario.id"));
+
+
         model.addAttribute("productos", productoService.all());
         return "public/index";
     }

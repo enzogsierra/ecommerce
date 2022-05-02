@@ -1,28 +1,25 @@
-package com.example.ecommerce.service;
+package com.example.ecommerce.security;
 
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
 import com.example.ecommerce.model.Usuario;
+import com.example.ecommerce.service.IUsuarioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class UserDetailServiceImpl implements UserDetailsService
+public class UserDetailsServiceImpl implements UserDetailsService
 {
     @Autowired
     private IUsuarioService usuarioService;
-
-    @Autowired
-    private BCryptPasswordEncoder bCrypt;
 
     @Autowired
     HttpSession session;
@@ -31,15 +28,15 @@ public class UserDetailServiceImpl implements UserDetailsService
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException 
     {
-        Optional<Usuario> optUser = usuarioService.findByEmail(username);
+        Optional<Usuario> optUser = usuarioService.findByEmail(username); // Buscar usuario por el email dado
         if(optUser.isPresent())
         {
             Usuario usuario = optUser.get();
-            session.setAttribute("usuario.id", usuario.getId());
+            session.setAttribute("login_email", username); // Nos ayudará a identificar el email que usó el usuario para iniciar sesión
             
             return User.builder()
-                        .username(usuario.getNombre())
-                        .password(bCrypt.encode(usuario.getPassword()))
+                        .username(usuario.getEmail())
+                        .password(usuario.getPassword())
                         .roles(usuario.getTipo())
                         .build();
         }
