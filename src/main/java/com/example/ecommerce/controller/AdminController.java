@@ -47,17 +47,15 @@ public class AdminController
     
     
     //
-    @GetMapping(value = {"", "/"})
-    public String index(Model model)
+    @GetMapping(value = {"", "/"}) // Lista todos los productos
+    public String index(Model model) 
     {
-        List<Producto> productos = productoService.all();
-        
-        model.addAttribute("productos", productos);
+        model.addAttribute("productos", productoService.all());
         return "admin/index";
     }
 
     //
-    @GetMapping("/usuarios")
+    @GetMapping("/usuarios") // Lista todos los usuarios
     public String usuarios(Model model)
     {
         model.addAttribute("usuarios", usuarioService.all());
@@ -65,7 +63,7 @@ public class AdminController
     }
 
     //
-    @GetMapping("/ordenes")
+    @GetMapping("/ordenes") // Lista todas las ordenes
     public String ordenes(Model model)
     {
         model.addAttribute("ordenes", ordenService.all());

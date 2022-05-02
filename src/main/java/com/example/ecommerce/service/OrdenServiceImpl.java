@@ -44,12 +44,12 @@ public class OrdenServiceImpl implements IOrdenService
     
     
     @Override
-    public String generateOrderNumber()
+    public String generateOrderNumber() // Función para añadir 0s delante de un numero hasta llegar a 10 digitos (ej: 0000000001, 0000060327)
     {
         int n;
         List<Orden> ordenes = all();
         
-        if(ordenes.isEmpty()) n = 1;
+        if(ordenes.isEmpty()) n = 1; // Si aún no hay ordenes, dar el id 1
         else
         { 
             List<Integer> numbers = new ArrayList<>();

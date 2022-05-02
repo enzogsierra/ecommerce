@@ -61,19 +61,16 @@ public class PublicController
     }
 
     
-    //
+    // Home page - muestra todos los productos
     @GetMapping(value = {"", "/"})
     public String index(Model model, HttpSession session)
     {
-        System.out.println("Usuario ID: " + session.getAttribute("usuario.id"));
-
-
-        model.addAttribute("productos", productoService.all());
+        model.addAttribute("productos", productoService.all()); 
         return "public/index";
     }
 
 
-    //
+    // Busca un producto por su título
     @PostMapping("/buscar")
     public String buscar(@RequestParam String busqueda, Model model)
     {
@@ -85,7 +82,7 @@ public class PublicController
     }
     
     
-    //
+    // Muestra los detalles de un producto específico
     @GetMapping("/producto/{id}")
     public String producto(@PathVariable Integer id, Model model)
     {
@@ -97,7 +94,7 @@ public class PublicController
     }
     
 
-    //
+    // Muestra el carrito de compras del usuario
     @GetMapping("/carrito")
     public String carrito(Model model)
     {
@@ -106,7 +103,7 @@ public class PublicController
         return "public/carrito";
     }
     
-    @PostMapping("/carrito")
+    @PostMapping("/carrito") // Añade un nuevo producto al carrito
     public String carrito_POST(@RequestParam Integer id, @RequestParam Integer cantidad, Model model)
     {
         DetalleOrden detalleOrden = new DetalleOrden();
@@ -130,28 +127,29 @@ public class PublicController
         return "redirect:/carrito";
     }
     
+    // Eliminar un producto del carrito de compras del usuario
     @GetMapping("/carrito-eliminar/{id}")
     public String removeProductFromCart(@PathVariable Integer id)
     {
         // Lista nueva
         List<DetalleOrden> newList = new ArrayList<>();
         
-        for(DetalleOrden detalle: detalles)
+        for(DetalleOrden detalle: detalles) // Recorrer todo el carrito 
         {
-            if(detalle.getProducto().getId() != id)
+            if(detalle.getProducto().getId() != id) // Verifica que el productoId de la lista no sea igual al productoId a eliminar
             {
                 newList.add(detalle);
             }
         }
-        detalles = newList;
+        detalles = newList; // Actualizar carrito
         
-        double total =  detalles.stream().mapToDouble(dt -> dt.getTotal()).sum();
-        orden.setTotal(total);
+        double total =  detalles.stream().mapToDouble(dt -> dt.getTotal()).sum(); // Sumar el precio de todos los productos en el carrito
+        orden.setTotal(total); // Actualizar precio total
         return "redirect:/carrito";
     }
     
     
-    //
+    // Muestra la orden de los productos a comprar
     @GetMapping("/orden")
     public String orden(Model model, HttpSession session)
     {
@@ -164,7 +162,7 @@ public class PublicController
         return "public/orden";
     }
     
-    @GetMapping("/guardar-orden")
+    @GetMapping("/guardar-orden") // Comprar productos
     public String saveOrder(HttpSession session)
     {
         int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
@@ -190,7 +188,7 @@ public class PublicController
     }
 
 
-    //
+    // Muestra el historial de compras del usuario
     @GetMapping("/compras")
     public String compras(Model model, HttpSession session)
     {
@@ -207,11 +205,12 @@ public class PublicController
         Usuario usuario = usuarioService.findById(userId).get();
         List<Orden> ordenes = ordenService.findByUsuario(usuario);
 
-        
         model.addAttribute("ordenes", ordenes);
         return "public/compras";
     }
 
+
+    // Muestra los detalles de una compra especifica
     @GetMapping("/detalles/{id}")
     public String detalles(Model model, @PathVariable Integer id)
     {

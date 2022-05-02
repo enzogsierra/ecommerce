@@ -43,7 +43,7 @@ public class SpringBootSecurity extends WebSecurityConfigurerAdapter
                 .loginPage("/login")
                 //.failureUrl("/login?error")
                 .defaultSuccessUrl("/login_success")
-                .usernameParameter("email")
+                .usernameParameter("email") // El email remplaza el username
                 .passwordParameter("password")
                 .permitAll()
                 .and()

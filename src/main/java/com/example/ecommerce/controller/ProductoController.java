@@ -50,15 +50,16 @@ public class ProductoController
     }
     
     
-    @GetMapping(value = {"", "/"})
+    // Ruta principal - muestra todos los productos
+    @GetMapping(value = {"", "/"}) 
     public String index(Model model)
     {
         model.addAttribute("productos", productoService.all());
         return "productos/index";
     }
     
-    //
-    @GetMapping("/crear")
+    // Muestra formulario para crear un nuevo producto
+    @GetMapping("/crear") 
     public String create(Model model)
     {
         return "productos/crear";
@@ -79,7 +80,8 @@ public class ProductoController
         return "redirect:/productos";
     }
     
-    //
+
+    // Muestra formulario para editar un producto
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) throws JsonProcessingException
     {
@@ -114,12 +116,13 @@ public class ProductoController
         return "redirect:/productos";
     }
     
-    //
+
+    // Eliminar un producto
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id)
     {
         Producto tmp = productoService.findById(id).get();
-        if(!tmp.getImagen().equals("default.jpg")) // Eliminar si no es una imagen default
+        if(!tmp.getImagen().equals("default.jpg")) // Eliminar imagen del producto si no usa la imagen default
         {
             image.deleteImage(tmp.getImagen());
         }
