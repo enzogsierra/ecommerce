@@ -45,6 +45,12 @@ public class Usuario
     @OneToMany(mappedBy = "usuario")
     private List<Orden> ordenes;
 
+    @OneToMany(mappedBy = "usuario")
+    private List<Carrito> carrito;
+
+    // @OneToMany(mappedBy = "usuario")
+    // private List<Compra> compras;
+
     
     public Usuario() {
     }

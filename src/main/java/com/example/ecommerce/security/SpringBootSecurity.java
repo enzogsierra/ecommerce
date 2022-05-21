@@ -42,7 +42,8 @@ public class SpringBootSecurity extends WebSecurityConfigurerAdapter
             "/app.js", // Script
             "/style.css", // CSS
             "/images/**", // Imagenes de productos
-            "/producto/**" // Vista de producto especifico
+            "/producto/**", // Vista de producto especifico
+            "/signup"
         };
 
         http.csrf().disable()
@@ -54,7 +55,7 @@ public class SpringBootSecurity extends WebSecurityConfigurerAdapter
             .formLogin()
                 .loginPage("/login")
                 //.failureUrl("/login?error")
-                .defaultSuccessUrl("/login_success")
+                .defaultSuccessUrl("/login_success", true)
                 .usernameParameter("email") // El email remplaza el username
                 .passwordParameter("password")
                 .permitAll()

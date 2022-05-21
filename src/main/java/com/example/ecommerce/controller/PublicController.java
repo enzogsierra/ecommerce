@@ -1,9 +1,11 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.model.Carrito;
 import com.example.ecommerce.model.DetalleOrden;
 import com.example.ecommerce.model.Orden;
 import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
+import com.example.ecommerce.service.ICarritoService;
 import com.example.ecommerce.service.IDetalleOrdenService;
 import com.example.ecommerce.service.IOrdenService;
 import java.util.ArrayList;
@@ -38,6 +40,10 @@ public class PublicController
     
     @Autowired
     private IDetalleOrdenService detalleOrdenService;
+
+    @Autowired
+    private ICarritoService carritoService;
+
     
     // Almacena los detalles de la orden
     List<DetalleOrden> detalles = new ArrayList<>();
@@ -94,19 +100,47 @@ public class PublicController
     }
     
 
+
+
     // Muestra el carrito de compras del usuario
     @GetMapping("/carrito")
-    public String carrito(Model model)
+    public String carrito(Model model, HttpSession session)
     {
-        model.addAttribute("detalles", detalles);
-        model.addAttribute("orden", orden);
+        Integer userId = Integer.parseInt(session.getAttribute("usuario.id").toString()); 
+        Usuario usuario = usuarioService.findById(userId).get(); // Obtener usuario
+        List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener el carrito de compras del usuario
+
+        // Calcular total
+        double total = 0.0d;
+        for(Carrito item: carrito) 
+        {
+            total += item.getProducto().getPrecio() * item.getCantidad();
+        }
+
+        //
+        model.addAttribute("carrito", carrito);
+        model.addAttribute("total", total);
         return "public/carrito";
     }
     
     @PostMapping("/carrito") // Añade un nuevo producto al carrito
-    public String carrito_POST(@RequestParam Integer id, @RequestParam Integer cantidad, Model model)
+    public String carrito_POST(@RequestParam Integer id, @RequestParam int cantidad, Model model, HttpSession session)
     {
-        DetalleOrden detalleOrden = new DetalleOrden();
+        Integer userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
+        Usuario usuario = usuarioService.findById(userId).get();
+        Producto producto = productoService.findById(id).get();
+
+        // Crear una nueva instancia de carrito
+        Carrito carrito = new Carrito();
+        carrito.setUsuario(usuario);
+        carrito.setProducto(producto);
+        carrito.setCantidad(cantidad);
+        carritoService.save(carrito); // Agregar producto al carrito
+        
+
+        return "redirect:/carrito";
+
+        /*DetalleOrden detalleOrden = new DetalleOrden();
         Optional<Producto> opt = productoService.findById(id);
         Producto producto = opt.get();
         
@@ -124,7 +158,7 @@ public class PublicController
             orden.setTotal(total);
         }
         
-        return "redirect:/carrito";
+        return "redirect:/carrito";*/
     }
     
     // Eliminar un producto del carrito de compras del usuario
