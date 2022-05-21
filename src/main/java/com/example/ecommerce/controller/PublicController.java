@@ -6,7 +6,6 @@ import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.service.ICarritoService;
 import com.example.ecommerce.service.ICompraService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,8 +68,9 @@ public class PublicController
     @PostMapping("/buscar")
     public String buscar(@RequestParam String busqueda, Model model)
     {
-        List<Producto> productos = productoService.all().stream().filter(p -> p.getNombre().contains(busqueda)).collect(Collectors.toList());
-        
+        //List<Producto> productos = productoService.all().stream().filter(p -> p.getNombre().contains(busqueda)).collect(Collectors.toList());
+        List<Producto> productos = productoService.search(busqueda);
+
         model.addAttribute("productos", productos);
         model.addAttribute("busqueda", busqueda);
         return "public/index";

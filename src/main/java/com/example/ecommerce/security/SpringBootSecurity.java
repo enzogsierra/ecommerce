@@ -38,11 +38,11 @@ public class SpringBootSecurity extends WebSecurityConfigurerAdapter
         String publicResources[] = new String[] // URLs y resources públicos para todos los usuarios
         {
             "/", // Home
-            // "/buscar", // Buscador de productos - parece ser no necesario incluirlo
             "/app.js", // Script
             "/style.css", // CSS
             "/images/**", // Imagenes de productos
             "/producto/**", // Vista de producto especifico
+            "/buscar", // Buscador de productos
             "/signup"
         };
 
