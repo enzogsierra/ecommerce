@@ -9,15 +9,16 @@
             <div class="row">
                 <div class="col-lg-9">
                     <div class="mb-4">
-                        <h4 class="card-title text-uppercase">Datos de la orden</h4>
+                        <h4 class="card-title text-uppercase">Datos del comprador</h4>
                         <h6>Nombre: <span th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></span></h6>
                         <h6>Correo: <span th:text="${usuario.email}"></span></h6>
                         <h6>Dirección: <span th:text="${usuario.direccion}"></span></h6>
                     </div>
 
-                    <h4 class="card-title text-uppercase mb-0">Productos</h4>
+                    <h4 class="card-title text-uppercase mb-0">Compra</h4>
                     <div class="alert alert-light" role="alert">
-                        <table class="table">
+                        <table class="table table-bordered">
+                            <caption><span th:text="${cantidadProductos}"></span> producto/s</caption>
                             <thead>
                                 <tr>
                                     <th>Producto</th>
@@ -27,10 +28,10 @@
                             </thead>
 
                             <tbody>
-                                <tr th:each="detalle: ${detalles}">
-                                    <td th:text="${detalle.nombre}"></td>
-                                    <td th:text="${#numbers.formatDecimal(detalle.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                                    <td th:text="'$ ' + ${#numbers.formatDecimal(detalle.precio, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                                <tr th:each="item: ${carrito}">
+                                    <td th:text="${item.producto.nombre}"></td>
+                                    <td th:text="${#numbers.formatDecimal(item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                                    <td th:text="${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -42,7 +43,7 @@
                     
                     <ul class="list-group my-2">
                         <li class="list-group-item">
-                            <p class="my-2">Total: <span th:text="'$ ' + ${#numbers.formatDecimal(orden.total, 0, 'DEFAULT', 0, 'POINT')}" class="fw-bold"></span></p>
+                            <p class="my-2">Total: <span th:text="'$ ' + ${#numbers.formatDecimal(total, 0, 'DEFAULT', 0, 'POINT')}" class="fw-bold"></span></p>
                         </li>
                     </ul>
                     

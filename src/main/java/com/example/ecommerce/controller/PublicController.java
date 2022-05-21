@@ -135,31 +135,9 @@ public class PublicController
         carrito.setUsuario(usuario);
         carrito.setProducto(producto);
         carrito.setCantidad(cantidad);
-        System.out.println(carrito.toString());
         carritoService.save(carrito); // Agregar producto al carrito
         
-
         return "redirect:/carrito";
-
-        /*DetalleOrden detalleOrden = new DetalleOrden();
-        Optional<Producto> opt = productoService.findById(id);
-        Producto producto = opt.get();
-        
-        // Verificar que el producto a añadir no esté en el carrito
-        boolean isInList = detalles.stream().anyMatch(p -> p.getProducto().getId() == producto.getId());
-        if(!isInList)
-        {
-            detalleOrden.setNombre(producto.getNombre());
-            detalleOrden.setCantidad(cantidad);
-            detalleOrden.setPrecio(producto.getPrecio() * cantidad);
-            detalleOrden.setProducto(producto);
-            detalles.add(detalleOrden);
-
-            double total = detalles.stream().mapToDouble(dt -> dt.getPrecio()).sum();
-            orden.setTotal(total);
-        }
-        
-        return "redirect:/carrito";*/
     }
     
     // Eliminar un producto del carrito de compras del usuario
@@ -167,32 +145,14 @@ public class PublicController
     public String removeProductFromCart(@PathVariable Integer id, HttpSession session)
     {
         Integer userId = Integer.parseInt(session.getAttribute("usuario.id").toString()); 
-        Optional<Carrito> item = carritoService.isProductInCart(userId, id);
+        Optional<Carrito> item = carritoService.isProductInCart(userId, id); // Buscar producto en el carrito del usuario
 
-        System.out.println("UserID: " + userId + " - ProductID: " + id);
-        if(item.isPresent())
+        if(item.isPresent()) // Verificar si existe
         {
-            carritoService.delete(item.get());
+            carritoService.delete(item.get()); // Eliminar producto del carrito del usuario
         }
-
 
         return "redirect:/carrito";
-
-        /*// Lista nueva
-        List<DetalleOrden> newList = new ArrayList<>();
-        
-        for(DetalleOrden detalle: detalles) // Recorrer todo el carrito 
-        {
-            if(detalle.getProducto().getId() != id) // Verifica que el productoId de la lista no sea igual al productoId a eliminar
-            {
-                newList.add(detalle);
-            }
-        }
-        detalles = newList; // Actualizar carrito
-        
-        double total =  detalles.stream().mapToDouble(dt -> dt.getPrecio()).sum(); // Sumar el precio de todos los productos en el carrito
-        orden.setTotal(total); // Actualizar precio total
-        return "redirect:/carrito";*/
     }
     
     
@@ -200,15 +160,32 @@ public class PublicController
     @GetMapping("/orden")
     public String orden(Model model, HttpSession session)
     {
-        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
+        /*int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
         Usuario usuario = usuarioService.findById(userId).get();
         
         model.addAttribute("detalles", detalles);
         model.addAttribute("orden", orden);
+        model.addAttribute("usuario", usuario);*/
+
+        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
+        Usuario usuario = usuarioService.findById(userId).get();
+        List<Carrito> carrito = carritoService.findByUsuario(usuario);
+
+        double total = 0.0d;
+        for(Carrito item: carrito)
+        {
+            total += item.getProducto().getPrecio() * item.getCantidad();
+        }
+
         model.addAttribute("usuario", usuario);
+        model.addAttribute("carrito", carritoService.findByUsuario(usuario));
+        model.addAttribute("cantidadProductos", carrito.size());
+        model.addAttribute("total", total);
         return "public/orden";
     }
     
+
+
     @GetMapping("/guardar-orden") // Comprar productos
     public String saveOrder(HttpSession session)
     {
