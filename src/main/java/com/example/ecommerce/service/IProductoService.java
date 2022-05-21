@@ -7,10 +7,10 @@ import java.util.Optional;
 
 public interface IProductoService 
 {
-    public List<Producto> all();
-    public Optional<Producto> findById(int id);
+    List<Producto> all();
+    Optional<Producto> findById(int id);
     
-    public void save(Producto producto);
-    public void update(Producto producto);
-    public void delete(int id);
+    void save(Producto producto);
+    void update(Producto producto);
+    void delete(int id);
 }

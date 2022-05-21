@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.example.ecommerce.service.IOrdenService;
 import com.example.ecommerce.service.IProductoService;
 import com.example.ecommerce.service.IUsuarioService;
 
@@ -21,9 +20,6 @@ public class AdminController
 
     @Autowired
     private IUsuarioService usuarioService;
-
-    @Autowired
-    private IOrdenService ordenService;
     
 
     // Atributos globales
@@ -61,7 +57,7 @@ public class AdminController
     @GetMapping("/ordenes")
     public String ordenes(Model model)
     {
-        model.addAttribute("ordenes", ordenService.all());
+        //model.addAttribute("ordenes", ordenService.all());
         return "admin/ordenes";
     }
 }

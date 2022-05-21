@@ -25,8 +25,7 @@ public class CarritoServiceImpl implements ICarritoService
 
     @Override
     public Optional<Carrito> findById(int id) {
-        // TODO Auto-generated method stub
-        return null;
+        return carritoRepository.findById(id);
     }
 
     @Override
@@ -46,8 +45,7 @@ public class CarritoServiceImpl implements ICarritoService
 
     @Override
     public void update(Carrito carrito) {
-        // TODO Auto-generated method stub
-        
+        carritoRepository.save(carrito);
     }
 
     @Override

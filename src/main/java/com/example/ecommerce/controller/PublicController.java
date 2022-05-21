@@ -1,13 +1,11 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.Carrito;
-import com.example.ecommerce.model.DetalleOrden;
-import com.example.ecommerce.model.Orden;
+import com.example.ecommerce.model.Compra;
 import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.service.ICarritoService;
-import com.example.ecommerce.service.IDetalleOrdenService;
-import com.example.ecommerce.service.IOrdenService;
+import com.example.ecommerce.service.ICompraService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,22 +32,13 @@ public class PublicController
     
     @Autowired
     private IUsuarioService usuarioService;
-    
-    @Autowired
-    private IOrdenService ordenService;
-    
-    @Autowired
-    private IDetalleOrdenService detalleOrdenService;
 
     @Autowired
     private ICarritoService carritoService;
 
-    
-    // Almacena los detalles de la orden
-    List<DetalleOrden> detalles = new ArrayList<>();
-    
-    // Datos de la orden
-    Orden orden = new Orden();
+    @Autowired
+    private ICompraService compraService;
+
    
 
     // Atributos globales
@@ -186,23 +175,21 @@ public class PublicController
     {
         int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
         Usuario usuario = usuarioService.findById(userId).get();
-        
-        Date fechaCreacion = new Date();
-        orden.setFechaCreacion(fechaCreacion);
-        orden.setNumero(ordenService.generateOrderNumber());
-        orden.setUsuario(usuario);
-        ordenService.save(orden);
-        
-        // Guardar detalles
-        detalles.forEach(d ->
+        List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener carrito de compras
+
+        for(Carrito item: carrito)
         {
-            d.setOrden(orden);
-            detalleOrdenService.save(d);
-        });
-        
-        // Limpiar lista y orden
-        orden = new Orden();
-        detalles.clear();
+            Compra compra = new Compra();
+            compra.setUsuario(usuario);
+            compra.setProducto(item.getProducto());
+            compra.setCantidad(item.getCantidad());
+            compra.setPrecio(item.getProducto().getPrecio() * item.getCantidad());
+            compra.setFecha(new Date());
+            compraService.save(compra);
+
+            carritoService.delete(item);
+        }
+
         return "redirect:/";
     }
 
@@ -211,31 +198,23 @@ public class PublicController
     @GetMapping("/compras")
     public String compras(Model model, HttpSession session)
     {
-        // Obtener usuario.id
-        Object usuario_id = session.getAttribute("usuario.id");
-
-        if(usuario_id == null) // Verificar que el usuario esté logueado
-        {
-            return "redirect:/login";
-        }
-
-        // Obtener las compras del usuario
-        Integer userId = Integer.parseInt(usuario_id.toString());
+        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
         Usuario usuario = usuarioService.findById(userId).get();
-        List<Orden> ordenes = ordenService.findByUsuario(usuario);
+        List<Compra> compras = compraService.findByUsuario(usuario);
 
-        model.addAttribute("ordenes", ordenes);
+        model.addAttribute("compras", compras);
+
         return "public/compras";
     }
 
 
     // Muestra los detalles de una compra especifica
-    @GetMapping("/detalles/{id}")
+    /*@GetMapping("/detalles/{id}")
     public String detalles(Model model, @PathVariable Integer id)
     {
         Orden orden = ordenService.findById(id).get();
 
         model.addAttribute("detalles", orden.getDetalle());
         return "public/detalles";
-    }
+    }*/
 }

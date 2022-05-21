@@ -2,7 +2,7 @@ package com.example.ecommerce.repository;
 
 import java.util.List;
 
-import com.example.ecommerce.model.Orden;
+import com.example.ecommerce.model.Compra;
 import com.example.ecommerce.model.Usuario;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface OrdenRepository extends JpaRepository<Orden, Integer>
+public interface CompraRepository extends JpaRepository<Compra, Integer>
 {
-    List<Orden> findByUsuario(Usuario usuario);
+    List<Compra> findByUsuario(Usuario usuario);
 }

@@ -65,13 +65,11 @@ public class Usuario
     private List<Producto> productos;
     
     @OneToMany(mappedBy = "usuario")
-    private List<Orden> ordenes;
-
-    @OneToMany(mappedBy = "usuario")
     private List<Carrito> carrito;
 
-    // @OneToMany(mappedBy = "usuario")
-    // private List<Compra> compras;
+    @OneToMany(mappedBy = "usuario")
+    private List<Compra> compras;
+
 
     
     public Usuario() {
@@ -160,18 +158,20 @@ public class Usuario
     public void setProductos(List<Producto> productos) {
         this.productos = productos;
     }
-
-    public List<Orden> getOrdenes() {
-        return ordenes;
-    }
-
-    public void setOrdenes(List<Orden> ordenes) {
-        this.ordenes = ordenes;
-    }
-
     
-    @Override
-    public String toString() {
-        return "Usuario{" + "id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + ", password=" + password + ", email=" + email + ", telefono=" + telefono + ", direccion=" + direccion + ", tipo=" + tipo + '}';
+    public List<Carrito> getCarrito() {
+        return carrito;
+    }
+
+    public void setCarrito(List<Carrito> carrito) {
+        this.carrito = carrito;
+    }
+
+    public List<Compra> getCompras() {
+        return compras;
+    }
+
+    public void setCompras(List<Compra> compras) {
+        this.compras = compras;
     }
 }
