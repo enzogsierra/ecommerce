@@ -160,23 +160,18 @@ public class PublicController
     @GetMapping("/orden")
     public String orden(Model model, HttpSession session)
     {
-        /*int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
-        Usuario usuario = usuarioService.findById(userId).get();
-        
-        model.addAttribute("detalles", detalles);
-        model.addAttribute("orden", orden);
-        model.addAttribute("usuario", usuario);*/
-
         int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
         Usuario usuario = usuarioService.findById(userId).get();
-        List<Carrito> carrito = carritoService.findByUsuario(usuario);
+        List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener carrito de compras
 
+        // Calcular total de la compra
         double total = 0.0d;
         for(Carrito item: carrito)
         {
             total += item.getProducto().getPrecio() * item.getCantidad();
         }
 
+        
         model.addAttribute("usuario", usuario);
         model.addAttribute("carrito", carritoService.findByUsuario(usuario));
         model.addAttribute("cantidadProductos", carrito.size());

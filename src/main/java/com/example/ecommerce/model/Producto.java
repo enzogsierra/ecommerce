@@ -7,6 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.NumberFormat;
+import org.springframework.format.annotation.NumberFormat.Style;
 
 
 @Entity
@@ -17,18 +24,34 @@ public class Producto
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    //
+    @Column(length = 256)
+    @NotBlank(message = "El nombre del producto no puede estar en blanco")
+    @Min(value = 16, message = "El nombre del producto debe tener entre 16 y 255 caracteres")
+    @Max(value = 255, message = "El nombre del producto debe tener entre 16 y 255 caracteres")
     private String nombre;
 
+    //
     @Column(length = 2048)
+    @Min(value = 128, message = "La descripción del producto debe tener entre 128 y 2048 caracteres")
+    @Max(value = 2048, message = "La descripción del producto debe tener entre 128 y 2048 caracteres")
     private String descripcion;
 
+    //
     @Column(length = 41) // 36 caracteres por el randomUUID + extension (.jpg, .webp)
     private String imagen;
 
+    //
+    @NotNull(message = "Debes ingresar un precio")
+    @NumberFormat(pattern = "#,##0.00", style = Style.CURRENCY)
     private double precio;
 
+    //
+    @NotNull(message = "Debes ingresar la cantidad de stock del producto")
+    @Min(value = 1, message = "La cantidad de stock no debe ser menor a 1")
     private int cantidad;
     
+    //
     @ManyToOne
     private Usuario usuario;
 

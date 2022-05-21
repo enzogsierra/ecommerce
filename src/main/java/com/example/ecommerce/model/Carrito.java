@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 
 
 @Entity
@@ -22,6 +23,7 @@ public class Carrito
     @ManyToOne
     private Producto producto;
     
+    @Min(value = 1, message = "Debes agregar al menos 1 producto")
     private int cantidad;
 
 
