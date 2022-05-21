@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.ecommerce.model.Carrito;
-import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.repository.CarritoRepository;
 
@@ -36,7 +35,7 @@ public class CarritoServiceImpl implements ICarritoService
     }
 
     @Override
-    public Optional<Carrito> isProductInCart(int userId, int productId) {
+    public Optional<Carrito> isProductInCart(Integer userId, Integer productId) {
         return carritoRepository.isProductInCart(userId, productId);
     }
 
@@ -52,8 +51,7 @@ public class CarritoServiceImpl implements ICarritoService
     }
 
     @Override
-    public void delete(int id) {
-        // TODO Auto-generated method stub
-        
+    public void delete(Carrito carrito) {
+        carritoRepository.delete(carrito);
     }
 }

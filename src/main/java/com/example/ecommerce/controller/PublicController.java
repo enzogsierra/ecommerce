@@ -135,6 +135,7 @@ public class PublicController
         carrito.setUsuario(usuario);
         carrito.setProducto(producto);
         carrito.setCantidad(cantidad);
+        System.out.println(carrito.toString());
         carritoService.save(carrito); // Agregar producto al carrito
         
 
@@ -163,9 +164,21 @@ public class PublicController
     
     // Eliminar un producto del carrito de compras del usuario
     @GetMapping("/carrito-eliminar/{id}")
-    public String removeProductFromCart(@PathVariable Integer id)
+    public String removeProductFromCart(@PathVariable Integer id, HttpSession session)
     {
-        // Lista nueva
+        Integer userId = Integer.parseInt(session.getAttribute("usuario.id").toString()); 
+        Optional<Carrito> item = carritoService.isProductInCart(userId, id);
+
+        System.out.println("UserID: " + userId + " - ProductID: " + id);
+        if(item.isPresent())
+        {
+            carritoService.delete(item.get());
+        }
+
+
+        return "redirect:/carrito";
+
+        /*// Lista nueva
         List<DetalleOrden> newList = new ArrayList<>();
         
         for(DetalleOrden detalle: detalles) // Recorrer todo el carrito 
@@ -179,7 +192,7 @@ public class PublicController
         
         double total =  detalles.stream().mapToDouble(dt -> dt.getPrecio()).sum(); // Sumar el precio de todos los productos en el carrito
         orden.setTotal(total); // Actualizar precio total
-        return "redirect:/carrito";
+        return "redirect:/carrito";*/
     }
     
     

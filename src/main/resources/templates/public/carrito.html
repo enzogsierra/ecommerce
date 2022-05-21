@@ -32,7 +32,7 @@
                         <td th:text="'$ ' + ${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
                         <!-- <td>(precio)</td> -->
                         <td>
-                            <a th:href="@{/carrito-eliminar/{id} (id = ${item.id})}" class="btn btn-outline-danger">Quitar</a>
+                            <a th:href="@{/carrito-eliminar/{id} (id = ${item.producto.id})}" class="btn btn-outline-danger">Quitar</a>
                         </td>
                     </tr>
                     

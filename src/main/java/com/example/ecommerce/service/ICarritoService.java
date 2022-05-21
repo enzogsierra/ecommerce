@@ -12,9 +12,9 @@ public interface ICarritoService
     List<Carrito> all();
     Optional<Carrito> findById(int id);
     List<Carrito> findByUsuario(Usuario usuario);
-    Optional<Carrito> isProductInCart(int userId, int productId);
+    Optional<Carrito> isProductInCart(Integer userId, Integer productId);
 
     void save(Carrito carrito);
     void update(Carrito carrito);
-    void delete(int id);
+    void delete(Carrito carrito);
 }
