@@ -10,9 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -25,20 +24,17 @@ public class Usuario
 
     //
     @Column(length = 64)
-    @Min(value = 3, message = "El nombre debe contener entre 3 y 64 caracteres")
-    @Max(value = 64, message = "El nombre debe contener entre 3 y 64 caracteres")
+    @Size(min = 3, max = 64, message = "El nombre debe contener entre 3 y 64 caracteres")
     private String nombre;
 
     //
     @Column(length = 64)
-    @Min(value = 3, message = "El apellido debe contener entre 3 y 64 caracteres")
-    @Max(value = 64, message = "El apellido debe contener entre 3 y 64 caracteres")
+    @Size(min = 3, max = 64, message = "El apellido debe contener entre 3 y 64 caracteres")
     private String apellido;
 
     //
     @Column(length = 64)
-    @Min(value = 3, message = "El email debe contener entre 3 y 64 caracteres")
-    @Max(value = 64, message = "El email debe contener entre 3 y 64 caracteres")
+    @Size(min = 0, max = 64, message = "El email debe contener entre 3 y 64 caracteres")
     @Email(regexp = ".+[@].+[\\.].+", message = "La dirección email no es válida")
     private String email;
 
@@ -48,13 +44,13 @@ public class Usuario
     private String password;
 
     //
-    @Column(length = 16) // Máximo de caracteres de un número de celular
-    @Max(value = 15, message = "El número de teléfono no puede superar los 15 caracteres")
+    @Column(length = 15) // Máximo de caracteres de un número de celular
+    @Size(min = 0, max = 15, message = "El número de teléfono no puede superar los 15 caracteres")
     private String telefono;
 
     //
-    @Column(length = 256)
-    @Max(value = 255, message = "La dirección no puede superar los 255 caracteres")
+    @Column(length = 255)
+    @Size(min = 0, max = 255, message = "La dirección no puede superar los 255 caracteres")
     private String direccion;
 
     //

@@ -25,7 +25,7 @@ public class Producto
     private Integer id;
 
     //
-    @Column(length = 256)
+    @Column(length = 255)
     @NotBlank(message = "El nombre del producto no puede estar en blanco")
     @Min(value = 16, message = "El nombre del producto debe tener entre 16 y 255 caracteres")
     @Max(value = 255, message = "El nombre del producto debe tener entre 16 y 255 caracteres")

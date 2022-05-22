@@ -2,14 +2,20 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.service.IUsuarioService;
+
 import java.util.Optional;
+
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -21,40 +27,42 @@ public class AuthController
     BCryptPasswordEncoder passEncode = new BCryptPasswordEncoder();
     
     
-    //
+    // Registro
     @GetMapping("/signup")
     public String signup(Model model)
     {
+        model.addAttribute("usuario", new Usuario());
         return "public/signup";
     }
-    
+
     @PostMapping("/signup")
-    public String signup_POST(Model model, Usuario usuario, HttpSession session)
+    public String signup_POST(@Valid Usuario usuario, BindingResult result, RedirectAttributes redirect, Model model)
     {
-        Optional<Usuario> checkEmail = usuarioService.findByEmail(usuario.getEmail()); // Buscar si ya existe un email registrado
-        if(checkEmail.isPresent()) // Email existente
+        // Verificar si el email ya está registrado
+        Optional<Usuario> checkEmail = usuarioService.findByEmail(usuario.getEmail());
+        if(checkEmail.isPresent()) // Email ya registrado
         {
-            model.addAttribute("nombre", usuario.getNombre()); // Autocompletar formulario
-            model.addAttribute("apellido", usuario.getApellido());
-            model.addAttribute("email", usuario.getEmail());
-            model.addAttribute("direccion", usuario.getDireccion());
-            model.addAttribute("error_email", 1); // Mostrar mensaje de error
+            model.addAttribute("error_emailExists", 1);
             return "public/signup";
         }
 
-        // Registro exitoso
-        usuario.setTipo("USER"); // Dar rol de "USER" por default
-        usuario.setPassword(passEncode.encode(usuario.getPassword())); // Encriptar la clave del usuario
-        Usuario createdUser = usuarioService.save(usuario); // Guardar el usuario en la db
+        // Verificar errores de formulario
+        if(result.hasErrors())
+        {
+            return "public/signup";
+        }
 
-        //
-        session.setAttribute("usuario.id", createdUser.getId());
-        session.setAttribute("usuario.tipo", createdUser.getTipo());
+        // Registro correcto
+        usuario.setTipo("USER"); // Rol "USER" por default
+        usuario.setPassword(passEncode.encode(usuario.getPassword())); // Hashear contraseña
+        //usuarioService.save(usuario);
 
-        return "redirect:/";
+        redirect.addFlashAttribute("signupRedirect_email", usuario.getEmail());
+        return "redirect:/login";
     }
-
     
+
+    // Sesión
     @GetMapping("/login")
     public String login()
     {
@@ -70,7 +78,6 @@ public class AuthController
         //
         session.setAttribute("usuario.id", auth.getId());
         session.setAttribute("usuario.tipo", auth.getTipo());
-
         session.removeAttribute("login_email"); // Eliminar este atributo de la sesión (ya no se usa)
 
         return "redirect:/";
@@ -83,48 +90,5 @@ public class AuthController
         session.removeAttribute("usuario.tipo");
         return "redirect:/";
     }
-    
-    
-    /*
-        *
-        * Overrided by Spring Securty
-        *
-    
-    @PostMapping("/login")
-    public String login_POST(Model model, Usuario usuario, HttpSession session)
-    {
-        Integer userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
-        Optional<Usuario> auth = usuarioService.findById(userId);
-        
-        if(!auth.isPresent()) // Verificar email
-        {
-            model.addAttribute("email", usuario.getEmail());
-            model.addAttribute("error_email", 1);
-            return "public/login";
-        }
-        if(!usuario.getPassword().equals(auth.get().getPassword())) // Verificar contraseña
-        {
-            model.addAttribute("email", usuario.getEmail());
-            model.addAttribute("password", usuario.getPassword());
-            model.addAttribute("error_password", 1);
-            return "public/login";
-        }
-        
-        //
-        session.setAttribute("usuario.id", auth.get().getId());
-        session.setAttribute("usuario.tipo", auth.get().getTipo());
-        
-        //
-        return auth.get().getTipo().equals("ADMIN") ? ("redirect:/admin") : ("redirect:/");
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session)
-    {
-        session.removeAttribute("usuario.id");
-        session.removeAttribute("usuario.tipo");
-        return "redirect:/";
-    }
-    */
 }
 
