@@ -59,7 +59,9 @@ public class PublicController
     @GetMapping(value = {"", "/"})
     public String index(Model model, HttpSession session)
     {
-        model.addAttribute("productos", productoService.all()); 
+        List<Producto> productos = productoService.all();
+
+        model.addAttribute("productos", productos); 
         return "public/index";
     }
 
@@ -68,7 +70,6 @@ public class PublicController
     @PostMapping("/buscar")
     public String buscar(@RequestParam String busqueda, Model model)
     {
-        //List<Producto> productos = productoService.all().stream().filter(p -> p.getNombre().contains(busqueda)).collect(Collectors.toList());
         List<Producto> productos = productoService.search(busqueda);
 
         model.addAttribute("productos", productos);
@@ -81,8 +82,7 @@ public class PublicController
     @GetMapping("/producto/{id}")
     public String producto(@PathVariable Integer id, Model model)
     {
-        Optional<Producto> opt = productoService.findById(id);
-        Producto producto = opt.get();
+        Producto producto = productoService.findById(id).get();
         
         model.addAttribute("producto", producto);
         return "public/producto";
@@ -103,7 +103,7 @@ public class PublicController
         double total = 0.0d;
         for(Carrito item: carrito) 
         {
-            total += item.getProducto().getPrecio() * item.getCantidad();
+            total += item.getProducto().getPrecio() * item.getCantidad(); // Total = precio unitario del producto * cantidad
         }
 
         //
@@ -124,7 +124,7 @@ public class PublicController
         carrito.setUsuario(usuario);
         carrito.setProducto(producto);
         carrito.setCantidad(cantidad);
-        carritoService.save(carrito); // Agregar producto al carrito
+        carritoService.save(carrito); // Agregar producto al carrito del usuario
         
         return "redirect:/carrito";
     }
@@ -151,16 +151,16 @@ public class PublicController
     {
         int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
         Usuario usuario = usuarioService.findById(userId).get();
-        List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener carrito de compras
+        List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener carrito de compras del usuario
 
         // Calcular total de la compra
         double total = 0.0d;
         for(Carrito item: carrito)
         {
-            total += item.getProducto().getPrecio() * item.getCantidad();
+            total += item.getProducto().getPrecio() * item.getCantidad(); // Total = precio unitario del producto * cantidad
         }
 
-        
+        //
         model.addAttribute("usuario", usuario);
         model.addAttribute("carrito", carritoService.findByUsuario(usuario));
         model.addAttribute("cantidadProductos", carrito.size());
@@ -175,19 +175,20 @@ public class PublicController
     {
         int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
         Usuario usuario = usuarioService.findById(userId).get();
-        List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener carrito de compras
+        List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener carrito de compras del usuario
 
         for(Carrito item: carrito)
         {
+            // Por cada item en el carrito crear una nueva compra
             Compra compra = new Compra();
             compra.setUsuario(usuario);
             compra.setProducto(item.getProducto());
             compra.setCantidad(item.getCantidad());
             compra.setPrecio(item.getProducto().getPrecio() * item.getCantidad());
             compra.setFecha(new Date());
-            compraService.save(compra);
+            compraService.save(compra); // Guardar datos de la compra
 
-            carritoService.delete(item);
+            carritoService.delete(item); // Eliminar item del carrito
         }
 
         return "redirect:/";
@@ -200,21 +201,33 @@ public class PublicController
     {
         int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
         Usuario usuario = usuarioService.findById(userId).get();
-        List<Compra> compras = compraService.findByUsuario(usuario);
 
-        model.addAttribute("compras", compras);
-
+        model.addAttribute("compras", compraService.findByUsuario(usuario));
         return "public/compras";
     }
 
 
     // Muestra los detalles de una compra especifica
-    /*@GetMapping("/detalles/{id}")
-    public String detalles(Model model, @PathVariable Integer id)
+    @GetMapping("/compra/{id}")
+    public String detalles(@PathVariable Integer id, Model model, HttpSession session)
     {
-        Orden orden = ordenService.findById(id).get();
+        // Verificar que la compra exista
+        Optional<Compra> opt = compraService.findById(id);
+        if(!opt.isPresent()) return "redirect:/"; // Si no existe, redireccionar
 
-        model.addAttribute("detalles", orden.getDetalle());
-        return "public/detalles";
-    }*/
+        // Obtener datos de la compra
+        Compra compra = opt.get();
+
+        // Verificar si el usuario puede ver los detalles de la compra
+        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
+        Usuario usuario = usuarioService.findById(userId).get();
+
+        if(compra.getUsuario().getId() != userId && !usuario.getTipo().equals("ADMIN")) // No es el mismo usuario y no es administrador
+        {
+            return "redirect:/";
+        }
+
+        model.addAttribute("compra", compra);
+        return "public/compra";
+    }
 }
