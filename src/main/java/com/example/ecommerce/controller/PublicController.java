@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.ecommerce.service.IProductoService;
 import com.example.ecommerce.service.IUsuarioService;
 import java.util.Date;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
 
 
