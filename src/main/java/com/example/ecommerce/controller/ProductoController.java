@@ -101,17 +101,28 @@ public class ProductoController
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) throws JsonProcessingException
     {
-        Optional<Producto> opt = productoService.findById(id);
-        Producto producto = opt.get();
-        
+        Optional<Producto> tmp = productoService.findById(id);
+        if(!tmp.isPresent()) return "redirect:/productos/";
+
+        //
+        Producto producto = tmp.get();
+
         model.addAttribute("producto", producto);
         return "productos/editar";
     }
     
     @PostMapping("/editar")
-    public String editar_POST(Producto producto, @RequestParam("imagenFile") MultipartFile file) throws IOException
-    {  
+    public String editar_POST(@Valid Producto producto, BindingResult result, @RequestParam("imagenFile") MultipartFile file) throws IOException
+    {
+        // Verificar errores
+        if(result.hasErrors())
+        {
+            return "productos/editar";
+        }
+
+        // Editar producto
         Producto tmp = productoService.findById(producto.getId()).get();
+
         if(file.isEmpty()) // La imagen no cambia
         {
             producto.setImagen(tmp.getImagen());
@@ -122,13 +133,14 @@ public class ProductoController
             {
                 image.deleteImage(tmp.getImagen());
             }
-            
+
             String imageName = image.saveImage(file); // Crear la imagen nueva
             producto.setImagen(imageName);
         }
-        
+
         producto.setUsuario(tmp.getUsuario());
         productoService.update(producto);
+
         return "redirect:/productos";
     }
     

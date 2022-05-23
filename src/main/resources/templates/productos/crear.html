@@ -38,36 +38,6 @@
             <input type="file" class="form-control" id="imagen" name="imagenFile" required>
             <small th:if="${emptyImage}" class="form-text text-danger">Debes incluir una imagen del producto</small>
         </div>
-
-
-        <!-- <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre del producto" required>
-        </div>
-        
-        <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción</label>
-            <textarea class="form-control" placeholder="" id="descripcion" name="descripcion" style="height: 100px" required></textarea>
-        </div>
-        
-        <div class="mb-3">
-            <label for="cantidad" class="form-label">Cantidad</label>
-            <input type="number" class="form-control" id="cantidad" name="cantidad" placeholder="1" min="1" required>
-        </div>
-        
-        <div class="mb-3">
-            <label for="precio" class="form-label">Precio</label>
-            
-            <div class="input-group mb-3">
-                <span class="input-group-text">$</span>
-                <input type="number" class="form-control" id="precio" name="precio" step="0.1" min="0" required>
-            </div>
-        </div>
-        
-        <div class="mb-3">
-            <label for="imagen" class="form-label">Imagen</label>
-            <input type="file" class="form-control" id="imagen" name="imagenFile" required>
-        </div> -->
         
         <button type="submit" class="btn btn-primary">Guardar</button>
         <a class="btn btn-outline-secondary" th:href="@{/productos}">Volver</a>
