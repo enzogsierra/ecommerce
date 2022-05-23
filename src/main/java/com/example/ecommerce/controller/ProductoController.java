@@ -9,6 +9,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.ecommerce.service.IProductoService;
 import com.example.ecommerce.service.IUsuarioService;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 
 @Controller
@@ -57,31 +60,44 @@ public class ProductoController
         model.addAttribute("productos", productoService.all());
         return "productos/index";
     }
+
     
-    // Muestra formulario para crear un nuevo producto
+    // Crear producto
     @GetMapping("/crear") 
     public String create(Model model)
     {
+        model.addAttribute("producto", new Producto());
         return "productos/crear";
     }
     
     @PostMapping("/crear")
-    public String create_POST(Producto producto, @RequestParam("imagenFile") MultipartFile file, HttpSession session) throws IOException
-    {   
-        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString()); // Obtener el id del usuario
-        Usuario usuario = usuarioService.findById(userId).get(); // Obtener datos del usuario
-        producto.setUsuario(usuario); // Almacenar el usuario en el producto
-        
-        // Imagen
-        String imageName = image.saveImage(file); // Guardar la imagen del producto
+    public String create_POST(@Valid Producto producto, BindingResult result, @RequestParam("imagenFile") MultipartFile file, Model model, HttpSession session) throws IOException
+    {
+        // Verificar errores
+        if(file.isEmpty()) // No hay imagen del producto
+        {
+            result.addError(new ObjectError("tmp", "tmp")); // Añadir un error temporal
+        }
+
+        if(result.hasErrors())
+        {
+            if(file.isEmpty()) model.addAttribute("emptyImage", 1); // Añadir atributo de que no hay imagen
+            return "productos/crear";
+        }
+
+        // Crear producto
+        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
+        Usuario usuario = usuarioService.findById(userId).get();
+        String imageName = image.saveImage(file);
+
+        producto.setUsuario(usuario);
         producto.setImagen(imageName);
-        
         productoService.save(producto);
         return "redirect:/productos";
     }
     
 
-    // Muestra formulario para editar un producto
+    // Editar producto
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) throws JsonProcessingException
     {

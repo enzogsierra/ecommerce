@@ -11,6 +11,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.format.annotation.NumberFormat.Style;
@@ -26,15 +27,12 @@ public class Producto
 
     //
     @Column(length = 255)
-    @NotBlank(message = "El nombre del producto no puede estar en blanco")
-    @Min(value = 16, message = "El nombre del producto debe tener entre 16 y 255 caracteres")
-    @Max(value = 255, message = "El nombre del producto debe tener entre 16 y 255 caracteres")
+    @Size(min = 16, max = 255, message = "El nombre del producto debe tener entre 16 y 255 caracteres")
     private String nombre;
 
     //
     @Column(length = 2048)
-    @Min(value = 128, message = "La descripción del producto debe tener entre 128 y 2048 caracteres")
-    @Max(value = 2048, message = "La descripción del producto debe tener entre 128 y 2048 caracteres")
+    @Size(min = 128, max = 2048, message = "La descripción del producto debe tener entre 128 y 2048 caracteres")
     private String descripcion;
 
     //
@@ -43,7 +41,8 @@ public class Producto
 
     //
     @NotNull(message = "Debes ingresar un precio")
-    @NumberFormat(pattern = "#,##0.00", style = Style.CURRENCY)
+    @NumberFormat(pattern = "#,###.##", style = Style.CURRENCY)
+    @Min(value = 1, message = "El precio debe ser mayor a $1")
     private double precio;
 
     //
