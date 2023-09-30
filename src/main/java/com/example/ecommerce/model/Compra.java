@@ -41,7 +41,6 @@ public class Compra
     @Min(value = 1, message = "Debes agregar al menos {value} producto/s")
     private Integer cantidad;
 
-    @NotNull(message = "El precio no puede estar vacío")
     @Min(value = 1, message = "El precio no puede ser menor a $ {min}")
     private Double precio;
 
