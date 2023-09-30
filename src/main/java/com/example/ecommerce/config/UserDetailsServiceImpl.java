@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.ecommerce.model.Usuario;
-import com.example.ecommerce.service.IUsuarioService;
+import com.example.ecommerce.repository.UsuarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,12 +21,12 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService
 {
     @Autowired
-    private IUsuarioService usuarioService;
+    private UsuarioRepository usuarioRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException 
     {
-        Optional<Usuario> opt = usuarioService.findByEmail(username); // Buscar usuario por el email dado
+        Optional<Usuario> opt = usuarioRepository.findByEmail(username); // Buscar usuario por el email dado
         
         if(opt.isPresent()) // Usuario encontrado
         {

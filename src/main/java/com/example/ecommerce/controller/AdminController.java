@@ -6,9 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.ecommerce.service.ICompraService;
-import com.example.ecommerce.service.IProductoService;
-import com.example.ecommerce.service.IUsuarioService;
+import com.example.ecommerce.repository.CompraRepository;
+import com.example.ecommerce.repository.ProductoRepository;
+import com.example.ecommerce.repository.UsuarioRepository;
 
 
 @Controller
@@ -16,20 +16,20 @@ import com.example.ecommerce.service.IUsuarioService;
 public class AdminController 
 {
     @Autowired
-    private IProductoService productoService;
+    private ProductoRepository productoRepository;
 
     @Autowired
-    private IUsuarioService usuarioService;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private ICompraService compraService;
+    private CompraRepository compraRepository;
     
     
     // Muestra todos los productos
     @GetMapping(value = {"", "/"})
     public String index(Model model) 
     {
-        model.addAttribute("productos", productoService.all());
+        model.addAttribute("productos", productoRepository.findAll());
         return "admin/index";
     }
 
@@ -37,7 +37,7 @@ public class AdminController
     @GetMapping("/usuarios")
     public String usuarios(Model model)
     {
-        model.addAttribute("usuarios", usuarioService.all());
+        model.addAttribute("usuarios", usuarioRepository.findAll());
         return "admin/usuarios";
     }
 
@@ -45,7 +45,7 @@ public class AdminController
     @GetMapping("/compras")
     public String ordenes(Model model)
     {
-        model.addAttribute("compras", compraService.all());
+        model.addAttribute("compras", compraRepository.findAll());
         return "admin/compras";
     }
 }

@@ -1,7 +1,7 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.Usuario;
-import com.example.ecommerce.service.IUsuarioService;
+import com.example.ecommerce.repository.UsuarioRepository;
 
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AuthController 
 {
     @Autowired
-    private IUsuarioService usuarioService;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -44,7 +44,7 @@ public class AuthController
     public String signup(@Valid Usuario usuario, BindingResult result, Model model)
     {
         // Verificar si el email ya está registrado
-        Optional<Usuario> email = usuarioService.findByEmail(usuario.getEmail());
+        Optional<Usuario> email = usuarioRepository.findByEmail(usuario.getEmail());
         if(email.isPresent()) // Email ya registrado
         {
             result.rejectValue("email", "usuario.email", "Este email ya está en uso"); // Añadir mensaje de error al campo "email"
@@ -57,7 +57,7 @@ public class AuthController
 
         // Registro correcto
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword())); // Hashear contraseña
-        usuarioService.save(usuario);
+        usuarioRepository.save(usuario);
         return "redirect:/login";
     }
 }

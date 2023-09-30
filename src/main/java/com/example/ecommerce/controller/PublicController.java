@@ -4,8 +4,10 @@ import com.example.ecommerce.model.Carrito;
 import com.example.ecommerce.model.Compra;
 import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
-import com.example.ecommerce.service.ICarritoService;
-import com.example.ecommerce.service.ICompraService;
+import com.example.ecommerce.repository.CarritoRepository;
+import com.example.ecommerce.repository.CompraRepository;
+import com.example.ecommerce.repository.ProductoRepository;
+import com.example.ecommerce.repository.UsuarioRepository;
 
 import java.security.Principal;
 import java.util.List;
@@ -17,35 +19,31 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.example.ecommerce.service.IProductoService;
-import com.example.ecommerce.service.IUsuarioService;
 
 
 @Controller
 public class PublicController 
 {
     @Autowired
-    private IProductoService productoService;
+    private ProductoRepository productoRepository;
     
     @Autowired
-    private IUsuarioService usuarioService;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private ICarritoService carritoService;
+    private CarritoRepository carritoRepository;
 
     @Autowired
-    private ICompraService compraService;
+    private CompraRepository compraRepository;
 
     
     // Home page - muestra todos los productos
     @GetMapping("/")
-    public String index(Model model, Principal principal)
+    public String index(Model model)
     {
-        List<Producto> productos = productoService.all();
+        List<Producto> productos = productoRepository.findAll();
 
         model.addAttribute("productos", productos); 
-
-        if(principal != null) System.out.println(principal.toString());
         return "public/index";
     }
 
@@ -53,7 +51,7 @@ public class PublicController
     @PostMapping("/buscar")
     public String buscar(@RequestParam String busqueda, Model model)
     {
-        List<Producto> productos = productoService.search(busqueda);
+        List<Producto> productos = productoRepository.search(busqueda);
 
         model.addAttribute("productos", productos);
         model.addAttribute("busqueda", busqueda);
@@ -65,7 +63,7 @@ public class PublicController
     @GetMapping("/producto/{id}")
     public String producto(@PathVariable Integer id, Model model)
     {
-        Producto producto = productoService.findById(id).get();
+        Producto producto = productoRepository.findById(id).get();
         
         model.addAttribute("producto", producto);
         return "public/producto";
@@ -78,8 +76,8 @@ public class PublicController
     @GetMapping("/carrito")
     public String carrito(Model model, Principal principal)
     {
-        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
-        List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener el carrito de compras del usuario
+        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
+        List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener el carrito de compras del usuario
 
         // Calcular total
         double total = 0.0d;
@@ -97,15 +95,15 @@ public class PublicController
     @PostMapping("/carrito") // Añade un nuevo producto al carrito
     public String carrito_POST(@RequestParam Integer id, @RequestParam int cantidad, Model model, Principal principal)
     {
-        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
-        Producto producto = productoService.findById(id).get();
+        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
+        Producto producto = productoRepository.findById(id).get();
 
         // Crear una nueva instancia de carrito
         Carrito carrito = new Carrito();
         carrito.setUsuario(usuario);
         carrito.setProducto(producto);
         carrito.setCantidad(cantidad);
-        carritoService.save(carrito); // Agregar producto al carrito del usuario
+        carritoRepository.save(carrito); // Agregar producto al carrito del usuario
         
         return "redirect:/carrito";
     }
@@ -114,12 +112,12 @@ public class PublicController
     @GetMapping("/carrito-eliminar/{id}")
     public String removeProductFromCart(@PathVariable Integer id, Principal principal)
     {
-        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
-        Optional<Carrito> item = carritoService.isProductInCart(usuario.getId(), id); // Buscar producto en el carrito del usuario
+        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
+        Optional<Carrito> item = carritoRepository.isProductInCart(usuario.getId(), id); // Buscar producto en el carrito del usuario
 
         if(item.isPresent()) // Verificar si existe
         {
-            carritoService.delete(item.get()); // Eliminar producto del carrito del usuario
+            carritoRepository.delete(item.get()); // Eliminar producto del carrito del usuario
         }
 
         return "redirect:/carrito";
@@ -130,8 +128,8 @@ public class PublicController
     @GetMapping("/orden")
     public String orden(Model model, Principal principal)
     {
-        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
-        List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener carrito de compras del usuario
+        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
+        List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener carrito de compras del usuario
 
         // Calcular total de la compra
         double total = 0.0d;
@@ -142,7 +140,7 @@ public class PublicController
 
         //
         model.addAttribute("usuario", usuario);
-        model.addAttribute("carrito", carritoService.findByUsuario(usuario));
+        model.addAttribute("carrito", carritoRepository.findByUsuario(usuario));
         model.addAttribute("cantidadProductos", carrito.size());
         model.addAttribute("total", total);
         return "public/orden";
@@ -153,8 +151,8 @@ public class PublicController
     @GetMapping("/guardar-orden") // Comprar productos
     public String saveOrder(Principal principal)
     {
-        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
-        List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener carrito de compras del usuario
+        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
+        List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener carrito de compras del usuario
 
         for(Carrito item: carrito)
         {
@@ -164,9 +162,9 @@ public class PublicController
             compra.setProducto(item.getProducto());
             compra.setCantidad(item.getCantidad());
             compra.setPrecio(item.getProducto().getPrecio() * item.getCantidad());
-            compraService.save(compra); // Guardar datos de la compra
+            compraRepository.save(compra); // Guardar datos de la compra
 
-            carritoService.delete(item); // Eliminar item del carrito
+            carritoRepository.delete(item); // Eliminar item del carrito
         }
 
         return "redirect:/";
@@ -177,9 +175,9 @@ public class PublicController
     @GetMapping("/compras")
     public String compras(Model model, Principal principal)
     {
-        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
+        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
 
-        model.addAttribute("compras", compraService.findByUsuario(usuario));
+        model.addAttribute("compras", compraRepository.findByUsuario(usuario));
         return "public/compras";
     }
 
@@ -189,14 +187,14 @@ public class PublicController
     public String detalles(@PathVariable Integer id, Model model, Principal principal)
     {
         // Verificar que la compra exista
-        Optional<Compra> opt = compraService.findById(id);
+        Optional<Compra> opt = compraRepository.findById(id);
         if(!opt.isPresent()) return "redirect:/"; // Si no existe, redireccionar
 
         // Obtener datos de la compra
         Compra compra = opt.get();
 
         // Verificar si el usuario puede ver los detalles de la compra
-        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
+        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
 
         if(compra.getUsuario().getId() != usuario.getId() && !usuario.getRole().equals("ADMIN")) // No es el mismo usuario y no es administrador
         {

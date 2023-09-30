@@ -1,7 +1,7 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.Producto;
-import com.example.ecommerce.service.ImageService;
+import com.example.ecommerce.repository.ProductoRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.Optional;
@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import com.example.ecommerce.service.IProductoService;
+import com.example.ecommerce.service.ImageService;
+
 import javax.validation.Valid;
 
 
@@ -25,17 +26,17 @@ import javax.validation.Valid;
 public class ProductoController 
 {
     @Autowired
-    private IProductoService productoService;
+    private ProductoRepository productoRepository;
     
     @Autowired
-    private ImageService image;
+    private ImageService imageService;
 
     
     // Ruta principal - muestra todos los productos
     @GetMapping(value = {"", "/"}) 
     public String index(Model model)
     {
-        model.addAttribute("productos", productoService.all());
+        model.addAttribute("productos", productoRepository.findAll());
         return "productos/index";
     }
 
@@ -64,10 +65,10 @@ public class ProductoController
         }
 
         // Crear producto
-        String imageName = image.saveImage(file);
+        String imageName = imageService.saveImage(file);
 
         producto.setImagen(imageName);
-        productoService.save(producto);
+        productoRepository.save(producto);
         return "redirect:/productos";
     }
     
@@ -76,7 +77,7 @@ public class ProductoController
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) throws JsonProcessingException
     {
-        Optional<Producto> tmp = productoService.findById(id);
+        Optional<Producto> tmp = productoRepository.findById(id);
         if(!tmp.isPresent()) return "redirect:/productos/";
 
         //
@@ -96,7 +97,7 @@ public class ProductoController
         }
 
         // Editar producto
-        Producto tmp = productoService.findById(producto.getId()).get();
+        Producto tmp = productoRepository.findById(producto.getId()).get();
 
         if(file.isEmpty()) // La imagen no cambia
         {
@@ -106,14 +107,14 @@ public class ProductoController
         {
             if(!tmp.getImagen().equals("default.jpg")) // Eliminar la imagen anterior
             {
-                image.deleteImage(tmp.getImagen());
+                imageService.deleteImage(tmp.getImagen());
             }
 
-            String imageName = image.saveImage(file); // Crear la imagen nueva
+            String imageName = imageService.saveImage(file); // Crear la imagen nueva
             producto.setImagen(imageName);
         }
 
-        productoService.update(producto);
+        productoRepository.save(producto);
 
         return "redirect:/productos";
     }
@@ -123,13 +124,13 @@ public class ProductoController
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id)
     {
-        Producto tmp = productoService.findById(id).get();
+        Producto tmp = productoRepository.findById(id).get();
         if(!tmp.getImagen().equals("default.jpg")) // Eliminar imagen del producto si no usa la imagen default
         {
-            image.deleteImage(tmp.getImagen());
+            imageService.deleteImage(tmp.getImagen());
         }
         
-        productoService.delete(id);
+        productoRepository.deleteById(id);
         return "redirect:/productos";
     }
 }
