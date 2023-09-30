@@ -1,49 +1,58 @@
-<div th:include="layout::header"> </div>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
 
-<!-- content -->
-<main class="container">
-    <h1 class="my-4">Editar Producto</h1>
+    </head>
 
+    <body>
+        <header th:replace="layout::header">
 
-    <form th:action="@{/productos/editar}" th:object="${producto}" method="POST" enctype="multipart/form-data">
-        <input type="hidden" th:field="*{id}">
+        </header>
+
+        <main class="container">
+            <h1 class="my-4">Editar Producto</h1>
+
+            <form th:action="@{/productos/editar}" th:object="${producto}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" th:field="*{id}">
+                
+                <div class="mb-3">
+                    <label class="form-label" for="nombre">Nombre</label>
+                    <input class="form-control" id="nombre" th:field="*{nombre}" type="text" placeholder="Nombre del producto" required>
+                    <small class="form-text text-danger" th:errors="*{nombre}"></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="descripcion">Descripción</label>
+                    <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="5" required></textarea>
+                    <small class="form-text text-danger" th:errors="*{descripcion}"></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="stock">Stock</label>
+                    <input class="form-control" id="stock" th:field="*{stock}" type="number" placeholder="1" required>
+                    <small class="form-text text-danger" th:errors="*{stock}"></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="precio">Precio</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input class="form-control" id="precio" th:field="*{precio}" type="number" value="1" required>
+                    </div>
+                    <small class="form-text text-danger" th:errors="*{precio}"></small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="imagen" class="form-label">Imagen (si necesitas cambiarla)</label>
+                    <input type="file" class="form-control" id="imagen" name="imagenFile">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a class="btn btn-outline-secondary" th:href="@{/productos}">Volver</a>
+            </form>
+        </main>
         
-        <div class="mb-3">
-            <label class="form-label" for="nombre">Nombre</label>
-            <input class="form-control" id="nombre" th:field="*{nombre}" type="text" placeholder="Nombre del producto" required>
-            <small class="form-text text-danger" th:errors="*{nombre}"></small>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label" for="descripcion">Descripción</label>
-            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="5" required></textarea>
-            <small class="form-text text-danger" th:errors="*{descripcion}"></small>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label" for="stock">Stock</label>
-            <input class="form-control" id="stock" th:field="*{stock}" type="number" placeholder="1" required>
-            <small class="form-text text-danger" th:errors="*{stock}"></small>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label" for="precio">Precio</label>
-            <div class="input-group">
-                <span class="input-group-text">$</span>
-                <input class="form-control" id="precio" th:field="*{precio}" type="number" value="1" required>
-            </div>
-            <small class="form-text text-danger" th:errors="*{precio}"></small>
-        </div>
-
-        <div class="mb-3">
-            <label for="imagen" class="form-label">Imagen (si necesitas cambiarla)</label>
-            <input type="file" class="form-control" id="imagen" name="imagenFile">
-        </div>
-
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a class="btn btn-outline-secondary" th:href="@{/productos}">Volver</a>
-    </form>
-</main>
-<!-- content/ -->
-
-<div th:include="layout::footer"> </div>
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

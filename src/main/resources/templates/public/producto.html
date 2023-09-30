@@ -1,42 +1,52 @@
-<div th:include="layout::header"> </div>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
 
-<!-- content -->
-<main class="container">
-    <div class="card my-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-lg-6 text-center">
-                    <img th:src="@{/images/{img} (img = ${producto.imagen})}" alt="producto" class="w-100" style="max-width: 30rem;">
-                </div>
-                
-                <div class="col-lg-6">
-                    <h2 class="card-title" th:text="${producto.nombre}"></h2>
-                
-                    <form th:action="@{/carrito}" method="POST">
-                        <input type="hidden" name="id" th:value="${producto.id}">
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+
+        <main class="container">
+            <div class="card my-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 text-center">
+                            <img th:src="@{/images/{img} (img = ${producto.imagen})}" alt="producto" class="w-100" style="max-width: 30rem;">
+                        </div>
                         
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <p class="m-0 fs-3" th:text="'$ ' + ${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></p>
-                            </li>
-                            
-                            <li class="list-group-item">
-                                <p th:text="${producto.descripcion}" class="text-pre-line"></p>
-                            </li>
-                            
-                            <li class="list-group-item">
-                                <label for="cantidad" class="form-label">Cantidad</label>
-                                <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" value="1">
-                            </li>
-                        </ul>
+                        <div class="col-lg-6">
+                            <h2 class="card-title" th:text="${producto.nombre}"></h2>
                         
-                        <button type="submit" class="btn btn-primary w-100 mt-4">Añadir al carrito</button>
-                    </form>
+                            <form th:action="@{/carrito}" method="POST">
+                                <input type="hidden" name="id" th:value="${producto.id}">
+                                
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <p class="m-0 fs-3" th:text="'$ ' + ${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></p>
+                                    </li>
+                                    
+                                    <li class="list-group-item">
+                                        <p th:text="${producto.descripcion}" class="text-pre-line"></p>
+                                    </li>
+                                    
+                                    <li class="list-group-item">
+                                        <label for="cantidad" class="form-label">Cantidad</label>
+                                        <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" value="1">
+                                    </li>
+                                </ul>
+                                
+                                <button type="submit" class="btn btn-primary w-100 mt-4">Añadir al carrito</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</main>
-<!-- content/ -->
-
-<div th:include="layout::footer"></div>
+        </main>
+        
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

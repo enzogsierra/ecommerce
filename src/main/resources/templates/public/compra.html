@@ -1,41 +1,51 @@
-<div th:include="layout::header"> </div>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
 
-<!-- content -->
-<main class="container">
-    <h3 class="mt-4">Detalles de compra</h3> 
+    </head>
 
-    <div class="card my-4">
-        <div class="card-body">        
-            <table class="table" id="products-table">
-                <thead>
-                    <tr>
-                        <th></th> <!-- imagen -->
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Total</th>
-                        <th>Fecha</th>
-                        <th></th>
-                    </tr>
-                </thead>
+    <body>
+        <header th:replace="layout::header">
 
-                <tbody>
-                    <tr th:each="item: ${compra}">
-                        <td>
-                            <img th:src="@{/images/{img} (img = ${compra.producto.imagen})}" alt="producto" height="64px">
-                        </td>
-                        <td th:text="${item.producto.nombre}"></td>
-                        <td th:text="${#numbers.formatDecimal(item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                        <td th:text="'$ ' + ${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                        <td th:text="${item.fecha}"></td>
-                        <td>
-                            <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="btn btn-primary">Ver producto</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</main>
-<!-- content/ -->
+        </header>
 
-<div th:include="layout::footer"> </div>
+        <main class="container">
+            <h3 class="mt-4">Detalles de compra</h3> 
+
+            <div class="card my-4">
+                <div class="card-body">        
+                    <table class="table" id="products-table">
+                        <thead>
+                            <tr>
+                                <th></th> <!-- imagen -->
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Total</th>
+                                <th>Fecha</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="item: ${compra}">
+                                <td>
+                                    <img th:src="@{/images/{img} (img = ${compra.producto.imagen})}" alt="producto" height="64px">
+                                </td>
+                                <td th:text="${item.producto.nombre}"></td>
+                                <td th:text="${#numbers.formatDecimal(item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                                <td th:text="'$ ' + ${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                                <td th:text="${item.fecha}"></td>
+                                <td>
+                                    <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="btn btn-primary">Ver producto</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

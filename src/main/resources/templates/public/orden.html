@@ -1,58 +1,68 @@
-<div th:include="layout::header"> </div>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
 
-<!-- content -->
-<main class="container">
-    <h3 class="mt-4">Confirmar compra</h3>
-    
-    <div class="card my-4">
-        <div class="card-body p-4">
-            <div class="row">
-                <div class="col-lg-9">
-                    <div class="mb-4">
-                        <h4 class="card-title text-uppercase">Datos del comprador</h4>
-                        <h6>Nombre: <span th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></span></h6>
-                        <h6>Correo: <span th:text="${usuario.email}"></span></h6>
-                        <h6>Dirección: <span th:text="${usuario.direccion}"></span></h6>
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+
+        <main class="container">
+            <h3 class="mt-4">Confirmar compra</h3>
+            
+            <div class="card my-4">
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <div class="mb-4">
+                                <h4 class="card-title text-uppercase">Datos del comprador</h4>
+                                <h6>Nombre: <span th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></span></h6>
+                                <h6>Correo: <span th:text="${usuario.email}"></span></h6>
+                                <h6>Dirección: <span th:text="${usuario.direccion}"></span></h6>
+                            </div>
+
+                            <h4 class="card-title text-uppercase mb-0">Compra</h4>
+                            <div class="alert alert-light" role="alert">
+                                <table class="table table-bordered">
+                                    <caption><span th:text="${cantidadProductos}"></span> producto/s</caption>
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr th:each="item: ${carrito}">
+                                            <td th:text="${item.producto.nombre}"></td>
+                                            <td th:text="${#numbers.formatDecimal(item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                                            <td th:text="${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3">
+                            <h4 class="card-title">Resumen</h4>
+                            
+                            <ul class="list-group my-2">
+                                <li class="list-group-item">
+                                    <p class="my-2">Total: <span th:text="'$ ' + ${#numbers.formatDecimal(total, 0, 'DEFAULT', 0, 'POINT')}" class="fw-bold"></span></p>
+                                </li>
+                            </ul>
+                            
+                            <a th:href="@{/guardar-orden}" class="mt-2 btn btn-primary w-100">Comprar</a>
+                        </div>
                     </div>
-
-                    <h4 class="card-title text-uppercase mb-0">Compra</h4>
-                    <div class="alert alert-light" role="alert">
-                        <table class="table table-bordered">
-                            <caption><span th:text="${cantidadProductos}"></span> producto/s</caption>
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr th:each="item: ${carrito}">
-                                    <td th:text="${item.producto.nombre}"></td>
-                                    <td th:text="${#numbers.formatDecimal(item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                                    <td th:text="${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3">
-                    <h4 class="card-title">Resumen</h4>
-                    
-                    <ul class="list-group my-2">
-                        <li class="list-group-item">
-                            <p class="my-2">Total: <span th:text="'$ ' + ${#numbers.formatDecimal(total, 0, 'DEFAULT', 0, 'POINT')}" class="fw-bold"></span></p>
-                        </li>
-                    </ul>
-                    
-                    <a th:href="@{/guardar-orden}" class="mt-2 btn btn-primary w-100">Comprar</a>
                 </div>
             </div>
-        </div>
-    </div>
-</main>
-<!-- content/ -->
-
-<div th:include="layout::footer"> </div>
+        </main>
+        
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

@@ -1,45 +1,55 @@
-<div th:include="layout::header"> </div>
- 
-<!-- content -->
-<main class="container">
-    <div class="my-4 p-5 bg-light rounded-3">
-        <h1 class="display-5 fw-bold">Bienvenidos a Spring e-Commerce</h1>
-        <p class="col-md-8 fs-4">Tu tienda de productos en línea</p>
-    </div>
-</main>   
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
 
-<section class="container">
-    <!-- Sin productos -->
-    <div th:if="${productos.isEmpty()}">
-        <h2 th:if="${busqueda != null}" class="text-center my-4">
-            No hay resultados para la búsqueda '<span th:text="${busqueda}"></span>'<br>
-            Intenta con otro término.
-        </h2>
-        <h2 th:unless="${busqueda != null}" class="text-center my-4">
-            Aún no hay productos creados.
-        </h2>
-    </div>
-    
-    <!-- Con productos -->
-    <div th:unless="${productos.isEmpty()}" class="products my-4">
+    </head>
 
-        <div th:each="producto: ${productos}" class="product border rounded">
-            <!-- -->
-            <a class="h-100 text-decoration-none text-black" th:href="@{/producto/{id} (id = ${producto.id})}">
-                <div class="p-2 border-bottom product-img-container">
-                    <img th:src="@{/images/{img} (img = ${producto.imagen})}" class="product-img" alt="producto">
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+
+        <main class="container">
+            <div class="my-4 p-5 bg-light rounded-3">
+                <h1 class="display-5 fw-bold">Bienvenidos a Spring e-Commerce</h1>
+                <p class="col-md-8 fs-4">Tu tienda de productos en línea</p>
+            </div>
+        </main>   
+
+        <section class="container">
+            <!-- Sin productos -->
+            <div th:if="${productos.isEmpty()}">
+                <h2 th:if="${busqueda != null}" class="text-center my-4">
+                    No hay resultados para la búsqueda '<span th:text="${busqueda}"></span>'<br>
+                    Intenta con otro término.
+                </h2>
+                <h2 th:unless="${busqueda != null}" class="text-center my-4">
+                    Aún no hay productos creados.
+                </h2>
+            </div>
+            
+            <!-- Con productos -->
+            <div th:unless="${productos.isEmpty()}" class="products my-4">
+
+                <div th:each="producto: ${productos}" class="product border rounded">
+                    <!-- -->
+                    <a class="h-100 text-decoration-none text-black" th:href="@{/producto/{id} (id = ${producto.id})}">
+                        <div class="p-2 border-bottom product-img-container">
+                            <img th:src="@{/images/{img} (img = ${producto.imagen})}" class="product-img" alt="producto">
+                        </div>
+
+                        <div class="p-2">
+                            <h4 class="">$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></span></h4>
+                            
+                            <p th:text="${producto.nombre}" class="m-0 text-muted product-title"></p>
+                        </div>
+                    </a>
                 </div>
 
-                <div class="p-2">
-                    <h4 class="">$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></span></h4>
-                    
-                    <p th:text="${producto.nombre}" class="m-0 text-muted product-title"></p>
-                </div>
-            </a>
-        </div>
+            </div>
+        </section>
 
-    </div>
-</section>
-<!-- content/ -->
-
-<div th:include="layout::footer"> </div>
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

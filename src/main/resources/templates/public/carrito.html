@@ -1,59 +1,69 @@
-<div th:include="layout::header"> </div>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
 
-<!-- content -->
-<main class="container">
-    <h3 class="mt-4">Carrito</h3>
+    </head>
 
-    <div class="card my-4">
-        <div class="card-body">
-            <div th:if="${carrito.isEmpty()}" class="my-4 text-center">
-                <p class="m-0 mb-2">Aún no hay productos añadidos al carrito</p>
-                <a th:href="@{/}" class="btn btn-primary">Explorar productos</a>
-            </div>
-            
-            <table th:unless="${carrito.isEmpty()}" class="mt-4 table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Imagen</th>
-                        <th scope="col">Producto</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Precio</th>
-                        <th scope="col">Accion</th>
-                    </tr>
-                </thead>
+    <body>
+        <header th:replace="layout::header">
 
-                <tbody>
-                    <tr th:each="item: ${carrito}">
-                        <td class="text-center">
-                            <img th:src="@{/images/{img} (img = ${item.producto.imagen})}" class="product-img-mini" alt="producto">
-                        </td>
-                        <td th:text="${item.producto.nombre}" class="fw-bold"></td>
-                        <td th:text="${#numbers.formatDecimal(item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                        <td th:text="'$ ' + ${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                        <!-- <td>(precio)</td> -->
-                        <td>
-                            <a th:href="@{/carrito-eliminar/{id} (id = ${item.producto.id})}" class="btn btn-outline-danger">Quitar</a>
-                        </td>
-                    </tr>
+        </header>
+
+        <!-- content -->
+        <main class="container">
+            <h3 class="mt-4">Carrito</h3>
+
+            <div class="card my-4">
+                <div class="card-body">
+                    <div th:if="${carrito.isEmpty()}" class="my-4 text-center">
+                        <p class="m-0 mb-2">Aún no hay productos añadidos al carrito</p>
+                        <a th:href="@{/}" class="btn btn-primary">Explorar productos</a>
+                    </div>
                     
-                    <tr class="fs-3">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>Total</td>
-                        <td th:text="'$ ' + ${#numbers.formatDecimal(total, 0, 'DEFAULT', 0, 'POINT')}" class="text-end"></td>
-                        <!-- <td th:text="'$ ' + ${#numbers.formatDecimal(orden.total, 0, 'DEFAULT', 0, 'POINT')}" class="text-end"></td> -->
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div th:unless="${carrito.isEmpty()}" class="text-end">
-                <a th:href="@{/orden}" class="btn btn-primary">Generar orden</a>
+                    <table th:unless="${carrito.isEmpty()}" class="mt-4 table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Imagen</th>
+                                <th scope="col">Producto</th>
+                                <th scope="col">Cantidad</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Accion</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="item: ${carrito}">
+                                <td class="text-center">
+                                    <img th:src="@{/images/{img} (img = ${item.producto.imagen})}" class="product-img-mini" alt="producto">
+                                </td>
+                                <td th:text="${item.producto.nombre}" class="fw-bold"></td>
+                                <td th:text="${#numbers.formatDecimal(item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                                <td th:text="'$ ' + ${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                                <!-- <td>(precio)</td> -->
+                                <td>
+                                    <a th:href="@{/carrito-eliminar/{id} (id = ${item.producto.id})}" class="btn btn-outline-danger">Quitar</a>
+                                </td>
+                            </tr>
+                            
+                            <tr class="fs-3">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Total</td>
+                                <td th:text="'$ ' + ${#numbers.formatDecimal(total, 0, 'DEFAULT', 0, 'POINT')}" class="text-end"></td>
+                                <!-- <td th:text="'$ ' + ${#numbers.formatDecimal(orden.total, 0, 'DEFAULT', 0, 'POINT')}" class="text-end"></td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div th:unless="${carrito.isEmpty()}" class="text-end">
+                        <a th:href="@{/orden}" class="btn btn-primary">Generar orden</a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</main>
+        </main>
 
-<!-- content/ -->
-
-<div th:include="layout::footer"> </div>
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

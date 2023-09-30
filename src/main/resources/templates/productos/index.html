@@ -1,43 +1,54 @@
-<div th:include="layout::header"> </div>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
 
-<!-- content -->
-<main class="container">
-    <h3 class="mt-4">Productos</h3>
-    
-    <a th:href="@{/productos/crear}" class="btn btn-primary mt-3">Crear producto</a>
-    
-    <div th:if="${productos.isEmpty()}">
-        <p class="text-center my-3">Aún no hay productos creados</p>
-    </div>
-    <div th:unless="${productos.isEmpty()}">
-        <h2 class="mt-4">Productos</h2>
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+
+        <main class="container">
+            <h3 class="mt-4">Productos</h3>
+            
+            <a th:href="@{/productos/crear}" class="btn btn-primary mt-3">Crear producto</a>
+            
+            <div th:if="${productos.isEmpty()}">
+                <p class="text-center my-3">Aún no hay productos creados</p>
+            </div>
+            <div th:unless="${productos.isEmpty()}">
+                <h2 class="mt-4">Productos</h2>
+                
+                <table class="table" id="products-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Stock</th>
+                            <th>Precio</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="producto: ${productos}">
+                            <td th:text="${producto.nombre}"></td>
+                            <td th:text="${#strings.abbreviate(producto.descripcion, 64)}"></td>
+                            <td th:text="${producto.stock}"></td>
+                            <td th:text="'$' + ${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                            <td class="d-flex gap-2">
+                                <a th:href="@{/productos/editar/{id} (id = ${producto.id})}" class="btn btn-warning">Editar</a>
+                                <a th:href="@{/productos/eliminar/{id} (id = ${producto.id})}" class="btn btn-danger" id="btn-delete-product">Eliminar</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
         
-        <table class="table" id="products-table">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Stock</th>
-                    <th>Precio</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr th:each="producto: ${productos}">
-                    <td th:text="${producto.nombre}"></td>
-                    <td th:text="${#strings.abbreviate(producto.descripcion, 64)}"></td>
-                    <td th:text="${producto.stock}"></td>
-                    <td th:text="'$' + ${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                    <td class="d-flex gap-2">
-                        <a th:href="@{/productos/editar/{id} (id = ${producto.id})}" class="btn btn-warning">Editar</a>
-                        <a th:href="@{/productos/eliminar/{id} (id = ${producto.id})}" class="btn btn-danger" id="btn-delete-product">Eliminar</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</main>
-<!-- content/ -->
-
-<div th:include="layout::footer"> </div>
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>
+ 
