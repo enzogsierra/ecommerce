@@ -7,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -42,7 +41,6 @@ public class Producto
     @Min(value = 1, message = "El precio del producto debe ser mayor a ${value}")
     private Double precio;
 
-    @NotBlank(message = "Debes especificar el stock")
     @Min(value = 0, message = "El stock no puede ser menor a {value}")
     private Integer stock;
 }
