@@ -5,17 +5,15 @@ import com.example.ecommerce.service.IUsuarioService;
 
 import java.util.Optional;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -24,8 +22,15 @@ public class AuthController
     @Autowired
     private IUsuarioService usuarioService;
 
-    BCryptPasswordEncoder passEncode = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
+
+    // Inicio de sesion
+    @GetMapping("/login")
+    public String login() {
+        return "public/login";
+    }
     
     // Registro
     @GetMapping("/signup")
@@ -36,58 +41,24 @@ public class AuthController
     }
 
     @PostMapping("/signup")
-    public String signup_POST(@Valid Usuario usuario, BindingResult result, RedirectAttributes redirect, Model model)
+    public String signup(@Valid Usuario usuario, BindingResult result, Model model)
     {
         // Verificar si el email ya está registrado
-        Optional<Usuario> checkEmail = usuarioService.findByEmail(usuario.getEmail());
-        if(checkEmail.isPresent()) // Email ya registrado
+        Optional<Usuario> email = usuarioService.findByEmail(usuario.getEmail());
+        if(email.isPresent()) // Email ya registrado
         {
-            model.addAttribute("error_emailExists", 1);
-            return "public/signup";
+            result.rejectValue("email", "usuario.email", "Este email ya está en uso"); // Añadir mensaje de error al campo "email"
         }
 
         // Verificar errores de formulario
-        if(result.hasErrors())
-        {
+        if(result.hasErrors()) {
             return "public/signup";
         }
 
         // Registro correcto
-        usuario.setPassword(passEncode.encode(usuario.getPassword())); // Hashear contraseña
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword())); // Hashear contraseña
         usuarioService.save(usuario);
-
-        redirect.addFlashAttribute("signupRedirect_email", usuario.getEmail());
         return "redirect:/login";
-    }
-    
-
-    // Sesión
-    @GetMapping("/login")
-    public String login()
-    {
-        return "public/login";
-    }
-
-    @GetMapping("/login_success") // Ruta cuando el usuario inicia sesión exitosamente
-    public String login_success(HttpSession session) 
-    {
-        String email = session.getAttribute("login_email").toString(); // Extraer el email que usó el usuario para iniciar sesión
-        Usuario auth = usuarioService.findByEmail(email).get(); // Buscar los datos de este email
-
-        //
-        session.setAttribute("usuario.id", auth.getId());
-        session.setAttribute("usuario.tipo", auth.getRole());
-        session.removeAttribute("login_email"); // Eliminar este atributo de la sesión (ya no se usa)
-
-        return "redirect:/";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session)
-    {
-        session.removeAttribute("usuario.id"); // Eliminar datos de sesión
-        session.removeAttribute("usuario.tipo");
-        return "redirect:/";
     }
 }
 

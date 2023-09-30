@@ -24,14 +24,14 @@
                     </div>
 
                     <!-- LoggedIn user -->
-                    <div th:if="${isLoggedIn}">
+                    <div sec:authorize="isAuthenticated()">
                         <nav class="d-flex align-items-center gap-3">
                             <a th:href="@{/compras}" class="flex-grow-1 text-decoration-none text-light">Compras</a>
                             <a th:href="@{/carrito}" class="flex-grow-1 text-decoration-none text-light">Ver Carrito</a>
                             <a th:href="@{/logout}" class="flex-grow-1 text-decoration-none text-light">Cerrar sesión</a>
                             
                             <!-- Admin user -->
-                            <div th:if="${isAdmin}" class="dropdown flex-grow-1">
+                            <div sec:authorize="hasAuthority('ADMIN')" class="dropdown flex-grow-1">
                                 <button 
                                     class="btn btn-secondary dropdown-toggle" 
                                     type="button" 
@@ -52,7 +52,7 @@
                     </div>
 
                     <!-- Not logged in user -->
-                    <div th:unless="${isLoggedIn}">
+                    <div sec:authorize="isAnonymous()">
                         <nav class="d-flex align-items-center gap-2">
                             <a th:href="@{/login}" class="btn btn-outline-light">Iniciar sesión</a>
                             <a th:href="@{/signup}" class="btn btn-outline-success">Crear cuenta</a>

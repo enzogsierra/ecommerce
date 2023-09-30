@@ -38,7 +38,7 @@ public class SecurityConfig
             .authorizeHttpRequests(auth ->
             {
                 auth.antMatchers(publicResources).permitAll(); // Rutas disponibles para cualquier usuario/visitante
-                auth.antMatchers("/admin/**", "/productos/**").hasRole("ADMIN"); // Rutas protegidas - solo pueden acceder quienes tengan el rol "ADMIN"
+                auth.antMatchers("/admin/**", "/productos/**").hasAuthority("ADMIN"); // Rutas protegidas - solo pueden acceder quienes tengan el rol "ADMIN"
                 auth.anyRequest().authenticated(); // Todas las demás rutas - disponible solo para usuarios logueados
             })
             .formLogin(auth ->

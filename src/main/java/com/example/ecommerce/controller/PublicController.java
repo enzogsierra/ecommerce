@@ -6,19 +6,19 @@ import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.service.ICarritoService;
 import com.example.ecommerce.service.ICompraService;
+
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.example.ecommerce.service.IProductoService;
 import com.example.ecommerce.service.IUsuarioService;
-import javax.servlet.http.HttpSession;
 
 
 @Controller
@@ -36,33 +36,18 @@ public class PublicController
     @Autowired
     private ICompraService compraService;
 
-   
-
-    // Atributos globales
-    @ModelAttribute("mainAttributes")
-    public void mainAttributes(Model model, HttpSession session)
-    {
-        Object usuario_id = session.getAttribute("usuario.id");
-        Object usuario_tipo = session.getAttribute("usuario.tipo");
-
-        Boolean isLoggedIn = (usuario_id == null) ? (false) : (!usuario_id.toString().equals("0"));
-        Boolean isAdmin = (usuario_tipo == null) ? (false) : (usuario_tipo.toString().equals("ADMIN"));
-
-        model.addAttribute("isLoggedIn", isLoggedIn);
-        model.addAttribute("isAdmin", isAdmin);
-    }
-
     
     // Home page - muestra todos los productos
-    @GetMapping(value = {"", "/"})
-    public String index(Model model, HttpSession session)
+    @GetMapping("/")
+    public String index(Model model, Principal principal)
     {
         List<Producto> productos = productoService.all();
 
         model.addAttribute("productos", productos); 
+
+        if(principal != null) System.out.println(principal.toString());
         return "public/index";
     }
-
 
     // Busca un producto por su título
     @PostMapping("/buscar")
@@ -91,10 +76,9 @@ public class PublicController
 
     // Muestra el carrito de compras del usuario
     @GetMapping("/carrito")
-    public String carrito(Model model, HttpSession session)
+    public String carrito(Model model, Principal principal)
     {
-        Integer userId = Integer.parseInt(session.getAttribute("usuario.id").toString()); 
-        Usuario usuario = usuarioService.findById(userId).get(); // Obtener usuario
+        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
         List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener el carrito de compras del usuario
 
         // Calcular total
@@ -111,10 +95,9 @@ public class PublicController
     }
     
     @PostMapping("/carrito") // Añade un nuevo producto al carrito
-    public String carrito_POST(@RequestParam Integer id, @RequestParam int cantidad, Model model, HttpSession session)
+    public String carrito_POST(@RequestParam Integer id, @RequestParam int cantidad, Model model, Principal principal)
     {
-        Integer userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
-        Usuario usuario = usuarioService.findById(userId).get();
+        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
         Producto producto = productoService.findById(id).get();
 
         // Crear una nueva instancia de carrito
@@ -129,10 +112,10 @@ public class PublicController
     
     // Eliminar un producto del carrito de compras del usuario
     @GetMapping("/carrito-eliminar/{id}")
-    public String removeProductFromCart(@PathVariable Integer id, HttpSession session)
+    public String removeProductFromCart(@PathVariable Integer id, Principal principal)
     {
-        Integer userId = Integer.parseInt(session.getAttribute("usuario.id").toString()); 
-        Optional<Carrito> item = carritoService.isProductInCart(userId, id); // Buscar producto en el carrito del usuario
+        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
+        Optional<Carrito> item = carritoService.isProductInCart(usuario.getId(), id); // Buscar producto en el carrito del usuario
 
         if(item.isPresent()) // Verificar si existe
         {
@@ -145,10 +128,9 @@ public class PublicController
     
     // Muestra la orden de los productos a comprar
     @GetMapping("/orden")
-    public String orden(Model model, HttpSession session)
+    public String orden(Model model, Principal principal)
     {
-        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
-        Usuario usuario = usuarioService.findById(userId).get();
+        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
         List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener carrito de compras del usuario
 
         // Calcular total de la compra
@@ -169,10 +151,9 @@ public class PublicController
 
 
     @GetMapping("/guardar-orden") // Comprar productos
-    public String saveOrder(HttpSession session)
+    public String saveOrder(Principal principal)
     {
-        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
-        Usuario usuario = usuarioService.findById(userId).get();
+        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
         List<Carrito> carrito = carritoService.findByUsuario(usuario); // Obtener carrito de compras del usuario
 
         for(Carrito item: carrito)
@@ -194,10 +175,9 @@ public class PublicController
 
     // Muestra el historial de compras del usuario
     @GetMapping("/compras")
-    public String compras(Model model, HttpSession session)
+    public String compras(Model model, Principal principal)
     {
-        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
-        Usuario usuario = usuarioService.findById(userId).get();
+        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
 
         model.addAttribute("compras", compraService.findByUsuario(usuario));
         return "public/compras";
@@ -206,7 +186,7 @@ public class PublicController
 
     // Muestra los detalles de una compra especifica
     @GetMapping("/compra/{id}")
-    public String detalles(@PathVariable Integer id, Model model, HttpSession session)
+    public String detalles(@PathVariable Integer id, Model model, Principal principal)
     {
         // Verificar que la compra exista
         Optional<Compra> opt = compraService.findById(id);
@@ -216,10 +196,9 @@ public class PublicController
         Compra compra = opt.get();
 
         // Verificar si el usuario puede ver los detalles de la compra
-        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
-        Usuario usuario = usuarioService.findById(userId).get();
+        Usuario usuario = usuarioService.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
 
-        if(compra.getUsuario().getId() != userId && !usuario.getRole().equals("ADMIN")) // No es el mismo usuario y no es administrador
+        if(compra.getUsuario().getId() != usuario.getId() && !usuario.getRole().equals("ADMIN")) // No es el mismo usuario y no es administrador
         {
             return "redirect:/";
         }

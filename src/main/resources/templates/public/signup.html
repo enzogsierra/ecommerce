@@ -19,7 +19,6 @@
         </header>
         
         <!-- -->
-        
         <main class="container-md my-4">
             <h1 class="text-center mb-4">Registro</h1>
 
@@ -43,7 +42,6 @@
                         <label class="form-label" for="email">Email *</label>
                         <input class="form-control" id="email" type="email" th:field="*{email}" required>
                         <small class="form-text text-danger" th:errors="*{email}"></small>
-                        <small th:if="${error_emailExists}" class="form-text text-danger">Este email ya está registrado, ¿quieres <a th:href="@{/login}">iniciar sesión</a>?</small>
                     </div>
 
                     <div class="form mb-3">
@@ -68,39 +66,8 @@
                     <a th:href="@{/login}" class="btn btn-outline-primary w-100">Iniciar sesión</a>
                 </form>
                 
-                <!-- <form th:action="@{/signup}" method="POST">
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input th:if="${nombre}" type="text" class="form-control" id="nombre" name="nombre" th:value="${nombre}" required>
-                        <input th:unless="${nombre}" type="text" class="form-control" id="nombre" name="nombre" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="apellido" class="form-label">Apellido</label>
-                        <input th:if="${nombre}" type="text" class="form-control" id="apellido" name="apellido" th:value="${apellido}" required>
-                        <input th:unless="${nombre}" type="text" class="form-control" id="apellido" name="apellido" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input th:if="${email}" type="email" class="form-control" id="email" name="email" th:value="${email}" required>
-                        <input th:unless="${email}"  type="email" class="form-control" id="email" name="email" required>
-                        <div th:if="${error_email}" class="form-text text-danger">Este correo electrónico ya está registrado, ¿deseas <a th:href="@{/login}">iniciar sesión</a>?</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="direccion" class="form-label">Dirección</label>
-                        <input th:if="${direccion}" th:value=${direccion} type="text" class="form-control" id="direccion" name="direccion" required>
-                        <input th:unless="${direccion}" type="text" class="form-control" id="direccion" name="direccion" required>
-
-                    </div>
-                    
-                    <button type="submit" class="my-2 btn btn-success w-100">Crear cuenta</button>
-                    <a th:href="@{/login}" class="btn btn-outline-primary w-100">Iniciar sesión</a>
-                </form> -->
             </div>
-        </main>>
+        </main>
         <!-- -->
         
         <footer class="bg-dark text-white py-4">

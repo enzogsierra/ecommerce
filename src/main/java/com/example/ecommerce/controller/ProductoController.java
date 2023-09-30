@@ -11,14 +11,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.ecommerce.service.IProductoService;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 
@@ -32,21 +30,6 @@ public class ProductoController
     @Autowired
     private ImageService image;
 
-
-    // Atributos globales
-    @ModelAttribute("mainAttributes")
-    public void mainAttributes(Model model, HttpSession session)
-    {
-        Object usuario_id = session.getAttribute("usuario.id");
-        Object usuario_tipo = session.getAttribute("usuario.tipo");
-
-        Boolean isLoggedIn = (usuario_id == null) ? (false) : (!usuario_id.toString().equals("0"));
-        Boolean isAdmin = (usuario_tipo == null) ? (false) : (usuario_tipo.toString().equals("ADMIN"));
-
-        model.addAttribute("isLoggedIn", isLoggedIn);
-        model.addAttribute("isAdmin", isAdmin);
-    }
-    
     
     // Ruta principal - muestra todos los productos
     @GetMapping(value = {"", "/"}) 

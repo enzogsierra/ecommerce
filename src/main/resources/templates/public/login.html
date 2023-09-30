@@ -22,9 +22,7 @@
         
         <main class="container-md my-4">
             <h1 class="text-center mb-4">Iniciar sesión</h1>
-
-            <p th:if="${signupRedirect_email}" class="text-center">Registro completo! Inicia sesión con el email con el cual te registraste</p>
-
+            
             <div class="py-3 px-4 card m-auto" style="width: 100%; max-width: 30rem;">    
                 <div th:if="${param.error}" class="mb-2 form-text text-danger">Correo electrónico o contraseña incorrectos.</div>
                 
