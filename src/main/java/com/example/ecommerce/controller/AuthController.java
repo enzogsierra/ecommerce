@@ -53,9 +53,8 @@ public class AuthController
         }
 
         // Registro correcto
-        usuario.setTipo("USER"); // Rol "USER" por default
         usuario.setPassword(passEncode.encode(usuario.getPassword())); // Hashear contraseña
-        //usuarioService.save(usuario);
+        usuarioService.save(usuario);
 
         redirect.addFlashAttribute("signupRedirect_email", usuario.getEmail());
         return "redirect:/login";
@@ -77,7 +76,7 @@ public class AuthController
 
         //
         session.setAttribute("usuario.id", auth.getId());
-        session.setAttribute("usuario.tipo", auth.getTipo());
+        session.setAttribute("usuario.tipo", auth.getRole());
         session.removeAttribute("login_email"); // Eliminar este atributo de la sesión (ya no se usa)
 
         return "redirect:/";

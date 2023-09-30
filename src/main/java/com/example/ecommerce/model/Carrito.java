@@ -7,10 +7,18 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "carritos")
+@NoArgsConstructor @AllArgsConstructor
+@Getter @Setter
 public class Carrito 
 {
     @Id
@@ -18,64 +26,13 @@ public class Carrito
     private Integer id;
 
     @ManyToOne
+    @NotNull(message = "No hay un usuario asociado a este item")
     private Usuario usuario;
 
     @ManyToOne
+    @NotNull(message = "No hay un producto asociado a este item")
     private Producto producto;
     
-    @Min(value = 1, message = "Debes agregar al menos 1 producto")
-    private int cantidad;
-
-
-
-    public Carrito() {
-
-    }
-
-    public Carrito(Integer id, Usuario usuario, Producto producto, int cantidad)
-    {
-        this.id = id;
-        this.usuario = usuario;
-        this.producto = producto;
-        this.cantidad = cantidad;
-    }
-
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Usuario getUsuario() {
-        return this.usuario;
-    }
-
-    public void setProducto(Producto producto) {
-        this.producto = producto;
-    }
-
-    public Producto getProducto() {
-        return this.producto;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    public int getCantidad() {
-        return this.cantidad;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Carrito{" + "id=" + id + ", usuario=" + usuario.getNombre() + ", producto=" + producto.getNombre() + ", cantidad=" + cantidad + '}';
-    }
+    @Min(value = 1, message = "Debes agregar al menos {value} producto")
+    private Integer cantidad;
 }

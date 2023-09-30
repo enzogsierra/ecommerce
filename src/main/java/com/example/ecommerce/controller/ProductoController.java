@@ -1,7 +1,6 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.Producto;
-import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.service.ImageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.ecommerce.service.IProductoService;
-import com.example.ecommerce.service.IUsuarioService;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -28,9 +26,6 @@ import javax.validation.Valid;
 @RequestMapping("/productos")
 public class ProductoController 
 {
-    @Autowired
-    private IUsuarioService usuarioService;
-    
     @Autowired
     private IProductoService productoService;
     
@@ -71,7 +66,7 @@ public class ProductoController
     }
     
     @PostMapping("/crear")
-    public String create_POST(@Valid Producto producto, BindingResult result, @RequestParam("imagenFile") MultipartFile file, Model model, HttpSession session) throws IOException
+    public String create_POST(@Valid Producto producto, BindingResult result, @RequestParam("imagenFile") MultipartFile file, Model model) throws IOException
     {
         // Verificar errores
         if(file.isEmpty()) // No hay imagen del producto
@@ -86,11 +81,8 @@ public class ProductoController
         }
 
         // Crear producto
-        int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
-        Usuario usuario = usuarioService.findById(userId).get();
         String imageName = image.saveImage(file);
 
-        producto.setUsuario(usuario);
         producto.setImagen(imageName);
         productoService.save(producto);
         return "redirect:/productos";
@@ -138,7 +130,6 @@ public class ProductoController
             producto.setImagen(imageName);
         }
 
-        producto.setUsuario(tmp.getUsuario());
         productoService.update(producto);
 
         return "redirect:/productos";

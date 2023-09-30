@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.example.ecommerce.service.IProductoService;
 import com.example.ecommerce.service.IUsuarioService;
-import java.util.Date;
 import javax.servlet.http.HttpSession;
 
 
@@ -184,7 +183,6 @@ public class PublicController
             compra.setProducto(item.getProducto());
             compra.setCantidad(item.getCantidad());
             compra.setPrecio(item.getProducto().getPrecio() * item.getCantidad());
-            compra.setFecha(new Date());
             compraService.save(compra); // Guardar datos de la compra
 
             carritoService.delete(item); // Eliminar item del carrito
@@ -221,7 +219,7 @@ public class PublicController
         int userId = Integer.parseInt(session.getAttribute("usuario.id").toString());
         Usuario usuario = usuarioService.findById(userId).get();
 
-        if(compra.getUsuario().getId() != userId && !usuario.getTipo().equals("ADMIN")) // No es el mismo usuario y no es administrador
+        if(compra.getUsuario().getId() != userId && !usuario.getRole().equals("ADMIN")) // No es el mismo usuario y no es administrador
         {
             return "redirect:/";
         }

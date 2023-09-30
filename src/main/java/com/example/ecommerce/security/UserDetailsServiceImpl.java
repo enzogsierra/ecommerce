@@ -37,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService
             return User.builder()
                         .username(usuario.getEmail())
                         .password(usuario.getPassword())
-                        .roles(usuario.getTipo())
+                        .roles(usuario.getRole())
                         .build();
         }
         else
