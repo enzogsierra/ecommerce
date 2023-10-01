@@ -10,46 +10,49 @@
         </header>
 
         <main class="container">
-            <h1 class="my-4">Editar Producto</h1>
+            <h2>Editar producto producto</h2>
+            
+            <div class="p-4 text-bg-light rounded shadow">
+                <p class="mb-2 small text-end">* Todos los campos son obligatorios</p>
 
-            <form th:action="@{/productos/editar}" th:object="${producto}" method="POST" enctype="multipart/form-data">
-                <input type="hidden" th:field="*{id}">
-                
-                <div class="mb-3">
-                    <label class="form-label" for="nombre">Nombre</label>
-                    <input class="form-control" id="nombre" th:field="*{nombre}" type="text" placeholder="Nombre del producto" required>
-                    <small class="form-text text-danger" th:errors="*{nombre}"></small>
-                </div>
+                <form th:action="@{/productos/editar}" th:object="${producto}" method="POST" enctype="multipart/form-data" novalidate>
+                    <input type="hidden" th:field="*{id}">
 
-                <div class="mb-3">
-                    <label class="form-label" for="descripcion">Descripción</label>
-                    <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="5" required></textarea>
-                    <small class="form-text text-danger" th:errors="*{descripcion}"></small>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="stock">Stock</label>
-                    <input class="form-control" id="stock" th:field="*{stock}" type="number" placeholder="1" required>
-                    <small class="form-text text-danger" th:errors="*{stock}"></small>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="precio">Precio</label>
-                    <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input class="form-control" id="precio" th:field="*{precio}" type="number" value="1" required>
+                    <div class="mb-3">
+                        <label class="form-label" for="nombre">Nombre</label>
+                        <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{nombre}" placeholder="Nombre del producto" required>
+                        <small class="text-danger" th:errors="*{nombre}"></small>
                     </div>
-                    <small class="form-text text-danger" th:errors="*{precio}"></small>
-                </div>
-
-                <div class="mb-3">
-                    <label for="imagen" class="form-label">Imagen (si necesitas cambiarla)</label>
-                    <input type="file" class="form-control" id="imagen" name="imagenFile">
-                </div>
-
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <a class="btn btn-outline-secondary" th:href="@{/productos}">Volver</a>
-            </form>
+    
+                    <div class="mb-3">
+                        <label class="form-label" for="descripcion">Descripción</label>
+                        <textarea class="form-control" th:errorclass="is-invalid" th:field="*{descripcion}" rows="5" placeholder="Descripción detallada del producto" required></textarea>
+                        <small class="text-danger" th:errors="*{descripcion}"></small>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label class="form-label" for="stock">Stock</label>
+                        <input class="form-control" th:errorclass="is-invalid" type="number" th:field="*{stock}" min="1" placeholder="1" required>
+                        <small class="text-danger" th:errors="*{stock}"></small>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label class="form-label" for="precio">Precio</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input class="form-control" th:errorclass="is-invalid" type="number" th:field="*{precio}" placeholder="1" required>
+                        </div>
+                        <small class="text-danger" th:errors="*{precio}"></small>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label for="imagenFile" class="form-label">Imagen (si necesitas cambiarla)</label>
+                        <input class="form-control" type="file" id="imagenFile" name="imagenFile">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
         </main>
         
         <!-- Footer y scripts -->

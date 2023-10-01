@@ -38,9 +38,11 @@ public class Compra
     @NotNull(message = "No hay un producto asociado a esta compra")
     private Producto producto;
 
+    @NotNull(message = "Ingresa la cantidad de productos")
     @Min(value = 1, message = "Debes agregar al menos {value} producto/s")
     private Integer cantidad;
 
+    @NotNull(message = "Ingresa el precio de la compra")
     @Min(value = 1, message = "El precio no puede ser menor a $ {min}")
     private Double precio;
 

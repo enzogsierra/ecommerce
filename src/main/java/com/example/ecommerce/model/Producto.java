@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -36,9 +37,11 @@ public class Producto
     @Column(length = 41) // 36 caracteres por el randomUUID + extension (.jpg, .webp)
     private String imagen;
 
+    @NotNull(message = "Debes indicar el precio de este producto")
     @Min(value = 1, message = "El precio del producto debe ser mayor a ${value}")
     private Double precio;
 
+    @NotNull(message = "Debes indicar el stock de este producto")
     @Min(value = 0, message = "El stock no puede ser menor a {value}")
     private Integer stock;
 }

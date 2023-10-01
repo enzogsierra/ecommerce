@@ -6,10 +6,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,15 +54,12 @@ public class ProductoController
     @PostMapping("/crear")
     public String create_POST(@Valid Producto producto, BindingResult result, @RequestParam("imagenFile") MultipartFile file, Model model) throws IOException
     {
-        // Verificar errores
-        if(file.isEmpty()) // No hay imagen del producto
-        {
-            result.addError(new ObjectError("tmp", "tmp")); // Añadir un error temporal
+        if(file.isEmpty()) { // No hay imagen del producto
+            result.rejectValue("imagen", "producto.imagen", "Debes incluir una imagen del producto");
         }
 
-        if(result.hasErrors())
-        {
-            if(file.isEmpty()) model.addAttribute("emptyImage", 1); // Añadir atributo de que no hay imagen
+        // Verificar errores
+        if(result.hasErrors()) {
             return "productos/crear";
         }
 
@@ -121,16 +120,20 @@ public class ProductoController
     
 
     // Eliminar un producto
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id)
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminar(@PathVariable Integer id)
     {
-        Producto tmp = productoRepository.findById(id).get();
-        if(!tmp.getImagen().equals("default.jpg")) // Eliminar imagen del producto si no usa la imagen default
+        Optional<Producto> opt = productoRepository.findById(id);
+        if(!opt.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        Producto producto = opt.get();
+
+        if(!producto.getImagen().equals("default.jpg")) // Eliminar imagen del producto si no usa la imagen default
         {
-            imageService.deleteImage(tmp.getImagen());
+            //imageService.deleteImage(producto.getImagen());
         }
         
-        productoRepository.deleteById(id);
-        return "redirect:/productos";
+        //productoRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

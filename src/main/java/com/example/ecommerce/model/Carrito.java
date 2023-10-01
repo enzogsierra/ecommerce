@@ -33,6 +33,7 @@ public class Carrito
     @NotNull(message = "No hay un producto asociado a este item")
     private Producto producto;
     
+    @NotNull(message = "Debes ingresar la cantidad de productos")
     @Min(value = 1, message = "Debes agregar al menos {value} producto")
     private Integer cantidad;
 }
