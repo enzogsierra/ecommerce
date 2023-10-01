@@ -10,38 +10,39 @@
         </header>
 
         <main class="container">
-            <h3 class="mt-4">Compras</h3> 
+            <h2>Tus compras</h2>
 
-            <div class="card my-4">
-                <div class="card-body">
-                    <div th:if="${compras.isEmpty()}" class="my-4 text-center">
-                        <p class="m-0 mb-2">Aún no haz realizado compras</p>
-                        <a th:href="@{/}" class="btn btn-primary">Explorar productos</a>
-                    </div>
+            <div th:if="${compras.size() == 0}" class="p-4 text-bg-light rounded shadow text-center">
+                <p class="mb-1 fs-2">Aún no has realizado compras</p>
+                <p class="text-muted">Añade varios productos a tu carrito y ahorra en envíos!</p>
 
-                    <table th:unless="${compras.isEmpty()}" class="table" id="products-table">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th><!-- Imagen --></th>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Total</th>
-                                <th>Accion</th>
-                            </tr>
-                        </thead>
+                <a th:href="@{/}" class="btn btn-primary">Explorar productos</a>
+            </div>
 
+            <div th:unless="${compras.size() == 0}" class="d-flex flex-column gap-3">
+                <div th:each="compra: ${compras}" class="p-3 text-bg-light rounded shadow">
+                    <h6 class="text-muted">
+                        <span th:text="${#temporals.format(compra.createdAt, 'd')}"></span> de
+                        <span th:text="${#temporals.format(compra.createdAt, 'MMMM')}"></span> de
+                        <span th:text="${#temporals.format(compra.createdAt, 'yyyy')}"></span>
+                    </h6>
+
+                    <table class="w-100">
                         <tbody>
-                            <tr th:each="compra: ${compras}">
-                                <td th:text="${compra.fecha}"></td>
-                                <td class="text-center">
-                                    <img th:src="@{/images/{img} (img = ${compra.producto.imagen})}" alt="producto" height="64px">
+                            <tr>
+                                <td class="pe-3">
+                                    <img th:src="@{/images/{img} (img = ${compra.producto.imagen})}" class="border rounded object-fit-contain" alt="Imagen del producto" style="width: 5rem; height: 5rem;">
                                 </td>
-                                <td th:text="${compra.producto.nombre}"></td>
-                                <td th:text="${compra.cantidad}"></td>
-                                <td th:text="'$ ' + ${#numbers.formatDecimal(compra.precio, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                                <td>
-                                    <a th:href="@{/compra/{id} (id = ${compra.id})}" class="btn btn-primary">Ver detalles</a>
+                                <td class="w-100">
+                                    <div class="d-flex flex-column gap-1">
+                                        <a th:href="@{/producto/{id} (id = ${compra.producto.id})}" class="text-decoration-none text-dark" th:text="${compra.producto.nombre}"></a>
+                                        
+                                        <small th:if="${compra.cantidad == 1}" class="text-muted">1 unidad</small>
+                                        <small th:unless="${compra.cantidad == 1}" class="text-muted"><span th:text="${compra.cantidad}"></span> unidades</small>
+                                    </div>
+                                </td>
+                                <td class="text-nowrap">
+                                    <a th:href="@{/compra/{id} (id = ${compra.id})}" class="btn btn-success">Ver compra</a>
                                 </td>
                             </tr>
                         </tbody>

@@ -47,7 +47,7 @@ public class AuthController
         Optional<Usuario> email = usuarioRepository.findByEmail(usuario.getEmail());
         if(email.isPresent()) // Email ya registrado
         {
-            result.rejectValue("email", "usuario.email", "Este email ya está en uso"); // Añadir mensaje de error al campo "email"
+            result.rejectValue("email", "usuario.email", "Este email ya está registrado, ¿deseas iniciar sesión?"); // Añadir mensaje de error al campo "email"
         }
 
         // Verificar errores de formulario

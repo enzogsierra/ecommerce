@@ -61,16 +61,18 @@ public class PublicController
     
     // Muestra los detalles de un producto específico
     @GetMapping("/producto/{id}")
-    public String producto(@PathVariable Integer id, Model model)
+    public String producto(@PathVariable Integer id, Model model, Principal principal)
     {
         Producto producto = productoRepository.findById(id).get();
+
+        Usuario usuario = null;
+        if(principal != null) usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Si el usuario está logueado, buscar sus datos
         
         model.addAttribute("producto", producto);
+        model.addAttribute("usuario", usuario);
         return "public/producto";
     }
     
-
-
 
     // Muestra el carrito de compras del usuario
     @GetMapping("/carrito")
@@ -93,18 +95,23 @@ public class PublicController
     }
     
     @PostMapping("/carrito") // Añade un nuevo producto al carrito
-    public String carrito_POST(@RequestParam Integer id, @RequestParam int cantidad, Model model, Principal principal)
+    public String carrito_POST(@RequestParam Integer productoId, @RequestParam int cantidad, Model model, Principal principal)
     {
-        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
-        Producto producto = productoRepository.findById(id).get();
+        Optional<Producto> producto = productoRepository.findById(productoId); // Buscar producto por su id
+        if(producto.isPresent()) // El producto existe
+        {
+            Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener usuario
+            Optional<Carrito> inCart = carritoRepository.findByUsuarioAndProducto(usuario, producto.get()); // Obtener si el usuario ya tiene el producto en su carrito
 
-        // Crear una nueva instancia de carrito
-        Carrito carrito = new Carrito();
-        carrito.setUsuario(usuario);
-        carrito.setProducto(producto);
-        carrito.setCantidad(cantidad);
-        carritoRepository.save(carrito); // Agregar producto al carrito del usuario
-        
+            if(!inCart.isPresent()) // El usuario no el producto en el carrito
+            {
+                Carrito carrito = new Carrito();
+                carrito.setUsuario(usuario);
+                carrito.setProducto(producto.get());
+                carrito.setCantidad(cantidad);
+                carritoRepository.save(carrito); // Agregar producto al carrito del usuario
+            }
+        }
         return "redirect:/carrito";
     }
     
@@ -112,14 +119,15 @@ public class PublicController
     @GetMapping("/carrito-eliminar/{id}")
     public String removeProductFromCart(@PathVariable Integer id, Principal principal)
     {
-        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
-        Optional<Carrito> item = carritoRepository.isProductInCart(usuario.getId(), id); // Buscar producto en el carrito del usuario
-
-        if(item.isPresent()) // Verificar si existe
+        Optional<Carrito> carrito = carritoRepository.findById(id); // Buscar el carrito (item)
+        if(carrito.isPresent()) // El item está presente
         {
-            carritoRepository.delete(item.get()); // Eliminar producto del carrito del usuario
+            Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a traves de la sesion
+            if(usuario.equals(carrito.get().getUsuario())) // El usuario asociado a este item es igual al usuario obtenido
+            {
+                carritoRepository.delete(carrito.get()); // Eliminar item del carrito del usuario
+            }
         }
-
         return "redirect:/carrito";
     }
     
@@ -131,18 +139,8 @@ public class PublicController
         Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
         List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener carrito de compras del usuario
 
-        // Calcular total de la compra
-        double total = 0.0d;
-        for(Carrito item: carrito)
-        {
-            total += item.getProducto().getPrecio() * item.getCantidad(); // Total = precio unitario del producto * cantidad
-        }
-
-        //
         model.addAttribute("usuario", usuario);
-        model.addAttribute("carrito", carritoRepository.findByUsuario(usuario));
-        model.addAttribute("cantidadProductos", carrito.size());
-        model.addAttribute("total", total);
+        model.addAttribute("carrito", carrito);
         return "public/orden";
     }
     
@@ -167,7 +165,7 @@ public class PublicController
             carritoRepository.delete(item); // Eliminar item del carrito
         }
 
-        return "redirect:/";
+        return "redirect:/compras";
     }
 
 

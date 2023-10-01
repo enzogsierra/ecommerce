@@ -10,7 +10,50 @@
         </header>
 
         <main class="container">
-            <div class="card my-4">
+            <div class="p-4 text-bg-light rounded shadow">
+                <div class="row row-cols-1 row-cols-lg-3">
+                    <div class="col text-center"> <!-- Imagen -->
+                        <img th:src="@{/images/{img} (img = ${producto.imagen})}" alt="Imagen del producto" class="w-100 object-fit-contain" style="max-height: 24rem;">
+                    </div>
+
+                    <div class="col"> <!-- Detalles -->
+                        <small class="text-muted" th:if="${producto.stock > 1}">Quedan <span th:text="${producto.stock}"></span> disponibles</small>
+                        <h4 th:text="${producto.nombre}"></h4>
+                    </div>
+
+                    <div class="col"> <!-- Comprar -->
+                        <div class="p-3 bg-secondary-subtle rounded">
+                            <div class="mb-4">
+                                <h2>$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></span></h2>
+
+                                <div th:if="${usuario != null}">
+                                    <p class="mb-0 small text-muted"><i class="fa-solid fa-truck-fast text-primary"></i> Enviar a <span th:text="${usuario.direccion}"></span></p>
+                                </div>
+                            </div>
+
+                            <form th:action="@{/carrito}" method="POST">
+                                <input type="hidden" name="productoId" th:value="${producto.id}">
+
+                                <div class="mb-3 d-flex align-items-center gap-3">
+                                    <label class="form-label mb-0 text-muted" for="cantidad">Cantidad</label>
+                                    <input class="form-control form-control-sm" type="number" name="cantidad" id="cantidad" value="1" min="1" th:max="${producto.stock}">
+                                </div>
+
+                                <div class="d-flex flex-column gap-2">
+                                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cart-plus"></i> Añadir al carrito</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h4>Conocé más sobre este producto</h4>
+
+                    <div class="fs-6 text-muted text-pre-line" th:text="${producto.descripcion}"></div>
+                </div>
+            </div>
+            <!-- <div class="card my-4">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-6 text-center">
@@ -43,7 +86,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </main>
         
         <!-- Footer y scripts -->

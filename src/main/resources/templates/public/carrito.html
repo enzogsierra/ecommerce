@@ -11,53 +11,81 @@
 
         <!-- content -->
         <main class="container">
-            <h3 class="mt-4">Carrito</h3>
+            <h2>Tu carrito</h3>
 
-            <div class="card my-4">
-                <div class="card-body">
-                    <div th:if="${carrito.isEmpty()}" class="my-4 text-center">
-                        <p class="m-0 mb-2">Aún no hay productos añadidos al carrito</p>
-                        <a th:href="@{/}" class="btn btn-primary">Explorar productos</a>
+            <div th:if="${carrito.size() == 0}" class="p-4 text-bg-light rounded shadow text-center">
+                <p class="mb-1 fs-2">¡Llená tu carrito!</p>
+                <p class="text-muted">Sumá varios productos para conseguir descuentos por envío!</p>
+
+                <a th:href="@{/}" class="btn btn-primary">Explorar productos</a>
+            </div>
+
+            <div th:unless="${carrito.size() == 0}" class="row row-cols-1 row-cols-lg-2 g-3">
+                <div class="col col-lg-8">
+                    <div class="px-3 text-bg-light rounded shadow">
+                        <table class="w-100">
+                            <tbody>
+                                <tr th:each="item, iter: ${carrito}" th:classappend="${!iter.last}? border-bottom">
+                                    <td class="py-3">
+                                        <img th:src="@{/images/{img} (img = ${item.producto.imagen})}" class="object-fit-contain" alt="Imagen del producto" style="width: 5rem; height: 5rem;">
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column gap-1">
+                                            <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
+                                            
+                                            <div class="d-flex gap-2">
+                                                <a th:href="@{/carrito-eliminar/{id} (id = ${item.id})}" class="small text-decoration-none">Quitar</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <ul class="list-group list-group-horizontal">
+                                            <button class="list-group-item">
+                                                <i class="fa-solid fa-minus"></i>
+                                            </button>
+                                            <li class="list-group-item font-monospace">
+                                                <span th:text="${item.cantidad}"></span>
+                                            </li>
+                                            <button class="list-group-item">
+                                                <i class="fa-solid fa-plus"></i>
+                                            </button>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 fs-5 text-end text-nowrap">
+                                            $ <span th:text="${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></span>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    
-                    <table th:unless="${carrito.isEmpty()}" class="mt-4 table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Imagen</th>
-                                <th scope="col">Producto</th>
-                                <th scope="col">Cantidad</th>
-                                <th scope="col">Precio</th>
-                                <th scope="col">Accion</th>
-                            </tr>
-                        </thead>
+                </div>
 
-                        <tbody>
-                            <tr th:each="item: ${carrito}">
-                                <td class="text-center">
-                                    <img th:src="@{/images/{img} (img = ${item.producto.imagen})}" class="product-img-mini" alt="producto">
-                                </td>
-                                <td th:text="${item.producto.nombre}" class="fw-bold"></td>
-                                <td th:text="${#numbers.formatDecimal(item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                                <td th:text="'$ ' + ${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                                <!-- <td>(precio)</td> -->
-                                <td>
-                                    <a th:href="@{/carrito-eliminar/{id} (id = ${item.producto.id})}" class="btn btn-outline-danger">Quitar</a>
-                                </td>
-                            </tr>
-                            
-                            <tr class="fs-3">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>Total</td>
-                                <td th:text="'$ ' + ${#numbers.formatDecimal(total, 0, 'DEFAULT', 0, 'POINT')}" class="text-end"></td>
-                                <!-- <td th:text="'$ ' + ${#numbers.formatDecimal(orden.total, 0, 'DEFAULT', 0, 'POINT')}" class="text-end"></td> -->
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <div th:unless="${carrito.isEmpty()}" class="text-end">
-                        <a th:href="@{/orden}" class="btn btn-primary">Generar orden</a>
+                <div class="col col-lg-4">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h5 class="card-text">Resumen de tu carrito</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="mb-2 w-100">
+                                <tbody>
+                                    <tr>
+                                        <td>Productos</td>
+                                        <td class="text-end" th:text="${#aggregates.sum(carrito.![cantidad])}"></td>
+                                    </tr>
+
+                                    <tr class="fs-4 fw-semibold">
+                                        <td>Total</td>
+                                        <td class="text-end">
+                                            $ <span th:text="${#numbers.formatDecimal(#aggregates.sum(carrito.![producto.precio * cantidad]), 0, 'DEFAULT', 0, 'POINT')}"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <a th:href="@{/orden}" class="btn btn-primary w-100">Continuar compra</a>
+                        </div>
                     </div>
                 </div>
             </div>

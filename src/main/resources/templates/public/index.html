@@ -10,42 +10,42 @@
         </header>
 
         <main class="container">
-            <div class="my-4 p-5 bg-light rounded-3">
-                <h1 class="display-5 fw-bold">Bienvenidos a Spring e-Commerce</h1>
-                <p class="col-md-8 fs-4">Tu tienda de productos en línea</p>
+            <div class="my-5 p-5 bg-light rounded-3 shadow">
+                <h2 class="display-5 fw-semibold">Bienvenido a Spring e-Commerce</h2>
+                <h6 class="fs-4 fw-light text-muted">Tu tienda de productos en línea</h6>
             </div>
         </main>   
 
         <section class="container">
             <!-- Sin productos -->
-            <div th:if="${productos.isEmpty()}">
-                <h2 th:if="${busqueda != null}" class="text-center my-4">
-                    No hay resultados para la búsqueda '<span th:text="${busqueda}"></span>'<br>
-                    Intenta con otro término.
-                </h2>
-                <h2 th:unless="${busqueda != null}" class="text-center my-4">
-                    Aún no hay productos creados.
-                </h2>
+            <div th:if="${productos.size() == 0}">
+                <div th:if="${busqueda == null}" class="my-4 text-center">
+                    <p class="fs-2 text-muted">Aún no hay productos creados.</p>
+                </div>
+
+                <div th:unless="${busqueda == null}" class="my-4 text-center">
+                    <p class="fs-3 text-muted">No hay resultados para la búsqueda '<span class="fw-semibold" th:text="${busqueda}"></span>'</p>
+                    <p class="fs-3 text-muted">Intenta con otro término.</p>
+                </div>
             </div>
             
             <!-- Con productos -->
-            <div th:unless="${productos.isEmpty()}" class="products my-4">
-
-                <div th:each="producto: ${productos}" class="product border rounded">
-                    <!-- -->
-                    <a class="h-100 text-decoration-none text-black" th:href="@{/producto/{id} (id = ${producto.id})}">
-                        <div class="p-2 border-bottom product-img-container">
-                            <img th:src="@{/images/{img} (img = ${producto.imagen})}" class="product-img" alt="producto">
-                        </div>
-
-                        <div class="p-2">
-                            <h4 class="">$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></span></h4>
-                            
-                            <p th:text="${producto.nombre}" class="m-0 text-muted product-title"></p>
-                        </div>
-                    </a>
+            <div th:unless="${productos.size() == 0}" class="my-4 row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-3">
+                <div th:each="producto: ${productos}" class="col">
+                    <div class="product bg-light border rounded">
+                        <a th:href="@{/producto/{id} (id = ${producto.id})}" class="text-decoration-none text-black">
+                            <div class="text-center border-bottom">
+                                <img th:src="@{/images/{img} (img = ${producto.imagen})}" class="object-fit-contain" alt="Imagen del producto" style="height: 14rem;">
+                            </div>
+    
+                            <div class="p-3">
+                                <h4>$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></span></h4>
+                                
+                                <h5 class="mb-0 small fw-light" th:text="${producto.nombre}"></h5>
+                            </div>
+                        </a>
+                    </div>
                 </div>
-
             </div>
         </section>
 
