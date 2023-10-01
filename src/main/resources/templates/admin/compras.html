@@ -10,36 +10,36 @@
         </header>
         
         <main class="container">
-            <h3 class="mt-4">Compras</h3> 
+            <h2>Compras</h2>
 
-            <div class="card my-4">
-                <div class="card-body">   
-                    <div th:if="${compras.isEmpty()}" class="text-center">
-                        <p class="my-3">Aún no se han realizado compras</p>
-                    </div>
+            <div class="p-4 text-bg-light rounded shadow">
+                <div th:if="${compras.size() == 0}" class="text-center">
+                    <p class="mb-0 fs-5 text-muted">Aún no se han realizado compras</p>
+                </div>
 
-                    <table th:unless="${compras.isEmpty()}" class="table" id="products-table">
+                <div th:unless="${compras.size() == 0}">
+                    <table class="table table-light caption-top">
+                        <caption><span th:text="${compras.size()}"></span> compras</caption>
+
                         <thead>
                             <tr>
                                 <th>Fecha</th>
-                                <th>Comprador</th>
+                                <th>Usuario</th>
                                 <th>Producto</th>
                                 <th>Cantidad</th>
                                 <th>Total</th>
-                                <th> </th>
+                                <th></th>
                             </tr>
                         </thead>
 
                         <tbody>
                             <tr th:each="compra: ${compras}">
-                                <td th:text="${#dates.format(compra.fecha, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${#temporals.format(compra.createdAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${compra.usuario.nombre} + ' ' + ${compra.usuario.apellido}"></td>
                                 <td th:text="${compra.producto.nombre}"></td>
                                 <td th:text="${compra.cantidad}"></td>
-                                <td th:text="'$ ' + ${#numbers.formatDecimal(compra.precio, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                                <td>
-                                    <a th:href="@{/compra/{id} (id = ${compra.id})}" class="btn btn-primary">Ver detalles</a>
-                                </td>
+                                <td>$ <span th:text="${#numbers.formatDecimal(compra.precio, 0, 'POINT', 0, 'DEFAULT')}"></span></td>
+                                <td><a th:href="@{/compra/{id} (id = ${compra.id})}" class="btn btn-sm btn-success">Ver detalles</a></td>
                             </tr>
                         </tbody>
                     </table>

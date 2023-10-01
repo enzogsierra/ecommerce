@@ -26,11 +26,11 @@ public class AdminController
     
     
     // Muestra todos los productos
-    @GetMapping(value = {"", "/"})
+    @GetMapping(value = {"/productos"})
     public String index(Model model) 
     {
         model.addAttribute("productos", productoRepository.findAll());
-        return "admin/index";
+        return "productos/index";
     }
 
     // Muestra todos los usuarios
