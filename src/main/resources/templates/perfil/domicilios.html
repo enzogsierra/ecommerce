@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+
+        <main class="container">
+            <div class="row row-cols-1 row-cols-lg-2 g-4">
+                <div class="col col-lg-4">
+                    <div class="card">
+                        <div class="card-header text-bg-success">Datos</div>
+                        <div class="card-body">
+                            <div th:replace="perfil/layout::profile-nav"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col col-lg-8">
+                    <div class="card">
+                        <div class="card-header text-bg-success">Tus domicilios</div>
+                        <div class="card-body">
+                            <div th:if="${domicilios.size() == 0}">
+                                <p class="fs-5 fw-light text-muted">Los domicilios que agregues se mostrarán aquí</p>
+                            </div>
+
+                            <div th:unless="${domicilios.size() == 0}" class="d-flex flex-column gap-4">
+                                <div th:each="domicilio: ${domicilios}" class="d-flex align-items-center justify-content-between gap-3">
+                                    <div class="d-flex gap-3">
+                                        <div class="d-flex align-items-center justify-content-center bg-dark-subtle rounded-circle" style="width: 4rem; height: 4rem;">
+                                            <i class="fs-2 fa-solid fa-map-location-dot text-dark"></i>
+                                        </div>
+
+                                        <div class="align-self-start">
+                                            <h6 class="mb-0">
+                                                <span th:text="${domicilio.calle}"></span>, <span th:text="${domicilio.numeroCalle}"></span>
+                                                <span th:if="${domicilio.principal == true}" class="badge text-bg-success">Dirección principal</span>
+                                            </h6>
+                                            <p class="mb-0">
+                                                <span th:text="${domicilio.localidad.nombre}"></span>, <span th:text="${domicilio.localidad.provincia.nombre}"></span>
+                                            </p>
+                                            <p class="mb-0"><span>Código postal: </span><span th:text="${domicilio.codigoPostal}"></span></p>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <button th:if="${domicilio.principal == false}" type="button" class="btn text-danger" th:domicilio-id="${domicilio.id}" onclick="onDeleteAddress()" title="Eliminar">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                        <a th:href="@{/perfil/domicilios/form?id={id} (id = ${domicilio.id})}" class="text-dark text-decoration-none" title="Editar">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 card-footer">
+                            <a th:href="@{/perfil/domicilios/form}" class="btn btn-outline-primary"><i class="fa-solid fa-location-dot"></i> Agregar domicilio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

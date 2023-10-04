@@ -39,12 +39,12 @@ public class PublicController
     
     // Home page - muestra todos los productos
     @GetMapping("/")
-    public String index(Model model)
+    public String home(Model model)
     {
         List<Producto> productos = productoRepository.findAll();
 
         model.addAttribute("productos", productos); 
-        return "public/index";
+        return "public/home";
     }
 
     // Busca un producto por su título

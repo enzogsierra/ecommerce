@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+
+        <main class="container">
+            <div class="row row-cols-1 row-cols-lg-2 g-4">
+                <div class="col col-lg-4">
+                    <div class="card">
+                        <div class="card-header text-bg-success">Datos</div>
+                        <div class="card-body">
+                            <div th:replace="perfil/layout::profile-nav"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col col-lg-8">
+                    <div class="card">
+                        <div class="card-header text-bg-success">Datos de tu cuenta</div>
+                        <div class="card-body">
+                            <form method="POST" th:action="@{/perfil}" th:object="${usuario}">
+                                <div class="d-flex gap-2">
+                                    <div class="w-100 mb-3">
+                                        <label class="form-label" for="nombre">Nombre <span class="text-danger">*</span></label>
+                                        <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{nombre}" required>
+                                        <small class="text-danger" th:errors="*{nombre}"></small>
+                                    </div>
+            
+                                    <div class="w-100 mb-3">
+                                        <label class="form-label" for="apellido">Apellido <span class="text-danger">*</span></label>
+                                        <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{apellido}" required>
+                                        <small class="text-danger" th:errors="*{apellido}"></small>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="email">Correo electrónico <span class="text-danger">*</span></label>
+                                    <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{email}" required>
+                                    <small class="text-danger" th:errors="*{email}"></small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="telefono">Número de teléfono <span class="text-danger">*</span></label>
+                                    <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{telefono}" required>
+                                    <small class="text-danger" th:errors="*{telefono}"></small>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

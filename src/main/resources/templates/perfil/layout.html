@@ -1,0 +1,14 @@
+<div th:fragment="profile-nav" class="d-flex flex-column gap-2">
+    <a th:href="@{/perfil/}" class="d-flex align-items-center gap-3 fs-5 text-decoration-none text-dark">
+        <i class="fa-solid fa-user text-center text-primary" style="width: 20px; height: 20px;"></i> 
+        <span>Cuenta</span>
+    </a>
+    <a th:href="@{/perfil/domicilios}" class="d-flex align-items-center gap-3 fs-5 text-decoration-none text-dark">
+        <i class="fa-solid fa-house-chimney text-center text-primary" style="width: 20px; height: 20px;"></i> 
+        <span>Domicilios</span>
+    </a>
+    <a th:href="@{/perfil/}" class="d-flex align-items-center gap-3 fs-5 text-decoration-none text-dark">
+        <i class="fa-solid fa-bag-shopping text-center text-primary" style="width: 20px; height: 20px;"></i> 
+        <span>Pedidos</span>
+    </a>
+</div>
