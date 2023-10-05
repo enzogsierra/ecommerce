@@ -2,18 +2,18 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.Carrito;
 import com.example.ecommerce.model.Compra;
+import com.example.ecommerce.model.Domicilio;
 import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.repository.CarritoRepository;
 import com.example.ecommerce.repository.CompraRepository;
+import com.example.ecommerce.repository.DomicilioRepository;
 import com.example.ecommerce.repository.ProductoRepository;
 import com.example.ecommerce.repository.UsuarioRepository;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,7 +40,7 @@ public class PublicController
     private CompraRepository compraRepository;
 
     @Autowired
-    private HttpSession session;
+    private DomicilioRepository domicilioRepository;
 
     
     // Home page - muestra todos los productos
@@ -71,81 +71,18 @@ public class PublicController
     {
         Producto producto = productoRepository.findById(id).get();
 
-        Usuario usuario = null;
-        if(principal != null) usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Si el usuario está logueado, buscar sus datos
-        
+        if(principal != null)
+        {
+            Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
+            Domicilio domicilio = domicilioRepository.findByUsuarioAndPrincipal(usuario, true).orElse(null); // Buscar el domicilio principal del usuario
+            model.addAttribute("domicilio", domicilio);
+        }
+
         model.addAttribute("producto", producto);
-        model.addAttribute("usuario", usuario);
         return "public/producto";
     }
     
 
-    // Muestra el carrito de compras del usuario
-    @GetMapping("/carrito")
-    public String carrito(Model model, Principal principal)
-    {
-        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
-        List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener el carrito de compras del usuario
-
-        // Calcular total
-        double total = 0.0d;
-        for(Carrito item: carrito) 
-        {
-            total += item.getProducto().getPrecio() * item.getCantidad(); // Total = precio unitario del producto * cantidad
-        }
-
-        //
-        model.addAttribute("carrito", carrito);
-        model.addAttribute("total", total);
-        return "public/carrito";
-    }
-    
-    @PostMapping("/carrito") // Añade un nuevo producto al carrito
-    public String carrito_POST(@RequestParam Integer productoId, @RequestParam int cantidad, Model model, Principal principal)
-    {
-        Optional<Producto> producto = productoRepository.findById(productoId); // Buscar producto por su id
-        if(producto.isPresent()) // El producto existe
-        {
-            Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
-
-            List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener carrito del usuario
-            session.setAttribute("carritoSize", carrito.size());
-
-            final boolean inList = carrito.stream().anyMatch(item -> item.getProducto().getId().equals(productoId)); // Retorna true si el producto ya está añadido en el carrito del usuario
-            if(!inList) // Si el producto no está añadido, crear un nuevo item de carrito
-            {
-                Carrito item = new Carrito();
-                item.setUsuario(usuario);
-                item.setProducto(producto.get());
-                item.setCantidad(cantidad);
-                carritoRepository.save(item); // Agregar producto al carrito del usuario
-
-                session.setAttribute("carritoSize", carrito.size() + 1);
-            }
-        }
-        return "redirect:/carrito";
-    }
-    
-    // Eliminar un producto del carrito de compras del usuario
-    @GetMapping("/carrito-eliminar/{id}")
-    public String removeProductFromCart(@PathVariable Integer id, Principal principal)
-    {
-        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
-
-        List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener carrito del usuario
-        session.setAttribute("carritoSize", carrito.size());
-
-        for(Carrito item: carrito) // Iterar sobre todos los productos del carrito
-        {
-            if(item.getId().equals(id)) // Si el id del item coincide con el @PathVarible id
-            {
-                carritoRepository.delete(item); // Eliminar item del carrito
-                session.setAttribute("carritoSize", carrito.size() - 1);
-            }
-        }
-        return "redirect:/carrito";
-    }
-    
     
     // Muestra la orden de los productos a comprar
     @GetMapping("/orden")

@@ -21,17 +21,17 @@
                         <h4 th:text="${producto.nombre}"></h4>
                     </div>
 
-                    <div class="col"> <!-- Comprar -->
+                    <div class="col"> <!-- Carrito -->
                         <div class="p-3 bg-secondary-subtle rounded">
                             <div class="mb-4">
                                 <h2>$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></span></h2>
 
-                                <div th:if="${usuario != null}">
-                                    <!-- <p class="mb-0 small text-muted"><i class="fa-solid fa-truck-fast text-primary"></i> Enviar a <span th:text="${usuario.direccion}"></span></p> -->
+                                <div th:if="${domicilio != null}">
+                                    <p class="mb-0 small text-muted"><i class="fa-solid fa-truck-fast text-primary"></i> Enviar a <span th:text="${domicilio.localidad.nombre}"></span></p>
                                 </div>
                             </div>
 
-                            <form th:action="@{/carrito}" method="POST">
+                            <form th:action="@{/carrito/añadir}" method="POST">
                                 <input type="hidden" name="productoId" th:value="${producto.id}">
 
                                 <div class="mb-3 d-flex align-items-center gap-3">

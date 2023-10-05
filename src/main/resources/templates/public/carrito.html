@@ -34,22 +34,25 @@
                                             <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
                                             
                                             <div class="d-flex gap-2">
-                                                <a th:href="@{/carrito-eliminar/{id} (id = ${item.id})}" class="small text-decoration-none">Quitar</a>
+                                                <a th:href="@{/carrito/quitar/{id} (id = ${item.id})}" class="small text-decoration-none">Quitar</a>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <ul class="list-group list-group-horizontal">
-                                            <button class="list-group-item">
-                                                <i class="fa-solid fa-minus"></i>
-                                            </button>
-                                            <li class="list-group-item font-monospace">
-                                                <span th:text="${item.cantidad}"></span>
-                                            </li>
-                                            <button class="list-group-item">
-                                                <i class="fa-solid fa-plus"></i>
-                                            </button>
-                                        </ul>
+                                        <form method="POST">
+                                            <ul class="list-group list-group-horizontal">
+                                                <button type="submit" class="list-group-item" th:formaction="@{/carrito/cambiarCantidad/-}" th:disabled="${item.cantidad <= 1}">
+                                                    <i class="fa-solid fa-minus"></i>
+                                                </button>
+                                                <li class="list-group-item font-monospace">
+                                                    <input type="hidden" name="productoId" th:value="${item.producto.id}">
+                                                    <span th:text="${item.cantidad}"></span>
+                                                </li>
+                                                <button type="submit" class="list-group-item" th:formaction="@{/carrito/cambiarCantidad/+}" th:disabled="${item.cantidad >= item.producto.stock}">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </button>
+                                            </ul>
+                                        </form>
                                     </td>
                                     <td>
                                         <p class="mb-0 fs-5 text-end text-nowrap">

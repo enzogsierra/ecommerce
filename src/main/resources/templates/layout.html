@@ -42,7 +42,7 @@
 
                 <a th:href="@{/carrito}" class="btn text-light position-relative">
                     <i class="fa-solid fa-cart-shopping"></i>
-                    <span th:if="${session.carritoSize != 0}" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" th:classappend="${session.carritoSize > 0 ? 'bg-danger' : 'bg-secondary'}">
                         <span th:text="${session.carritoSize}"></span>
                     </span>
                 </a>
