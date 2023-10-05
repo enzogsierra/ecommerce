@@ -10,13 +10,18 @@
         </header>
 
         <main class="container">
-            <h2>Editar producto producto</h2>
+            <h2>
+                <span th:if="${producto.id == null}">Crear producto</span>
+                <span th:unless="${producto.id == null}">Editar producto</span>
+            </h2>
             
             <div class="p-4 text-bg-light rounded shadow">
-                <p class="mb-2 small text-end">* Todos los campos son obligatorios</p>
+                <p class="mb-2 small text-end"><span class="text-danger">*</span> Todos los campos son obligatorios</p>
 
-                <form th:action="@{/productos/editar}" th:object="${producto}" method="POST" enctype="multipart/form-data" novalidate>
+                <form method="POST" th:action="@{/admin/productos/form}" th:object="${producto}" enctype="multipart/form-data" novalidate>
                     <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{archivado}">
+                    <input type="hidden" th:field="*{imagen}">
 
                     <div class="mb-3">
                         <label class="form-label" for="nombre">Nombre</label>
@@ -26,7 +31,7 @@
     
                     <div class="mb-3">
                         <label class="form-label" for="descripcion">Descripción</label>
-                        <textarea class="form-control" th:errorclass="is-invalid" th:field="*{descripcion}" rows="5" placeholder="Descripción detallada del producto" required></textarea>
+                        <textarea class="form-control" th:errorclass="is-invalid" th:field="*{descripcion}" rows="10" placeholder="Descripción detallada del producto" required></textarea>
                         <small class="text-danger" th:errors="*{descripcion}"></small>
                     </div>
     
@@ -46,8 +51,9 @@
                     </div>
     
                     <div class="mb-3">
-                        <label for="imagenFile" class="form-label">Imagen (si necesitas cambiarla)</label>
-                        <input class="form-control" type="file" id="imagenFile" name="imagenFile">
+                        <label for="imagenFile" class="form-label">Imagen</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('imagen')}? is-invalid" type="file" id="imagenFile" name="imagenFile" required>
+                        <small class="text-danger" th:errors="*{imagen}"></small>
                     </div>
                     
                     <button type="submit" class="btn btn-primary">Guardar</button>

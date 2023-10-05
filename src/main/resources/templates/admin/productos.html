@@ -13,7 +13,7 @@
             <h2>Lista de productos</h2>
 
             <div class="p-4 text-bg-light rounded shadow">
-                <a th:href="@{/productos/crear}" class="btn btn-primary"><i class="fa-solid fa-square-plus"></i> Nuevo producto</a>
+                <a th:href="@{/admin/productos/form}" class="btn btn-primary"><i class="fa-solid fa-square-plus"></i> Nuevo producto</a>
 
                 <table class="mt-4 table table-bordered caption-top align-middle">
                     <caption><span th:text="${productos.size()}"></span> productos</caption>
@@ -35,7 +35,7 @@
                                 <img th:src="@{/images/{img} (img = ${producto.imagen})}" class="object-fit-contain" alt="Imagen del producto" style="width: 4rem; height: 4rem;">
                             </td>
                             <td>
-                                <a th:href="@{/producto/{id} (id = ${producto.id})}" class="text-dark text-decoration-none" th:text="${producto.nombre}"></a>
+                                <a th:href="@{/producto/{id} (id = ${producto.id})}" class="text-dark text-decoration-none" th:text="${#strings.abbreviate(producto.nombre, 32)}"></a>
                             </td>
                             <td th:text="${#strings.abbreviate(producto.descripcion, 64)}"></td>
                             <td th:text="${producto.stock}"></td>
@@ -44,8 +44,8 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-2">
-                                    <a th:href="@{/productos/editar/{id} (id = ${producto.id})}" class="btn btn-warning" title="Editar producto"><i class="fa-solid fa-pen-to-square"></i></a>
-                                    <button type="button" class="btn btn-danger" title="Archivar producto" th:product-id="${producto.id}" onclick="onDeleteProduct()"><i class="fa-solid fa-trash-can"></i></button>
+                                    <a th:href="@{/admin/productos/form?id={id} (id = ${producto.id})}" class="btn btn-sm btn-warning" title="Editar producto"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <button type="button" class="btn btn-sm btn-danger" title="Archivar producto" th:product-id="${producto.id}" onclick="onDeleteProduct()"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </td>
                         </tr>

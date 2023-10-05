@@ -10,6 +10,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Where;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,7 @@ import lombok.Setter;
 @Table(name = "productos")
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
+@Where(clause = "archivado != 1")
 public class Producto 
 {
     @Id
@@ -44,4 +47,7 @@ public class Producto
     @NotNull(message = "Debes indicar el stock de este producto")
     @Min(value = 0, message = "El stock no puede ser menor a {value}")
     private Integer stock;
+
+    @Column(columnDefinition = "BIT DEFAULT 0")
+    private boolean archivado = false;
 }

@@ -71,7 +71,7 @@ function onDeleteProduct()
     {
         if(result.isConfirmed) // Archivar producto
         {
-            fetch("/productos/eliminar/" + productId, {method: "DELETE"}) // Enviar una peticion de delete al controlador
+            fetch("/admin/productos/archivar/" + productId, {method: "DELETE"}) // Enviar una peticion de delete al controlador
                 .then(response =>
                 {
                     if(response.status == 200) // El controlador respondio con un ok
