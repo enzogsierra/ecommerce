@@ -12,6 +12,9 @@ import com.example.ecommerce.repository.UsuarioRepository;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +38,9 @@ public class PublicController
 
     @Autowired
     private CompraRepository compraRepository;
+
+    @Autowired
+    private HttpSession session;
 
     
     // Home page - muestra todos los productos
@@ -100,16 +106,21 @@ public class PublicController
         Optional<Producto> producto = productoRepository.findById(productoId); // Buscar producto por su id
         if(producto.isPresent()) // El producto existe
         {
-            Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener usuario
-            Optional<Carrito> inCart = carritoRepository.findByUsuarioAndProducto(usuario, producto.get()); // Obtener si el usuario ya tiene el producto en su carrito
+            Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
 
-            if(!inCart.isPresent()) // El usuario no el producto en el carrito
+            List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener carrito del usuario
+            session.setAttribute("carritoSize", carrito.size());
+
+            final boolean inList = carrito.stream().anyMatch(item -> item.getProducto().getId().equals(productoId)); // Retorna true si el producto ya está añadido en el carrito del usuario
+            if(!inList) // Si el producto no está añadido, crear un nuevo item de carrito
             {
-                Carrito carrito = new Carrito();
-                carrito.setUsuario(usuario);
-                carrito.setProducto(producto.get());
-                carrito.setCantidad(cantidad);
-                carritoRepository.save(carrito); // Agregar producto al carrito del usuario
+                Carrito item = new Carrito();
+                item.setUsuario(usuario);
+                item.setProducto(producto.get());
+                item.setCantidad(cantidad);
+                carritoRepository.save(item); // Agregar producto al carrito del usuario
+
+                session.setAttribute("carritoSize", carrito.size() + 1);
             }
         }
         return "redirect:/carrito";
@@ -119,13 +130,17 @@ public class PublicController
     @GetMapping("/carrito-eliminar/{id}")
     public String removeProductFromCart(@PathVariable Integer id, Principal principal)
     {
-        Optional<Carrito> carrito = carritoRepository.findById(id); // Buscar el carrito (item)
-        if(carrito.isPresent()) // El item está presente
+        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
+
+        List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener carrito del usuario
+        session.setAttribute("carritoSize", carrito.size());
+
+        for(Carrito item: carrito) // Iterar sobre todos los productos del carrito
         {
-            Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a traves de la sesion
-            if(usuario.equals(carrito.get().getUsuario())) // El usuario asociado a este item es igual al usuario obtenido
+            if(item.getId().equals(id)) // Si el id del item coincide con el @PathVarible id
             {
-                carritoRepository.delete(carrito.get()); // Eliminar item del carrito del usuario
+                carritoRepository.delete(item); // Eliminar item del carrito
+                session.setAttribute("carritoSize", carrito.size() - 1);
             }
         }
         return "redirect:/carrito";

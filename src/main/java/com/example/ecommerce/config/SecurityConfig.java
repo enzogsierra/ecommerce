@@ -1,5 +1,8 @@
 package com.example.ecommerce.config;
 
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +16,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig
 {
+    @Autowired
+    private HttpSession session;
+
+
     @Bean
     PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
@@ -50,6 +57,11 @@ public class SecurityConfig
             .logout(logout ->
             {
                 logout.logoutSuccessUrl("/");
+                logout.logoutSuccessHandler((request, response, authentication) ->
+                {
+                    session.invalidate();
+                    response.sendRedirect("/");
+                });
             })
             .build();
     }

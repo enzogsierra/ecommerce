@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.ecommerce.dto.UsuarioDTO;
 import com.example.ecommerce.model.Domicilio;
 import com.example.ecommerce.model.Localidad;
 import com.example.ecommerce.model.Provincia;
@@ -52,9 +53,32 @@ public class PerfilController
     public String perfil(Model model, Principal principal)
     {
         Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setNombre(usuario.getNombre());
+        usuarioDTO.setApellido(usuario.getApellido());
+        usuarioDTO.setEmail(usuario.getEmail());
+        usuarioDTO.setTelefono(usuario.getTelefono());
 
-        model.addAttribute("usuario", usuario);
+        model.addAttribute("usuarioDTO", usuarioDTO);
         return "perfil/index";
+    }
+
+    // Editar datos del usuario
+    @PostMapping("/form")
+    public String perfil(@Valid UsuarioDTO usuarioDTO, BindingResult result, Principal principal)
+    {
+        if(result.hasErrors()) {
+            return "perfil/index";
+        }
+
+        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
+        usuario.setNombre(usuarioDTO.getNombre());
+        usuario.setApellido(usuarioDTO.getApellido());
+        usuario.setEmail(usuarioDTO.getEmail());
+        usuario.setTelefono(usuarioDTO.getTelefono());
+
+        usuarioRepository.save(usuario);
+        return "redirect:/perfil";
     }
 
     // Mostrar los domicilios del usuario

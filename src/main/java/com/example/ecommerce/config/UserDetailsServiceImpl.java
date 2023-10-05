@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
+import com.example.ecommerce.model.Carrito;
 import com.example.ecommerce.model.Usuario;
+import com.example.ecommerce.repository.CarritoRepository;
 import com.example.ecommerce.repository.UsuarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,13 @@ public class UserDetailsServiceImpl implements UserDetailsService
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private CarritoRepository carritoRepository;
+
+    @Autowired
+    private HttpSession session;
+
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException 
     {
@@ -31,6 +42,12 @@ public class UserDetailsServiceImpl implements UserDetailsService
         if(opt.isPresent()) // Usuario encontrado
         {
             Usuario usuario = opt.get(); // Obtener usuario
+
+            // Variable de sesion
+            List<Carrito> carrito = carritoRepository.findByUsuario(usuario);
+            session.setAttribute("usuarioNombre", usuario.getNombre());
+            session.setAttribute("carritoSize", carrito.size());
+            
 
             // Añadir roles al usuario (en este sistema, cada usuario solo puede tener 1 rol)
             List<GrantedAuthority> roles = new ArrayList<>(); // Lista que almacena los roles del usuario

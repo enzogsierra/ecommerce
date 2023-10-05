@@ -38,26 +38,37 @@
         <!-- Usuarios logueados -->
         <div sec:authorize="isAuthenticated()">
             <nav class="d-flex align-items-center gap-4">
-                <a th:href="@{/compras}" class="text-decoration-none text-light">Compras</a>
-                <a th:href="@{/carrito}" class="text-decoration-none text-light">Ver Carrito</a>
-                <a th:href="@{/logout}" class="text-decoration-none text-light">Cerrar sesión</a>
-                
-                <!-- Usuario ADMIN -->
-                <div sec:authorize="hasAuthority('ADMIN')" class="dropdown flex-grow-1">
-                    <button 
-                        class="btn btn-success dropdown-toggle" 
-                        type="button" 
-                        id="dropdownAdminNav"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                    >
-                        Admin
+                <a th:href="@{/compras}" class="text-decoration-none text-light">Mis compras</a>
+
+                <a th:href="@{/carrito}" class="btn text-light position-relative">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span th:if="${session.carritoSize != 0}" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span th:text="${session.carritoSize}"></span>
+                    </span>
+                </a>
+
+                <div class="btn-group">
+                    <button type="button" class="profile-btn px-3 py-1 dropdown-toggle text-light" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-user fa-sm"></i>
                     </button>
                     
-                    <ul class="dropdown-menu" aria-labelledby="dropdownAdminNav">
-                        <li><a th:href="@{/admin/productos}" class="dropdown-item">Productos</a></li>
-                        <li><a th:href="@{/admin/usuarios}" class="dropdown-item">Usuarios</a></li>
-                        <li><a th:href="@{/admin/compras}" class="dropdown-item">Compras</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li><h6 class="dropdown-header">Bienvenido, <span th:text="${session.usuarioNombre}"></span></h6></li>
+                        <li><a th:href="@{/perfil}" class="dropdown-item">Perfil</a></li>
+                        <li><a th:href="@{/perfil/domicilios}" class="dropdown-item">Tus domicilios</a></li>
+
+                        <!-- Admin -->
+                        <th:block sec:authorize="hasAuthority('ADMIN')">
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Administración</h6></li>
+                            <li><a th:href="@{/admin/productos}" class="dropdown-item"><i class="fa-solid fa-box-open text-success"></i> Productos</a></li>
+                            <li><a th:href="@{/admin/usuarios}" class="dropdown-item"><i class="fa-solid fa-users text-success"></i> Usuarios</a></li>
+                            <li><a th:href="@{/admin/compras}" class="dropdown-item"><i class="fa-solid fa-basket-shopping text-success"></i> Compras</a></li>
+                        </th:block>
+
+                        <!--  -->
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a th:href="@{/logout}" class="dropdown-item">Cerrar sesión <i class="fa-solid fa-right-from-bracket text-secondary"></i></a></li>
                     </ul>
                 </div>
             </nav>
