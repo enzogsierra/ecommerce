@@ -16,46 +16,81 @@
             </h2>
             
             <div class="p-4 text-bg-light rounded shadow">
-                <p class="mb-2 small text-end"><span class="text-danger">*</span> Todos los campos son obligatorios</p>
-
                 <form method="POST" th:action="@{/admin/productos/form}" th:object="${producto}" enctype="multipart/form-data" novalidate>
                     <input type="hidden" th:field="*{id}">
                     <input type="hidden" th:field="*{archivado}">
                     <input type="hidden" th:field="*{imagen}">
 
                     <div class="mb-3">
-                        <label class="form-label" for="nombre">Nombre</label>
+                        <label class="form-label" for="nombre">Nombre <span class="text-danger">*</span></label>
                         <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{nombre}" placeholder="Nombre del producto" required>
                         <small class="text-danger" th:errors="*{nombre}"></small>
                     </div>
     
                     <div class="mb-3">
-                        <label class="form-label" for="descripcion">Descripción</label>
+                        <label class="form-label" for="descripcion">Descripción <span class="text-danger">*</span></label>
                         <textarea class="form-control" th:errorclass="is-invalid" th:field="*{descripcion}" rows="10" placeholder="Descripción detallada del producto" required></textarea>
                         <small class="text-danger" th:errors="*{descripcion}"></small>
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="categoria">Categoría <span class="text-danger">*</span></label>
+                        <select class="form-select" th:field="*{categoria}" oninput="onCategorySelect()" required>
+                            <option th:each="categoria: ${categorias}" th:value="${categoria.id}" th:text="${categoria.nombre}"></option>
+                        </select>
+                        <small class="text-danger" th:errors="*{categoria}"></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="categoria">Subcategoría</label>
+                        <th:block th:if="*{categoria == null}">
+                            <select th:each="categoria, iter: ${categorias}" class="form-select" th:classappend="${iter.index != 0}? d-none" th:field="*{subcategoria}" th:category-id="${categoria.id}" required>
+                                <option th:value="${null}">-- Sin subcategoría --</option>
+                                <option th:each="sub: ${categoria.subcategorias}" th:value="${sub.id}" th:text="${sub.nombre}"></option>
+                            </select>
+                        </th:block>
+                        <th:block th:unless="*{categoria == null}">
+                            <select 
+                                th:each="categoria: ${categorias}" 
+                                class="form-select" 
+                                th:classappend="${producto.categoria.id != categoria.id}? d-none" 
+                                th:field="*{subcategoria}" 
+                                th:disabled="${producto.categoria.id != categoria.id}"
+                                th:category-id="${categoria.id}"
+                                required
+                            >
+                                <option th:value="${null}">-- Sin subcategoría --</option>
+                                <option th:each="sub: ${categoria.subcategorias}" th:value="${sub.id}" th:text="${sub.nombre}"></option>
+                            </select>
+                        </th:block>
+                        <small class="text-danger" th:errors="*{categoria}"></small>
+                    </div>
     
                     <div class="mb-3">
-                        <label class="form-label" for="stock">Stock</label>
+                        <label class="form-label" for="stock">Stock <span class="text-danger">*</span></label>
                         <input class="form-control" th:errorclass="is-invalid" type="number" th:field="*{stock}" min="1" placeholder="1" required>
                         <small class="text-danger" th:errors="*{stock}"></small>
                     </div>
     
                     <div class="mb-3">
-                        <label class="form-label" for="precio">Precio</label>
+                        <label class="form-label" for="precio">Precio <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
-                            <input class="form-control" th:errorclass="is-invalid" type="number" th:field="*{precio}" placeholder="1" required>
+                            <input class="form-control" th:errorclass="is-invalid" type="text" data-mask="#,##0" data-mask-reverse="true" th:field="*{precio}" placeholder="1" required>
                         </div>
                         <small class="text-danger" th:errors="*{precio}"></small>
                     </div>
     
-                    <div class="mb-3">
-                        <label for="imagenFile" class="form-label">Imagen</label>
-                        <input class="form-control" th:classappend="${#fields.hasErrors('imagen')}? is-invalid" type="file" id="imagenFile" name="imagenFile" required>
+                    <div class="text-start mb-3">
+                        <label for="imagenFile" class="form-label">Imagen <span class="text-danger">*</span></label>
+                        <div>
+                            <img th:if="*{imagen == null || imagen.isBlank()}" class="d-none mb-2 object-fit-contain border rounded" id="productImgThumb" style="max-height: 5rem;">
+                            <img th:if="*{imagen != null && !imagen.isBlank()}" th:src="@{/images/{img} (img = *{imagen})}" class="mb-2 object-fit-contain border rounded" id="productImgThumb" style="max-height: 5rem;">
+                        </div>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('imagen')}? is-invalid" type="file" id="imagenFile" name="imagenFile" data-img-thumb="#productImgThumb" required>
                         <small class="text-danger" th:errors="*{imagen}"></small>
                     </div>
-                    
+
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </form>
             </div>
@@ -63,5 +98,6 @@
         
         <!-- Footer y scripts -->
         <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/admin/productos.js}"></script>
     </body>
 </html>

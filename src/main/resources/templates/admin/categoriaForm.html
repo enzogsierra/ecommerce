@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+
+        <main class="container" style="max-width: 768px;">
+            <h2>
+                <span th:if="${categoria.id == null}">Crear categoría</span>
+                <span th:unless="${categoria.id == null}">Editar categoría</span>
+            </h2>
+            
+            <div class="p-4 text-bg-light rounded shadow">
+                <form method="POST" th:action="@{/admin/categorias/form}" th:object="${categoria}" enctype="multipart/form-data" novalidate>
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="mb-3">
+                        <label class="form-label" for="nombre">Nombre *</label>
+                        <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{nombre}" placeholder="Nombre de la categoria" required>
+                        <small class="text-danger" th:errors="*{nombre}"></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="small text-muted">Subcategorías</p>
+
+                        <ul class="mb-0">
+                            <li class="mt-2 text-primary" th:each="sub, iter: *{subcategorias}">
+                                <input type="hidden" th:field="*{subcategorias[__${iter.index}__].id}">
+                                <input type="hidden" th:field="*{subcategorias[__${iter.index}__].categoria}">
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{subcategorias[__${iter.index}__].nombre}" th:placeholder="*{subcategorias[__${iter.index}__].nombre}">
+                             
+                                    <button type="button" class="btn btn-danger" th:subcategory-id="${sub.id}" onclick="onDeleteSubcategory()">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                                <small class="text-danger" th:errors="*{subcategorias[__${iter.index}__].nombre}"></small>
+                            </li>
+                        </ul>
+                    </div>
+    
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+        </main>
+        
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/admin/categorias.js}"></script>
+    </body>
+</html>

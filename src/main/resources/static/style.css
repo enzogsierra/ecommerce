@@ -39,6 +39,8 @@ body
 
 
 /* Bootstrap ext */
+.btn { transition: all .2s ease; }
+
 .bg-white { background-color: white; }
 
 .text-pre-line { white-space: pre-line; }

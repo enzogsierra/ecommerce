@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+        
+        <main class="container">
+            <h2>Categorías y subcategorías de productos</h2>
+
+            <div class="p-4 text-bg-light rounded shadow">
+                <button type="button" class="mb-3 btn btn-success" onclick="onAddCategoryClick()">
+                    <i class="fa-solid fa-square-plus"></i> Añadir categoría
+                </button>
+
+                <div th:if="${categorias.size() == 0}" class="text-center">
+                    <p class="mb-0 fs-4 text-muted">Las categorías que añadas se mostrarán aquí.</p>
+                </div>
+
+                <div th:unless="${categorias.size() == 0}" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+                    <div class="col" th:each="categoria: ${categorias}">
+                        <div class="border border-dark-subtle rounded shadow overflow-hidden">
+                            <div class="p-3 text-bg-primary border-bottom d-flex align-items-center justify-content-between gap-2">
+                                <h5 class="mb-0 text-break" th:text="${categoria.nombre}" style="hyphens: auto;"></h5>
+
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{/admin/categorias/form?id={id} (id = ${categoria.id})}" class="btn btn-sm btn-warning">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-danger" th:category-id="${categoria.id}" onclick="onDeleteCategory()">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="p-3">
+                                <p class="mb-2 small text-muted">
+                                    <span th:if="${categoria.subcategorias.size() == 0}" class="text-center">Sin subcategorías</span>
+                                    <span th:unless="${categoria.subcategorias.size() == 0}">Subcategorías</span>
+                                </p>
+
+                                <ul>
+                                    <li th:each="sub: ${categoria.subcategorias}" class="mt-1 text-primary">
+                                        <div class="d-flex justify-content-between gap-2">
+                                            <p class="mb-0 text-dark" th:text="${sub.nombre}"></p>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                                <button type="button" class="btn btn-sm btn-outline-primary" th:category-id="${categoria.id}" onclick="onAddSubcategoryClick()">
+                                    <i class="fa-solid fa-plus"></i> Añadir subcategoría
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/admin/categorias.js}"></script>
+    </body>
+</html>
