@@ -1,9 +1,6 @@
 package com.example.ecommerce.model;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.Min;
@@ -22,10 +19,6 @@ import lombok.Setter;
 @Getter @Setter
 public abstract class Direccion 
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
     @ManyToOne
     @NotNull(message = "Debes asignar una localidad a este domicilio")
     private Localidad localidad;

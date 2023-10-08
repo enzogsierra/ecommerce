@@ -4,8 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,17 +15,16 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "domicilios")
+@Table(name = "envios")
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
-public class Domicilio extends Direccion
+public class Envio extends Direccion
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
-    @ManyToOne
-    private Usuario usuario;
 
-    private Boolean principal;
+    @OneToOne
+    @NotNull(message = "Debes asociar una orden a este envío")
+    private Orden orden;
 }
