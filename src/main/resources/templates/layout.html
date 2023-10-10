@@ -29,7 +29,7 @@
 
             <form th:action="@{/buscar}" method="GET">
                 <div class="input-group">
-                    <input class="form-control" type="search" name="q" placeholder="Buscar productos" required>
+                    <input class="form-control" type="search" name="q" th:value="${param?.q}" placeholder="Buscar productos" required>
                     <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
                 </div>
             </form>

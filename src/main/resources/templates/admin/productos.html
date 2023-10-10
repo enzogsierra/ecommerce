@@ -35,7 +35,7 @@
                                 <img th:src="@{/images/{img} (img = ${producto.imagen})}" class="object-fit-contain" alt="Imagen del producto" style="width: 4rem; height: 4rem;">
                             </td>
                             <td>
-                                <a th:href="@{/producto/{id} (id = ${producto.id})}" class="text-dark text-decoration-none" th:text="${#strings.abbreviate(producto.nombre, 32)}"></a>
+                                <a th:href="@{/productos/{id} (id = ${producto.id})}" class="text-dark text-decoration-none" th:text="${#strings.abbreviate(producto.nombre, 32)}"></a>
                             </td>
                             <td th:text="${#strings.abbreviate(producto.descripcion, 64)}"></td>
                             <td th:text="${producto.stock}"></td>

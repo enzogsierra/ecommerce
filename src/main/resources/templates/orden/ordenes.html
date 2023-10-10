@@ -44,7 +44,7 @@
                                         </td>
                                         <td class="w-100">
                                             <div class="d-flex flex-column gap-1">
-                                                <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
+                                                <a th:href="@{/productos/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
                                                 
                                                 <span th:if="${orden.items.size() == 1}">
                                                     <span th:if="${item.cantidad == 1}">1 unidad</span>

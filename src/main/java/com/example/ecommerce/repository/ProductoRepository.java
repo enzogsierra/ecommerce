@@ -2,15 +2,20 @@ package com.example.ecommerce.repository;
 
 import java.util.List;
 
+import com.example.ecommerce.model.Categoria;
 import com.example.ecommerce.model.Producto;
+import com.example.ecommerce.model.Subcategoria;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 
-@Repository
 public interface ProductoRepository extends JpaRepository<Producto, Integer>
 {
-    @Query(value = "SELECT * FROM productos WHERE nombre LIKE %:term%", nativeQuery = true)
-    List<Producto> search(String term);
+    List<Producto> findByCategoria(Categoria categoria, Sort sort);
+    List<Producto> findBySubcategoria(Subcategoria subcategoria, Sort sort);
+
+    List<Producto> findByNombreContaining(String nombre, Sort sort);
+    List<Producto> findByCategoriaAndNombreContaining(Categoria categoria, String nombre, Sort sort);
+    List<Producto> findBySubcategoriaAndNombreContaining(Subcategoria categoria, String nombre, Sort sort);
 }

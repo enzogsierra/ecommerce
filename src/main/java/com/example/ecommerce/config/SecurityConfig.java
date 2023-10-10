@@ -34,7 +34,7 @@ public class SecurityConfig
             "/app.js", // Script
             "/style.css", // CSS
             "/images/**", // Imagenes de productos
-            "/producto/**", // Vista de un producto especifico
+            "/productos/**", // Vista de un producto especifico
             "/buscar", // Buscador de productos
             "/signup"
         };

@@ -31,7 +31,7 @@
                                     </td>
                                     <td>
                                         <div class="d-flex flex-column gap-1">
-                                            <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
+                                            <a th:href="@{/productos/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
                                             
                                             <div class="d-flex gap-2">
                                                 <a th:href="@{/carrito/quitar/{id} (id = ${item.id})}" class="small text-decoration-none">Quitar</a>

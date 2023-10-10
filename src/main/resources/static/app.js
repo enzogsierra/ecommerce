@@ -103,9 +103,19 @@ function setURLParam(name, value)
     window.location.search = params.toString();
 }
 
+// Quitar parametro de la URL
 function removeURLParam(name) 
 {
     let params = new URLSearchParams(window.location.search);
     params.delete(name);
+    window.location.search = params.toString();
+}
+
+// Añadir/editar un parámetro y eliminar otro parámetro de la URL
+function toggleURLParams(setParam, value, deleteParam)
+{
+    let params = new URLSearchParams(window.location.search);
+    params.set(setParam, value);
+    params.delete(deleteParam);
     window.location.search = params.toString();
 }

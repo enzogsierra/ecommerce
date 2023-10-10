@@ -33,7 +33,7 @@
             <div th:unless="${productos.size() == 0}" class="my-4 row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-3">
                 <div th:each="producto: ${productos}" class="col">
                     <div class="product bg-white border rounded">
-                        <a th:href="@{/producto/{id} (id = ${producto.id})}" class="text-decoration-none text-black">
+                        <a th:href="@{/productos/{id} (id = ${producto.id})}" class="text-decoration-none text-black">
                             <div class="text-center border-bottom">
                                 <img th:src="@{/images/{img} (img = ${producto.imagen})}" class="w-100 object-fit-contain" alt="Imagen del producto" style="height: 14rem;">
                             </div>

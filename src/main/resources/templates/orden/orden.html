@@ -80,7 +80,7 @@
                                         </td>
                                         <td class="w-100">
                                             <div class="d-flex flex-column gap-1">
-                                                <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
+                                                <a th:href="@{/productos/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
                                                 
                                                 <small th:if="${item.cantidad == 1}" class="text-muted">1 unidad</small>
                                                 <small th:unless="${item.cantidad == 1}" class="text-muted"><span th:text="${item.cantidad}"></span> unidades</small>
@@ -155,7 +155,7 @@
                                 <td th:text="'$ ' + ${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
                                 <td th:text="${item.createdAt}"></td>
                                 <td>
-                                    <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="btn btn-primary">Ver producto</a>
+                                    <a th:href="@{/productos/{id} (id = ${item.producto.id})}" class="btn btn-primary">Ver producto</a>
                                 </td>
                             </tr>
                         </tbody>
