@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+
+        <!-- content -->
+        <main class="container">
+            <div class="mb-2">
+                <h2 class="mb-0">Resultados para '<span th:text="${param.q}"></span>'</h2>
+                <small class="text-muted"><span th:text="${productos.size()}"></span> resultados</small>
+            </div>
+
+            <div class="row row-cols-2 g-5">
+                <div class="col col-3">
+                    <div class="p-4 bg-white rounded shadow">
+                        <div>
+                            <h6>Categorías</h6>
+
+                            <div th:each="categoria: ${categorias}">
+                                <div class="mb-3">
+                                    <button 
+                                        th:onclick="|setURLParam('categoria', '${categoria.id}'); removeURLParam('subcategoria')|"
+                                        class="btn-unstyled fw-medium small text-muted" 
+                                        th:text="${categoria.nombre}"
+                                        >
+                                    </button>
+
+                                    <div class="ps-2" th:each="sub: ${categoria.subcategorias}">
+                                        <button 
+                                            th:onclick="|setURLParam('categoria', '${categoria.id}'); setURLParam('subcategoria', '${sub.id}')|"
+                                            class="btn-unstyled small text-start text-muted" 
+                                            th:text="${sub.nombre}"
+                                            >
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col col-9">
+                    <div th:if="${productos.size() == 0}" class="p-4 bg-white rounded shadow text-center">
+                        <p class="mb-1 fs-2">Sin resultados</p>
+                        <p class="mb-0 text-muted">No se encontraron resultados para "<span class="fw-medium" th:text="${param.q}"></span>"</p>
+                        <p class="text-muted">Intenta con otros términos.</p>
+                    </div>
+    
+                    <div th:unless="${productos.size() == 0}">
+                        <div class="bg-white rounded shadow">
+                            <table class="w-100">
+                                <tbody>
+                                    <tr th:each="producto, iter: ${productos}" th:classappend="${!iter.last}? border-bottom">
+                                        <td class="py-4 px-3">
+                                            <a th:href="@{/productos/{id} (id = ${producto.id})}" class="text-decoration-none text-dark">
+                                                <img th:src="@{/images/{img} (img = ${producto.imagen})}" class="object-fit-contain" alt="Imagen del producto" style="width: 10rem; height: 10rem;">
+                                            </a>
+                                        </td>
+                                        <td class="w-100">
+                                            <div class="d-flex flex-column gap-2">
+                                                <a th:href="@{/productos/{id} (id = ${producto.id})}" class="fs-5 text-decoration-none text-dark" th:text="${producto.nombre}"></a>
+                                                <h4 class="fw-medium text-success">$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span></h4>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

@@ -93,3 +93,19 @@ function onDeleteAddress()
         }
     })
 }
+
+
+// Añadir/editar el valor de un parametro en la URL
+function setURLParam(name, value) 
+{
+    let params = new URLSearchParams(window.location.search);
+    params.set(name, value);
+    window.location.search = params.toString();
+}
+
+function removeURLParam(name) 
+{
+    let params = new URLSearchParams(window.location.search);
+    params.delete(name);
+    window.location.search = params.toString();
+}

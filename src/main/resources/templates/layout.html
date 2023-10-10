@@ -27,9 +27,9 @@
                 </a>
             </h1>
 
-            <form th:action="@{/buscar}" method="POST">
+            <form th:action="@{/buscar}" method="GET">
                 <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Buscar" name="busqueda" autocomplete="off" required>
+                    <input class="form-control" type="search" name="q" placeholder="Buscar productos" required>
                     <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
                 </div>
             </form>

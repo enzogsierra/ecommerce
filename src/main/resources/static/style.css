@@ -40,6 +40,13 @@ body
 
 /* Bootstrap ext */
 .btn { transition: all .2s ease; }
+.btn-unstyled
+{
+    border: 0;
+    padding: 0;
+    background-color: transparent;
+    text-decoration: none;
+}
 
 .bg-white { background-color: white; }
 

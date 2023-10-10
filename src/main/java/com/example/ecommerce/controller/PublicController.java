@@ -3,6 +3,7 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.model.Domicilio;
 import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
+import com.example.ecommerce.repository.CategoriaRepository;
 import com.example.ecommerce.repository.DomicilioRepository;
 import com.example.ecommerce.repository.ProductoRepository;
 import com.example.ecommerce.repository.UsuarioRepository;
@@ -11,11 +12,11 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -24,6 +25,9 @@ public class PublicController
 {
     @Autowired
     private ProductoRepository productoRepository;
+
+    @Autowired
+    private CategoriaRepository categoriaRepository;
     
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -43,14 +47,16 @@ public class PublicController
     }
 
     // Busca un producto por su título
-    @PostMapping("/buscar")
-    public String buscar(@RequestParam String busqueda, Model model)
+    @GetMapping("/buscar")
+    public String buscar(@RequestParam(defaultValue = "") String q, Model model)
     {
-        List<Producto> productos = productoRepository.search(busqueda);
+        if(q.isEmpty()) return "redirect:/";
+
+        List<Producto> productos = productoRepository.search(q);
 
         model.addAttribute("productos", productos);
-        model.addAttribute("busqueda", busqueda);
-        return "public/index";
+        model.addAttribute("categorias", categoriaRepository.findAll(Sort.by("nombre")));
+        return "public/buscar";
     }
     
     // Muestra los detalles de un producto específico
