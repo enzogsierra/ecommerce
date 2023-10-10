@@ -20,7 +20,7 @@
                 <p class="text-muted">Escribe las credenciales de tu cuenta</p>
             </div>
             
-            <div class="m-auto p-4 text-bg-light rounded-3" style="max-width: 32rem;">
+            <div class="m-auto p-4 bg-white rounded-3" style="max-width: 32rem;">
                 <small th:if="${param.error}" class="mb-4 text-danger">Correo electrónico o contraseña incorrectos.</small>
                 
                 <form th:action="@{/login}" method="POST">

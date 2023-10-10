@@ -12,7 +12,7 @@
         <main class="container">
             <h2>Tus compras</h2>
 
-            <div th:if="${ordenes.size() == 0}" class="p-4 text-bg-light rounded shadow text-center">
+            <div th:if="${ordenes.size() == 0}" class="p-4 bg-white rounded shadow text-center">
                 <p class="mb-1 fs-2">Aún no has realizado compras</p>
                 <p class="text-muted">Añade varios productos a tu carrito y ahorra en envíos!</p>
 
@@ -20,44 +20,48 @@
             </div>
 
             <div th:unless="${ordenes.size() == 0}" class="d-flex flex-column gap-3">
-                <div th:each="orden: ${ordenes}" class="p-3 text-bg-light rounded shadow">
-                    <h6 class="text-muted">
-                        <span th:text="${#temporals.format(orden.createdAt, 'd')}"></span> de
-                        <span th:text="${#temporals.format(orden.createdAt, 'MMMM')}"></span> de
-                        <span th:text="${#temporals.format(orden.createdAt, 'yyyy')}"></span>
-                    </h6>
+                <div th:each="orden: ${ordenes}" class="p-3 bg-white rounded shadow">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="w-100">
+                            <h6 class="text-muted">
+                                <span th:text="${#temporals.format(orden.createdAt, 'd')}"></span> de
+                                <span th:text="${#temporals.format(orden.createdAt, 'MMMM')}"></span> de
+                                <span th:text="${#temporals.format(orden.createdAt, 'yyyy')}"></span>
+                            </h6>
 
-                    <table class="w-100">
-                        <tbody>
-                            <tr th:each="item, iter: ${orden.items}" th:if="${iter.count == 1}">
-                                <td class="pe-4">
-                                    <div class="d-flex gap-2">
-                                        <img
-                                            th:src="@{/images/{img} (img = ${item.producto.imagen})}"
-                                            class="border rounded object-fit-contain"
-                                            alt="Imagen del producto"
-                                            style="width: 5rem; height: 5rem;"
-                                        >
-                                    </div>
-                                </td>
-                                <td class="w-100">
-                                    <div class="d-flex flex-column gap-1">
-                                        <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
-                                        
-                                        <span th:if="${orden.items.size() == 1}">
-                                            <span th:if="${item.cantidad == 1}">1 unidad</span>
-                                            <span th:unless="${item.cantidad == 1}"><span th:text="${item.cantidad}"></span> unidades</span>
-                                        </span>
-                                        <span th:if="${orden.items.size() == 2}" class="text-success">1 producto más</span>
-                                        <span th:if="${orden.items.size() > 2}" class="text-success"><span th:text="${orden.items.size() - 1}"></span> productos más</span>
-                                    </div>
-                                </td>
-                                <td class="text-nowrap">
-                                    <a th:href="@{/compras/{id} (id = ${orden.id})}" class="btn btn-success">Ver compra</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <table class="w-100">
+                                <tbody>
+                                    <tr th:each="item, iter: ${orden.items}" th:if="${iter.count == 1}">
+                                        <td class="pe-4">
+                                            <div class="d-flex gap-2">
+                                                <img
+                                                    th:src="@{/images/{img} (img = ${item.producto.imagen})}"
+                                                    class="border rounded object-fit-contain"
+                                                    alt="Imagen del producto"
+                                                    style="width: 5rem; height: 5rem;"
+                                                >
+                                            </div>
+                                        </td>
+                                        <td class="w-100">
+                                            <div class="d-flex flex-column gap-1">
+                                                <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
+                                                
+                                                <span th:if="${orden.items.size() == 1}">
+                                                    <span th:if="${item.cantidad == 1}">1 unidad</span>
+                                                    <span th:unless="${item.cantidad == 1}"><span th:text="${item.cantidad}"></span> unidades</span>
+                                                </span>
+                                                <span th:if="${orden.items.size() == 2}" class="text-success">1 producto más</span>
+                                                <span th:if="${orden.items.size() > 2}" class="text-success"><span th:text="${orden.items.size() - 1}"></span> productos más</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-nowrap">
+                            <a th:href="@{/compras/{id} (id = ${orden.id})}" class="btn btn-success">Ver compra</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

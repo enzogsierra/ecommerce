@@ -12,13 +12,13 @@
         <main class="container">
             <h2>Usuarios</h2>
 
-            <div class="p-4 text-bg-light rounded shadow">
+            <div class="p-4 bg-white rounded shadow">
                 <div th:if="${usuarios.size() == 0}" class="text-center">
                     <p class="mb-0 fs-5 text-muted">Aún no hay usuarios registrados</p>
                 </div>
 
                 <div th:unless="${usuarios.size() == 0}">
-                    <table class="table table-light caption-top">
+                    <table class="table caption-top">
                         <caption><span th:text="${usuarios.size()}"></span> usuarios</caption>
 
                         <thead>

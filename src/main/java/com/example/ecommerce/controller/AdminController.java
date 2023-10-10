@@ -242,10 +242,10 @@ public class AdminController
     }
 
     // Muestra todas las ordenes
-    @GetMapping("/compras")
+    @GetMapping("/ordenes")
     public String ordenes(Model model)
     {
-        model.addAttribute("compras", ordenRepository.findAll());
-        return "admin/compras";
+        model.addAttribute("ordenes", ordenRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")));
+        return "admin/ordenes";
     }
 }

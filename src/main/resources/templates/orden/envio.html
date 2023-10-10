@@ -12,7 +12,7 @@
         <main class="container">
             <h2>Seleccioná tu domicilio</h2>
 
-            <div th:if="${carrito.size() == 0}" class="p-4 text-bg-light rounded shadow text-center">
+            <div th:if="${carrito.size() == 0}" class="p-4 bg-white rounded shadow text-center">
                 <p class="mb-1 fs-2">¡Llená tu carrito!</p>
                 <p class="text-muted">Sumá varios productos para conseguir descuentos por envío!</p>
 
@@ -21,12 +21,12 @@
 
             <div th:unless="${carrito.size() == 0}" class="row row-cols-1 row-cols-lg-2 g-3">
                 <div class="col col-lg-8">
-                    <div class="p-4 text-bg-light rounded shadow">
+                    <div class="p-4 bg-white rounded shadow">
                         <p th:if="${error}" class="text-danger" th:text="${error}"></p>                        
 
                         <form th:action="@{/orden/generar}" method="POST" id="generarOrden">
                             <div class="d-flex flex-column gap-4">
-                                <label class="p-3 d-flex gap-2 border rounded shadow-sm cursor-pointer" th:each="domicilio: ${domicilios}">
+                                <label class="p-3 d-flex gap-2 bg-light-subtle border rounded cursor-pointer" th:each="domicilio: ${domicilios}">
                                     <input class="form-check-input" type="radio" name="domicilioId" th:value="${domicilio.id}" th:checked="${domicilio.principal == true}" required>
                                     
                                     <div>

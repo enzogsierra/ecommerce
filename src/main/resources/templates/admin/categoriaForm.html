@@ -15,7 +15,7 @@
                 <span th:unless="${categoria.id == null}">Editar categoría</span>
             </h2>
             
-            <div class="p-4 text-bg-light rounded shadow">
+            <div class="p-4 bg-white rounded shadow">
                 <form method="POST" th:action="@{/admin/categorias/form}" th:object="${categoria}" enctype="multipart/form-data" novalidate>
                     <input type="hidden" th:field="*{id}">
 

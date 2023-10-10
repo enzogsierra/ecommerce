@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+        
+        <main class="container">
+            <h2>Ordenes</h2>
+
+            <div class="p-4 bg-white rounded shadow">
+                <div th:if="${ordenes.size() == 0}" class="text-center">
+                    <p class="mb-0 fs-5 text-muted">Aún no se han realizado ordenes</p>
+                </div>
+
+                <div th:unless="${ordenes.size() == 0}">
+                    <table class="table caption-top">
+                        <caption><span th:text="${ordenes.size()}"></span> ordenes</caption>
+
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Usuario</th>
+                                <th>Envío</th>
+                                <th>Productos</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="orden: ${ordenes}">
+                                <td th:text="${#temporals.format(orden.createdAt, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${orden.usuario.nombre} + ' ' + ${orden.usuario.apellido}"></td>
+                                <td>
+                                    <span th:text="${orden.envio.localidad.nombre}"></span>,
+                                    <span th:text="${orden.envio.localidad.provincia.nombre}"></span>
+                                </td>
+                                <td th:text="${orden.items.size()}"></td>
+                                <td class="fw-medium fs-5">$ <span th:text="${#numbers.formatDecimal(orden.total, 0, 'POINT', 0, 'DEFAULT')}"></span></td>
+                                <td><a th:href="@{/compras/{id} (id = ${orden.id})}" class="btn btn-sm btn-success">Ver detalles</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

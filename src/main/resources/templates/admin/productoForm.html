@@ -15,7 +15,7 @@
                 <span th:unless="${producto.id == null}">Editar producto</span>
             </h2>
             
-            <div class="p-4 text-bg-light rounded shadow">
+            <div class="p-4 bg-white rounded shadow">
                 <form method="POST" th:action="@{/admin/productos/form}" th:object="${producto}" enctype="multipart/form-data" novalidate>
                     <input type="hidden" th:field="*{id}">
                     <input type="hidden" th:field="*{archivado}">

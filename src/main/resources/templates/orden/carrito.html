@@ -13,7 +13,7 @@
         <main class="container">
             <h2>Tu carrito</h3>
 
-            <div th:if="${carrito.size() == 0}" class="p-4 text-bg-light rounded shadow text-center">
+            <div th:if="${carrito.size() == 0}" class="p-4 bg-white rounded shadow text-center">
                 <p class="mb-1 fs-2">¡Llená tu carrito!</p>
                 <p class="text-muted">Sumá varios productos para conseguir descuentos por envío!</p>
 
@@ -22,7 +22,7 @@
 
             <div th:unless="${carrito.size() == 0}" class="row row-cols-1 row-cols-lg-2 g-3">
                 <div class="col col-lg-8">
-                    <div class="px-3 text-bg-light rounded shadow">
+                    <div class="px-3 bg-white rounded shadow">
                         <table class="w-100">
                             <tbody>
                                 <tr th:each="item, iter: ${carrito}" th:classappend="${!iter.last}? border-bottom">
