@@ -28,7 +28,7 @@ import com.example.ecommerce.model.Categoria;
 import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Subcategoria;
 import com.example.ecommerce.repository.CategoriaRepository;
-import com.example.ecommerce.repository.CompraRepository;
+import com.example.ecommerce.repository.OrdenRepository;
 import com.example.ecommerce.repository.ProductoRepository;
 import com.example.ecommerce.repository.SubcategoriaRepository;
 import com.example.ecommerce.repository.UsuarioRepository;
@@ -46,7 +46,7 @@ public class AdminController
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private CompraRepository compraRepository;
+    private OrdenRepository ordenRepository;
 
     @Autowired
     private CategoriaRepository categoriaRepository;
@@ -245,7 +245,7 @@ public class AdminController
     @GetMapping("/compras")
     public String ordenes(Model model)
     {
-        model.addAttribute("compras", compraRepository.findAll());
+        model.addAttribute("compras", ordenRepository.findAll());
         return "admin/compras";
     }
 }

@@ -48,7 +48,7 @@ public class CarritoController
         List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener el carrito de compras del usuario
 
         model.addAttribute("carrito", carrito);
-        return "public/carrito";
+        return "orden/carrito";
     }
     
     // Añade un nuevo producto al carrito

@@ -45,6 +45,7 @@ body
 
 .text-pre-line { white-space: pre-line; }
 
+.cursor-pointer { cursor: pointer; }
 
 /* Fixes */
 button i, a i { pointer-events: none; }

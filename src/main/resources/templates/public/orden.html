@@ -61,7 +61,7 @@
                                                 <span th:text="${item.producto.nombre}"></span>
                                             </div>
                                             <div>
-                                                $ <span th:text="${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></span>
+                                                $ <span th:text="${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'POINT', 0, 'DEFAULT')}"></span>
                                             </div>
                                         </td>
                                     </tr>
@@ -78,7 +78,7 @@
                                     <tr class="fs-4 fw-semibold">
                                         <td>Total</td>
                                         <td class="text-end">
-                                            $ <span th:text="${#numbers.formatDecimal(#aggregates.sum(carrito.![producto.precio * cantidad]), 0, 'DEFAULT', 0, 'POINT')}"></span>
+                                            $ <span th:text="${#numbers.formatDecimal(#aggregates.sum(carrito.![producto.precio * cantidad]), 0, 'POINT', 0, 'DEFAULT')}"></span>
                                         </td>
                                     </tr>
                                 </tbody>

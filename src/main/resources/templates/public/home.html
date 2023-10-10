@@ -39,7 +39,7 @@
                             </div>
     
                             <div class="p-3">
-                                <h4>$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></span></h4>
+                                <h4>$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span></h4>
                                 
                                 <h5 class="mb-0 small fw-light" th:text="${producto.nombre}"></h5>
                             </div>

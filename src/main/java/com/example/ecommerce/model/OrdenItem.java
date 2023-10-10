@@ -42,8 +42,8 @@ public class OrdenItem
     private Double total;
 
 
-    public Double calcularTotal()
-    {
-        return this.total * this.cantidad;
+    // Funcion para calcular el total de este item
+    public Double calcularTotal() {
+        return this.producto.getPrecio() * this.cantidad;
     }
 }

@@ -24,7 +24,7 @@
                     <div class="col"> <!-- Carrito -->
                         <div class="p-3 bg-secondary-subtle rounded">
                             <div class="mb-4">
-                                <h2>$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></span></h2>
+                                <h2>$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span></h2>
 
                                 <div th:if="${domicilio != null}">
                                     <p class="mb-0 small text-muted"><i class="fa-solid fa-truck-fast text-primary"></i> Enviar a <span th:text="${domicilio.localidad.nombre}"></span></p>
@@ -68,7 +68,7 @@
                                 
                                 <ul class="list-group">
                                     <li class="list-group-item">
-                                        <p class="m-0 fs-3" th:text="'$ ' + ${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'POINT')}"></p>
+                                        <p class="m-0 fs-3" th:text="'$ ' + ${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></p>
                                     </li>
                                     
                                     <li class="list-group-item">

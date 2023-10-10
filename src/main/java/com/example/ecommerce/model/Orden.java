@@ -56,6 +56,7 @@ public class Orden
     private LocalDateTime createdAt;
 
     
+    // Funcion para calcular el total de la orden, sumando el total de todos los items de la lista
     public Double calcularTotal()
     {
         Double total = 0.0;
@@ -63,5 +64,15 @@ public class Orden
             total += item.calcularTotal();
         }
         return total;
+    }
+
+    // Funcion para obtener la cantidad de productos (sumar la cantidad de todos los items)
+    public int calcularCantidad()
+    {
+        int cantidad = 0;
+        for(OrdenItem item: items) {
+            cantidad += item.getCantidad();
+        }
+        return cantidad;
     }
 }

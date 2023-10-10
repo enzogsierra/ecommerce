@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+
+        <main class="container">
+            <h2>Detalles de tu compra</h2>
+
+            <div class="row row-cols-1 row-cols-lg-2 g-3">
+                <div class="col col-lg-8">
+                    <div class="p-4 text-bg-light rounded shadow">
+                        <div class="mb-4 pb-4 row row-cols-2 g-4 border-bottom">
+                            <div class="col">
+                                <h6 class="text-muted">Dirección de envío</h6>
+                                
+                                <div class="text-muted">
+                                    <p class="mb-1">
+                                        <i class="fa-solid fa-road text-success"></i> Calle:
+                                        <span class="fw-semibold">
+                                            <span th:text="${orden.envio.calle}"></span>,
+                                            <span th:text="${orden.envio.numeroCalle}"></span>
+                                        </span>
+                                    </p>
+                                    <p class="mb-1">
+                                        <i class="fa-solid fa-city text-success"></i> Ciudad:
+                                        <span class="fw-semibold">
+                                            <span th:text="${orden.envio.localidad.nombre}"></span>,
+                                            <span th:text="${orden.envio.localidad.provincia.nombre}"></span>
+                                        </span>
+                                    </p>
+                                    <p class="mb-1">
+                                        <i class="fa-solid fa-hashtag text-success"></i> Código postal:
+                                        <span class="fw-semibold">
+                                            <span th:text="${orden.envio.codigoPostal}"></span>
+                                        </span>
+                                    </p>
+                                    <p class="mb-1" th:if="${!#strings.isEmpty(orden.envio.entrecalle1)}">
+                                        <i class="fa-regular fa-map text-success"></i> Entre calles:
+                                        <span class="fw-semibold">
+                                            <span th:text="${orden.envio.entrecalle1}"></span> y
+                                            <span th:text="${orden.envio.entrecalle2}"></span>
+                                        </span>
+                                    </p>
+                                    <p class="mb-0" th:if="${!#strings.isEmpty(orden.envio.piso_dpto)}">
+                                        <i class="fa-regular fa-building text-success"></i> Piso/departamento:
+                                        <span class="fw-semibold" th:text="${orden.envio.piso_dpto}">
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <h6 class="text-muted">Persona que recibirá los productos</h6>
+                                
+                                <div class="text-muted">
+                                    <p class="mb-1">
+                                        <i class="fa-solid fa-address-card text-primary"></i> Nombre completo:
+                                        <span class="fw-semibold" th:text="${orden.usuario.nombre + ' ' + orden.usuario.apellido}"></span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <i class="fa-solid fa-phone text-primary"></i> Teléfono:
+                                        <span class="fw-semibold" th:text="${orden.usuario.telefono}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h5 class="mb-0 text-muted">Productos</h5>
+                            <table class="w-100">
+                                <tbody>
+                                    <tr th:each="item, iter: ${orden.items}" th:classappend="${!iter.last}? border-bottom">
+                                        <td class="py-3 pe-3">
+                                            <img th:src="@{/images/{img} (img = ${item.producto.imagen})}" class="border rounded object-fit-contain" style="width: 5rem; height: 5rem;">
+                                        </td>
+                                        <td class="w-100">
+                                            <div class="d-flex flex-column gap-1">
+                                                <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
+                                                
+                                                <small th:if="${item.cantidad == 1}" class="text-muted">1 unidad</small>
+                                                <small th:unless="${item.cantidad == 1}" class="text-muted"><span th:text="${item.cantidad}"></span> unidades</small>
+                                            </div>
+                                        </td>
+                                        <td class="fs-4 fw-semibold text-success text-end text-nowrap">
+                                            $ <span th:text="${#numbers.formatDecimal(item.total, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col col-lg-4">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h5 class="mb-0 card-text">Resumen de tu compra | #<span th:text="${orden.id}"></span></h5>
+                            <small class="text-muted">
+                                <span th:text="${#temporals.format(orden.createdAt, 'd')}"></span> de
+                                <span th:text="${#temporals.format(orden.createdAt, 'MMMM')}"></span> de
+                                <span th:text="${#temporals.format(orden.createdAt, 'yyyy')}"></span>
+                            </small>
+                        </div>
+                         
+                        <div class="card-body">
+                            <table class="w-100">
+                                <tbody>
+                                    <tr>
+                                        <td>Productos</td>
+                                        <td class="text-end" th:text="${orden.items.size()}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total de unidades</td>
+                                        <td class="text-end" th:text="${orden.calcularCantidad()}"></td>
+                                    </tr>
+                                    <tr class="fs-4 fw-semibold">
+                                        <td>Total</td>
+                                        <td class="text-end">
+                                            $ <span th:text="${#numbers.formatDecimal(orden.total, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="card my-4">
+                <div class="card-body">        
+                    <table class="table" id="products-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Total</th>
+                                <th>Fecha</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="item: ${compra}">
+                                <td>
+                                    <img th:src="@{/images/{img} (img = ${compra.producto.imagen})}" alt="producto" height="64px">
+                                </td>
+                                <td th:text="${item.producto.nombre}"></td>
+                                <td th:text="${#numbers.formatDecimal(item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                                <td th:text="'$ ' + ${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
+                                <td th:text="${item.createdAt}"></td>
+                                <td>
+                                    <a th:href="@{/producto/{id} (id = ${item.producto.id})}" class="btn btn-primary">Ver producto</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> -->
+        </main>
+        
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>
