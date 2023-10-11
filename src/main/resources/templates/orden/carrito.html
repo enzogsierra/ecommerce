@@ -29,34 +29,42 @@
                                     <td class="py-3 pe-2">
                                         <img th:src="@{/images/{img} (img = ${item.producto.imagen})}" class="border rounded object-fit-contain" alt="Imagen del producto" style="width: 5rem; height: 5rem;">
                                     </td>
-                                    <td>
+                                    <td class="pe-2">
                                         <div class="d-flex flex-column gap-1">
                                             <a th:href="@{/productos/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
                                             
-                                            <div class="d-flex gap-2">
+                                            <div class="d-flex align-items-center gap-3">
                                                 <a th:href="@{/carrito/quitar/{id} (id = ${item.id})}" class="small text-decoration-none">Quitar</a>
+                                                <small th:if="${item.producto.precioDescuento > 0}" class="badge text-bg-success">
+                                                    %<span th:text="${#numbers.formatDecimal(item.producto.precioDescuento, 0, 'POINT', 0, 'DEFAULT')}"></span> OFF
+                                                </small>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="pe-2">
                                         <form method="POST">
-                                            <ul class="list-group list-group-horizontal">
-                                                <button type="submit" class="list-group-item" th:formaction="@{/carrito/cambiarCantidad/-}" th:disabled="${item.cantidad <= 1}">
+                                            <div class="d-flex align-items-center justify-content-between border rounded">
+                                                <button type="submit" class="btn-unstyled px-2 py-1 border-end" th:formaction="@{/carrito/cambiarCantidad/-}" th:disabled="${item.cantidad <= 1}">
                                                     <i class="fa-solid fa-minus"></i>
                                                 </button>
-                                                <li class="list-group-item font-monospace">
+                                                <div class="w-100 px-2 py-1 text-center">
                                                     <input type="hidden" name="productoId" th:value="${item.producto.id}">
                                                     <span th:text="${item.cantidad}"></span>
-                                                </li>
-                                                <button type="submit" class="list-group-item" th:formaction="@{/carrito/cambiarCantidad/+}" th:disabled="${item.cantidad >= item.producto.stock}">
+                                                </div>
+                                                <button type="submit" class="btn-unstyled px-2 py-1 border-start" th:formaction="@{/carrito/cambiarCantidad/+}" th:disabled="${item.cantidad >= item.producto.stock}">
                                                     <i class="fa-solid fa-plus"></i>
                                                 </button>
-                                            </ul>
+                                            </div>
                                         </form>
                                     </td>
                                     <td>
-                                        <p class="mb-0 fs-5 text-end text-nowrap">
-                                            $ <span th:text="${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                        <div th:if="${item.producto.precioDescuento > 0.0}" class="d-flex align-items-center justify-content-end gap-2">
+                                            <small class="text-muted text-decoration-line-through">
+                                                $ <span th:text="${#numbers.formatDecimal(item.calcularPrecioTotal(), 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                            </small>
+                                        </div>
+                                        <p class="mb-0 fs-5 text-end">
+                                            $ <span th:text="${#numbers.formatDecimal(item.calcularPrecioFinal(), 0, 'POINT', 0, 'DEFAULT')}"></span>
                                         </p>
                                     </td>
                                 </tr>
@@ -70,26 +78,30 @@
                         <div class="card-header">
                             <h5 class="card-text">Resumen de tu carrito</h5>
                         </div>
-                        <div class="card-body">
-                            <table class="mb-2 w-100">
-                                <tbody>
-                                    <tr>
-                                        <td>Productos</td>
-                                        <td class="text-end" th:text="${carrito.size()}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total de unidades</td>
-                                        <td class="text-end" th:text="${#aggregates.sum(carrito.![cantidad])}"></td>
-                                    </tr>
 
-                                    <tr class="fs-4 fw-semibold">
-                                        <td>Total</td>
-                                        <td class="text-end">
-                                            $ <span th:text="${#numbers.formatDecimal(#aggregates.sum(carrito.![producto.precio * cantidad]), 0, 'POINT', 0, 'DEFAULT')}"></span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <p class="mb-0 d-flex justify-content-between gap-3">
+                                    <span>Productos</span>
+                                    <span th:text="${carrito.size()}"></span>
+                                </p>
+                                <p class="mb-3 d-flex justify-content-between gap-3">
+                                    <span>Total de unidades</span>
+                                    <span th:text="${totalUnidades}"></span>
+                                </p>
+                                <h6 th:if="${precioFinal < precioTotal}" class="mb-1 d-flex justify-content-between gap-3 fw-semibold text-success">
+                                    <span>Ahorras</span>
+                                    <span>
+                                        $ <span th:text="${#numbers.formatDecimal(precioTotal - precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                    </span>
+                                </h6>
+                                <h4 class="mb-0 d-flex justify-content-between gap-3">
+                                    <span>Total</span>
+                                    <span class="fw-semibold">
+                                        $ <span th:text="${#numbers.formatDecimal(precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                    </span>
+                                </h4>
+                            </div>
 
                             <a th:href="@{/orden/envio}" class="btn btn-primary w-100">Continuar compra</a>
                         </div>

@@ -60,7 +60,7 @@
                             <h5 class="card-text">Resumen de tu compra</h5>
                         </div>
                         <div class="card-body">
-                            <table class="mb-2 w-100">
+                            <!-- <table class="mb-2 w-100">
                                 <tbody>
                                     <tr>
                                         <td>Productos</td>
@@ -78,7 +78,30 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table> -->
+
+                            <div class="mb-2">
+                                <p class="mb-0 d-flex justify-content-between gap-3">
+                                    <span>Productos</span>
+                                    <span th:text="${carrito.size()}"></span>
+                                </p>
+                                <p class="mb-3 d-flex justify-content-between gap-3">
+                                    <span>Total de unidades</span>
+                                    <span th:text="${totalUnidades}"></span>
+                                </p>
+                                <h6 th:if="${precioFinal < precioTotal}" class="mb-1 d-flex justify-content-between gap-3 fw-semibold text-success">
+                                    <span>Ahorras</span>
+                                    <span>
+                                        $ <span th:text="${#numbers.formatDecimal(precioTotal - precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                    </span>
+                                </h6>
+                                <h4 class="mb-0 d-flex justify-content-between gap-3">
+                                    <span>Total</span>
+                                    <span class="fw-semibold">
+                                        $ <span th:text="${#numbers.formatDecimal(precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                    </span>
+                                </h4>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -37,13 +37,20 @@ public class OrdenItem
     @Min(value = 1, message = "La cantidad de productos no puede ser menor a {value}")
     private Integer cantidad;
 
-    @NotNull(message = "Debes indicar el total de este item")
+    @NotNull(message = "Debes indicar el precio final de este producto")
     @Min(value = 1, message = "El total de este item no puede ser menor a $ {value}")
-    private Double total;
+    private Double precioFinal;
+
+    @Min(value = 0, message = "El descuento para este item no puede ser menor a $ {value}")
+    private Double descuentoTotal;
+
+    // @NotNull(message = "Debes indicar el total de este item")
+    // @Min(value = 1, message = "El total de este item no puede ser menor a $ {value}")
+    // private Double total;
 
 
-    // Funcion para calcular el total de este item
-    public Double calcularTotal() {
-        return this.producto.getPrecio() * this.cantidad;
-    }
+    // // Funcion para calcular el total de este item
+    // public Double calcularTotal() {
+    //     return this.producto.getPrecio() * this.cantidad;
+    // }
 }

@@ -47,7 +47,22 @@ public class CarritoController
         Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
         List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener el carrito de compras del usuario
 
+        // Calcular precios, descuentos y unidades
+        Double precioTotal = 0.0;
+        Double precioFinal = 0.0;
+        Integer totalUnidades = 0;
+
+        for(Carrito item: carrito)
+        {
+            precioTotal += item.calcularPrecioTotal();
+            precioFinal += item.calcularPrecioFinal();
+            totalUnidades += item.getCantidad();
+        }
+
         model.addAttribute("carrito", carrito);
+        model.addAttribute("precioTotal", precioTotal);
+        model.addAttribute("precioFinal", precioFinal);
+        model.addAttribute("totalUnidades", totalUnidades);
         return "orden/carrito";
     }
     

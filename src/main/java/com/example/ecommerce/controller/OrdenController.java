@@ -82,9 +82,24 @@ public class OrdenController
         List<Domicilio> domicilios = domicilioRepository.findByUsuarioOrderByPrincipalDesc(usuario);
         List<Carrito> carrito = carritoRepository.findByUsuario(usuario);
 
+        // Calcular precios, descuentos y unidades
+        Double precioTotal = 0.0;
+        Double precioFinal = 0.0;
+        Integer totalUnidades = 0;
+
+        for(Carrito item: carrito)
+        {
+            precioTotal += item.calcularPrecioTotal();
+            precioFinal += item.calcularPrecioFinal();
+            totalUnidades += item.getCantidad();
+        }
+
         model.addAttribute("usuario", usuario);
         model.addAttribute("carrito", carrito);
         model.addAttribute("domicilios", domicilios);
+        model.addAttribute("precioTotal", precioTotal);
+        model.addAttribute("precioFinal", precioFinal);
+        model.addAttribute("totalUnidades", totalUnidades);
         return "orden/envio";
     }
 
@@ -140,7 +155,8 @@ public class OrdenController
             OrdenItem item = new OrdenItem();
             item.setProducto(carrito.getProducto());
             item.setCantidad(carrito.getCantidad());
-            item.setTotal(item.calcularTotal());
+            item.setPrecioFinal(carrito.calcularPrecioFinal());
+            item.setDescuentoTotal(carrito.calcularPrecioTotal() - carrito.calcularPrecioFinal());
             item.setOrden(orden);
             items.add(item);
         }
@@ -148,7 +164,8 @@ public class OrdenController
         // Crear orden
         orden.setUsuario(usuario);
         orden.setItems(items);
-        orden.setTotal(orden.calcularTotal());
+        orden.setPrecioFinal(orden.calcularPrecioFinal());
+        orden.setDescuentoTotal(orden.calcularDescuentoTotal());
         orden.setEnvio(envio);
         ordenRepository.save(orden);
 

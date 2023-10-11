@@ -8,10 +8,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.format.annotation.NumberFormat.Style;
@@ -55,6 +57,13 @@ public class Producto
     @NotNull(message = "Debes indicar el precio de este producto")
     @Min(value = 1, message = "El precio del producto debe ser mayor a ${value}")
     private Double precio;
+
+    @Min(value = 0, message = "El porcentaje de descuento no puede ser menor a %{value}")
+    @Max(value = 100, message = "El porcentaje de descuento no puede superar el %{value}")
+    private Double precioDescuento; 
+
+    @Formula("precio * (1 - COALESCE(precioDescuento, 0) / 100.0)")
+    private Double precioFinal;
 
     @NotNull(message = "Debes indicar el stock de este producto")
     @Min(value = 0, message = "El stock no puede ser menor a {value}")

@@ -42,7 +42,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label" for="categoria">Subcategoría</label>
+                        <label class="form-label" for="categoria">Subcategoría (opcional)</label>
                         <th:block th:if="*{categoria == null}">
                             <select th:each="categoria, iter: ${categorias}" class="form-select" th:classappend="${iter.index != 0}? d-none" th:field="*{subcategoria}" th:category-id="${categoria.id}" required>
                                 <option th:value="${null}">-- Sin subcategoría --</option>
@@ -79,6 +79,15 @@
                             <input class="form-control" th:errorclass="is-invalid" type="text" data-mask="#,##0" data-mask-reverse="true" th:field="*{precio}" placeholder="1" required>
                         </div>
                         <small class="text-danger" th:errors="*{precio}"></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="precioDescuento">Descuento (opcional)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">%</span>
+                            <input class="form-control" th:errorclass="is-invalid" type="number" th:field="*{precioDescuento}" max="100">
+                        </div>
+                        <small class="text-danger" th:errors="*{precioDescuento}"></small>
                     </div>
     
                     <div class="text-start mb-3">

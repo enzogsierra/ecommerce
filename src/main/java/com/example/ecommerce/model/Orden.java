@@ -47,27 +47,40 @@ public class Orden
     @Size(min = 1, message = "Debes agregar al menos 1 producto para generar esta orden")
     private List<OrdenItem> items = new ArrayList<>();
 
-    @NotNull(message = "Debes indicar el total de esta orden")
-    @Min(value = 1, message = "El total de esta orden no puede ser menor a $ {value}")
-    private Double total;
+    @NotNull(message = "Debes indicar el precio final de la orden")
+    @Min(value = 1, message = "El precio final de la orden no puede ser menor a $ {value}")
+    private Double precioFinal;
+
+    @Min(value = 0, message = "El descuento total de la orden no puede ser menor a $ {value}")
+    private Double descuentoTotal;
 
     @CreationTimestamp
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt;
 
-    
-    // Funcion para calcular el total de la orden, sumando el total de todos los items de la lista
-    public Double calcularTotal()
+
+    // Sumar el precio de cada item
+    public Double calcularPrecioFinal()
     {
         Double total = 0.0;
         for(OrdenItem item: items) {
-            total += item.calcularTotal();
+            total += item.getPrecioFinal();
+        }
+        return total;
+    }
+
+    // Sumar el precio de cada item
+    public Double calcularDescuentoTotal()
+    {
+        Double total = 0.0;
+        for(OrdenItem item: items) {
+            total += item.getDescuentoTotal();
         }
         return total;
     }
 
     // Funcion para obtener la cantidad de productos (sumar la cantidad de todos los items)
-    public int calcularCantidad()
+    public int calcularUnidades()
     {
         int cantidad = 0;
         for(OrdenItem item: items) {

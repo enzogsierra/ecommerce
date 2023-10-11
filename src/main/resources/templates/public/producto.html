@@ -24,7 +24,21 @@
                     <div class="col"> <!-- Carrito -->
                         <div class="p-3 bg-secondary-subtle rounded">
                             <div class="mb-4">
-                                <h2>$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span></h2>
+                                <div th:if="${producto.precioDescuento > 0.0}">
+                                    <p class="mb-0 text-muted text-decoration-line-through">
+                                        $ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                    </p>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <h2 class="text-nowrap">$ <span th:text="${#numbers.formatDecimal(producto.precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span></h2>
+                                        <p class="mb-2 p-2 fs-5 fw-medium text-success">
+                                            %<span th:text="${#numbers.formatDecimal(producto.precioDescuento, 0, 'POINT', 0, 'DEFAULT')}"></span> OFF
+                                        </p>
+                                    </div>
+                                </div>
+                                <div th:unless="${producto.precioDescuento > 0.0}">
+                                    <h2>$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span></h2>
+                                </div>
 
                                 <div th:if="${domicilio != null}">
                                     <p class="mb-0 small text-muted"><i class="fa-solid fa-truck-fast text-primary"></i> Enviar a <span th:text="${domicilio.localidad.nombre}"></span></p>

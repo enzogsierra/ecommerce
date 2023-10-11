@@ -91,7 +91,22 @@
                                         <td class="w-100">
                                             <div class="d-flex flex-column gap-2">
                                                 <a th:href="@{/productos/{id} (id = ${producto.id})}" class="fs-5 text-decoration-none text-dark" th:text="${producto.nombre}"></a>
-                                                <h4 class="fw-medium text-success">$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span></h4>
+                                                
+                                                <div th:if="${producto.precioDescuento > 0}">
+                                                    <small th:if="${producto.precioDescuento}" class="text-decoration-line-through text-muted">
+                                                        $ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                                    </small>
+                
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <h4 class="text-nowrap">$ <span th:text="${#numbers.formatDecimal(producto.precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span></h4>
+                                                        <span class="mb-2 p-2 badge text-bg-success fst-italic fw-semibold">
+                                                            %<span th:text="${#numbers.formatDecimal(producto.precioDescuento, 0, 'POINT', 0, 'DEFAULT')}"></span> OFF
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div th:unless="${producto.precioDescuento > 0}">
+                                                    <h4 class="text-nowrap">$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span></h4>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>

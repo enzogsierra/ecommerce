@@ -36,4 +36,20 @@ public class Carrito
     @NotNull(message = "Debes ingresar la cantidad de productos")
     @Min(value = 1, message = "Debes agregar al menos {value} producto")
     private Integer cantidad;
+
+
+    // Obtiene el precio total sin aplicar descuentos (precio * cantidad)
+    public Double calcularPrecioTotal() {
+        return (this.producto.getPrecio() * cantidad);
+    }
+
+    // Obtiene el precio total aplicando descuentos (precioFinal * cantidad)
+    public Double calcularPrecioFinal() {
+        return (this.producto.getPrecioFinal() * cantidad);
+    }
+
+    // Obtiene la diferencia entre el precio total y descuento total
+    public Double calcularDescuentoTotal() {
+        return this.calcularPrecioTotal() - this.calcularPrecioFinal();
+    }
 }

@@ -86,8 +86,15 @@
                                                 <small th:unless="${item.cantidad == 1}" class="text-muted"><span th:text="${item.cantidad}"></span> unidades</small>
                                             </div>
                                         </td>
-                                        <td class="fs-4 fw-semibold text-success text-end text-nowrap">
-                                            $ <span th:text="${#numbers.formatDecimal(item.total, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                        <td class="text-end text-nowrap">
+                                            <div th:if="${item.descuentoTotal > 0}">
+                                                <small class="text-decoration-line-through text-muted">
+                                                    $ <span th:text="${#numbers.formatDecimal(item.precioFinal + item.descuentoTotal, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                                </small>
+                                            </div>
+                                            <h4 class="mb-0 fw-semibold text-success">
+                                                $ <span th:text="${#numbers.formatDecimal(item.precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                            </h4>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -103,12 +110,36 @@
                             <small class="text-muted">
                                 <span th:text="${#temporals.format(orden.createdAt, 'd')}"></span> de
                                 <span th:text="${#temporals.format(orden.createdAt, 'MMMM')}"></span> de
-                                <span th:text="${#temporals.format(orden.createdAt, 'yyyy')}"></span>
+                                <span th:text="${#temporals.format(orden.createdAt, 'yyyy')}"></span> a las
+                                <span th:text="${#temporals.format(orden.createdAt, 'HH:mm')}"></span>
                             </small>
                         </div>
                          
                         <div class="card-body">
-                            <table class="w-100">
+                            <div class="mb-2">
+                                <p class="mb-0 d-flex justify-content-between gap-3">
+                                    <span>Productos</span>
+                                    <span th:text="${orden.items.size()}"></span>
+                                </p>
+                                <p class="mb-3 d-flex justify-content-between gap-3">
+                                    <span>Total de unidades</span>
+                                    <span th:text="${orden.calcularUnidades()}"></span>
+                                </p>
+                                <h6 th:if="${orden.descuentoTotal > 0.0}" class="mb-1 d-flex justify-content-between gap-3 fw-semibold text-success">
+                                    <span>Ahorrado</span>
+                                    <span>
+                                        $ <span th:text="${#numbers.formatDecimal(orden.descuentoTotal, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                    </span>
+                                </h6>
+                                <h4 class="mb-0 d-flex justify-content-between gap-3">
+                                    <span>Total</span>
+                                    <span class="fw-semibold">
+                                        $ <span th:text="${#numbers.formatDecimal(orden.precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                    </span>
+                                </h4>
+                            </div>
+
+                            <!-- <table class="w-100">
                                 <tbody>
                                     <tr>
                                         <td>Productos</td>
@@ -116,52 +147,20 @@
                                     </tr>
                                     <tr>
                                         <td>Total de unidades</td>
-                                        <td class="text-end" th:text="${orden.calcularCantidad()}"></td>
+                                        <td class="text-end" th:text="${orden.calcularUnidades()}"></td>
                                     </tr>
                                     <tr class="fs-4 fw-semibold">
                                         <td>Total</td>
                                         <td class="text-end">
-                                            $ <span th:text="${#numbers.formatDecimal(orden.total, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                            $ <span th:text="${#numbers.formatDecimal(orden.precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span>
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table> -->
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- <div class="card my-4">
-                <div class="card-body">        
-                    <table class="table" id="products-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Total</th>
-                                <th>Fecha</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr th:each="item: ${compra}">
-                                <td>
-                                    <img th:src="@{/images/{img} (img = ${compra.producto.imagen})}" alt="producto" height="64px">
-                                </td>
-                                <td th:text="${item.producto.nombre}"></td>
-                                <td th:text="${#numbers.formatDecimal(item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                                <td th:text="'$ ' + ${#numbers.formatDecimal(item.producto.precio * item.cantidad, 0, 'DEFAULT', 0, 'POINT')}"></td>
-                                <td th:text="${item.createdAt}"></td>
-                                <td>
-                                    <a th:href="@{/productos/{id} (id = ${item.producto.id})}" class="btn btn-primary">Ver producto</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div> -->
         </main>
         
         <!-- Footer y scripts -->

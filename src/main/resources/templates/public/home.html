@@ -30,7 +30,7 @@
             </div>
             
             <!-- Con productos -->
-            <div th:unless="${productos.size() == 0}" class="my-4 row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-3">
+            <div th:unless="${productos.size() == 0}" class="my-4 row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
                 <div th:each="producto: ${productos}" class="col">
                     <div class="product bg-white border rounded">
                         <a th:href="@{/productos/{id} (id = ${producto.id})}" class="text-decoration-none text-black">
@@ -39,7 +39,21 @@
                             </div>
     
                             <div class="p-3">
-                                <h4>$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span></h4>
+                                <div th:if="${producto.precioDescuento > 0}">
+                                    <small th:if="${producto.precioDescuento}" class="text-decoration-line-through text-muted">
+                                        $ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                    </small>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <h4 class="text-nowrap">$ <span th:text="${#numbers.formatDecimal(producto.precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span></h4>
+                                        <span class="mb-2 p-2 badge text-bg-success fst-italic fw-semibold">
+                                            %<span th:text="${#numbers.formatDecimal(producto.precioDescuento, 0, 'POINT', 0, 'DEFAULT')}"></span> OFF
+                                        </span>
+                                    </div>
+                                </div>
+                                <div th:unless="${producto.precioDescuento > 0}">
+                                    <h4 class="text-nowrap">$ <span th:text="${#numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'DEFAULT')}"></span></h4>
+                                </div>
                                 
                                 <h5 class="mb-0 small fw-light text-muted" th:text="${producto.nombre}"></h5>
                             </div>

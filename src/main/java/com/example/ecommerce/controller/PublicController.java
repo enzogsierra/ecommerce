@@ -67,7 +67,7 @@ public class PublicController
     {
         List<Producto> productos = new ArrayList<>();
         Map<String, String> filtros = new HashMap<>(); // Almacena los filtros de busqueda
-        Sort sort = Sort.by(orden.equals("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC, "precio"); // Establece la forma en la que se ordenarán los productos
+        Sort sort = Sort.by((orden.equals("DESC") ? (Sort.Direction.DESC) : (Sort.Direction.ASC)), "precioFinal"); // Establece la forma en la que se ordenarán los productos
         
 
         // Buscar productos segun los filtros
