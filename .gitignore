@@ -34,3 +34,4 @@ build/
 
 #
 images/
+src/main/resources/application.properties

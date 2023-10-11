@@ -86,8 +86,12 @@
         </div>
 
         <div class="mt-4 d-flex justify-content-center gap-4 fw-light small">
+            <!-- <a th:href="@{/}" class="btn-unstyled fw-medium text-light"><i class="fa-solid fa-tag"></i> Ofertas</a>
+
+            <div class="border-start"></div> -->
+
             <div th:each="categoria: ${categorias}" th:if="${categoria.destacado == true}">
-                <a th:href="@{/}" class="btn-unstyled text-light" th:text="${categoria.nombre}"></a>
+                <a th:href="@{/buscar?categoria={id} (id = ${categoria.id})}" class="btn-unstyled text-light" th:text="${categoria.nombre}"></a>
             </div>
 
             <div class="dropdown">
