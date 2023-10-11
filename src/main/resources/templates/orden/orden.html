@@ -126,7 +126,7 @@
                                     <span th:text="${orden.calcularUnidades()}"></span>
                                 </p>
                                 <h6 th:if="${orden.descuentoTotal > 0.0}" class="mb-1 d-flex justify-content-between gap-3 fw-semibold text-success">
-                                    <span>Ahorrado</span>
+                                    <span>Descuento</span>
                                     <span>
                                         $ <span th:text="${#numbers.formatDecimal(orden.descuentoTotal, 0, 'POINT', 0, 'DEFAULT')}"></span>
                                     </span>
@@ -138,25 +138,6 @@
                                     </span>
                                 </h4>
                             </div>
-
-                            <!-- <table class="w-100">
-                                <tbody>
-                                    <tr>
-                                        <td>Productos</td>
-                                        <td class="text-end" th:text="${orden.items.size()}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total de unidades</td>
-                                        <td class="text-end" th:text="${orden.calcularUnidades()}"></td>
-                                    </tr>
-                                    <tr class="fs-4 fw-semibold">
-                                        <td>Total</td>
-                                        <td class="text-end">
-                                            $ <span th:text="${#numbers.formatDecimal(orden.precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table> -->
                         </div>
                     </div>
                 </div>

@@ -19,68 +19,86 @@
 
 <!--  -->
 <header th:fragment="header" class="mb-5 py-4 text-bg-dark">
-    <div class="container d-flex align-items-center justify-content-between gap-4">
-        <div class="d-flex align-items-center gap-4">
-            <h1 class="mb-0 fs-2">
-                <a th:href="@{/}" class="text-decoration-none text-white">
-                    Spring e-Commerce
-                </a>
-            </h1>
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between gap-5">
+            <div class="d-flex align-items-center gap-4 flex-grow-1">
+                <h1 class="mb-0 fs-2 text-nowrap">
+                    <a th:href="@{/}" class="text-decoration-none text-white">Spring e-Commerce</a>
+                </h1>
 
-            <form th:action="@{/buscar}" method="GET">
-                <div class="input-group">
-                    <input class="form-control" type="search" name="q" th:value="${param?.q}" placeholder="Buscar productos" required>
-                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
+                <div class="w-100">
+                    <form th:action="@{/buscar}" method="GET">
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="q" th:value="${param?.q}" placeholder="Buscar productos" required>
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
+            </div>
 
-        <!-- Usuarios logueados -->
-        <div sec:authorize="isAuthenticated()">
-            <nav class="d-flex align-items-center gap-4">
-                <a th:href="@{/compras}" class="text-decoration-none text-light">Mis compras</a>
+            <!-- Usuarios logueados -->
+            <div sec:authorize="isAuthenticated()">
+                <nav class="d-flex align-items-center gap-4">
+                    <a th:href="@{/compras}" class="text-decoration-none text-light">Mis compras</a>
 
-                <a th:href="@{/carrito}" class="btn text-light position-relative">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" th:classappend="${session.carritoSize > 0 ? 'bg-danger' : 'bg-secondary'}">
-                        <span th:text="${session.carritoSize}"></span>
-                    </span>
-                </a>
+                    <a th:href="@{/carrito}" class="btn text-light position-relative">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" th:classappend="${session.carritoSize > 0 ? 'bg-danger' : 'bg-secondary'}">
+                            <span th:text="${session.carritoSize}"></span>
+                        </span>
+                    </a>
 
-                <div class="btn-group">
-                    <button type="button" class="profile-btn px-3 py-1 dropdown-toggle text-light" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa-solid fa-user fa-sm"></i>
-                    </button>
-                    
-                    <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li><h6 class="dropdown-header">Bienvenido, <span th:text="${session.usuarioNombre}"></span></h6></li>
-                        <li><a th:href="@{/perfil}" class="dropdown-item">Perfil</a></li>
-                        <li><a th:href="@{/perfil/domicilios}" class="dropdown-item">Tus domicilios</a></li>
+                    <div class="btn-group">
+                        <button type="button" class="profile-btn px-3 py-1 dropdown-toggle text-light" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user fa-sm"></i>
+                        </button>
+                        
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li><h6 class="dropdown-header">Bienvenido, <span th:text="${session.usuarioNombre}"></span></h6></li>
+                            <li><a th:href="@{/perfil}" class="dropdown-item">Perfil</a></li>
+                            <li><a th:href="@{/perfil/domicilios}" class="dropdown-item">Tus domicilios</a></li>
 
-                        <!-- Admin -->
-                        <th:block sec:authorize="hasAuthority('ADMIN')">
+                            <!-- Admin -->
+                            <th:block sec:authorize="hasAuthority('ADMIN')">
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Administración</h6></li>
+                                <li><a th:href="@{/admin/productos}" class="dropdown-item"><i class="fa-solid fa-box-open text-success"></i> Productos</a></li>
+                                <li><a th:href="@{/admin/categorias}" class="dropdown-item"><i class="fa-solid fa-tag text-success"></i> Categorías</a></li>
+                                <li><a th:href="@{/admin/usuarios}" class="dropdown-item"><i class="fa-solid fa-users text-success"></i> Usuarios</a></li>
+                                <li><a th:href="@{/admin/ordenes}" class="dropdown-item"><i class="fa-solid fa-basket-shopping text-success"></i> Ordenes</a></li>
+                            </th:block>
+
+                            <!--  -->
                             <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">Administración</h6></li>
-                            <li><a th:href="@{/admin/productos}" class="dropdown-item"><i class="fa-solid fa-box-open text-success"></i> Productos</a></li>
-                            <li><a th:href="@{/admin/categorias}" class="dropdown-item"><i class="fa-solid fa-tag text-success"></i> Categorías</a></li>
-                            <li><a th:href="@{/admin/usuarios}" class="dropdown-item"><i class="fa-solid fa-users text-success"></i> Usuarios</a></li>
-                            <li><a th:href="@{/admin/ordenes}" class="dropdown-item"><i class="fa-solid fa-basket-shopping text-success"></i> Ordenes</a></li>
-                        </th:block>
+                            <li><a th:href="@{/logout}" class="dropdown-item">Cerrar sesión <i class="fa-solid fa-right-from-bracket text-secondary"></i></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
 
-                        <!--  -->
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a th:href="@{/logout}" class="dropdown-item">Cerrar sesión <i class="fa-solid fa-right-from-bracket text-secondary"></i></a></li>
-                    </ul>
-                </div>
-            </nav>
+            <!-- Usuarios no logueados -->
+            <div sec:authorize="isAnonymous()">
+                <nav class="d-flex gap-2">
+                    <a th:href="@{/signup}" class="btn btn-success fw-bold">Crear cuenta</a>
+                    <a th:href="@{/login}" class="btn btn-outline-light fw-bold">Iniciar sesión</a>
+                </nav>
+            </div>
         </div>
 
-        <!-- Usuarios no logueados -->
-        <div sec:authorize="isAnonymous()">
-            <nav class="d-flex gap-2">
-                <a th:href="@{/signup}" class="btn btn-success fw-bold">Crear cuenta</a>
-                <a th:href="@{/login}" class="btn btn-outline-light fw-bold">Iniciar sesión</a>
-            </nav>
+        <div class="mt-4 d-flex justify-content-center gap-4 fw-light small">
+            <div th:each="categoria: ${categorias}" th:if="${categoria.destacado == true}">
+                <a th:href="@{/}" class="btn-unstyled text-light" th:text="${categoria.nombre}"></a>
+            </div>
+
+            <div class="dropdown">
+                <button class="btn-unstyled fw-semibold text-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Otras </button>
+
+                <ul class="dropdown-menu">
+                    <li th:each="categoria: ${categorias}" th:unless="${categoria.destacado == true}">
+                        <a class="dropdown-item" th:href="@{/buscar?categoria={id} (id = ${categoria.id})}" th:text="${categoria.nombre}"></a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </header>

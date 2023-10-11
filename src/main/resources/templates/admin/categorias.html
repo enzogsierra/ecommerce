@@ -24,7 +24,7 @@
                 <div th:unless="${categorias.size() == 0}" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
                     <div class="col" th:each="categoria: ${categorias}">
                         <div class="border border-dark-subtle rounded shadow overflow-hidden">
-                            <div class="p-3 text-bg-primary border-bottom d-flex align-items-center justify-content-between gap-2">
+                            <div class="p-3 border-bottom d-flex align-items-center justify-content-between gap-2" th:classappend="${categoria.destacado == true} ? 'text-bg-primary' : 'text-bg-secondary'">
                                 <h5 class="mb-0 text-break" th:text="${categoria.nombre}" style="hyphens: auto;"></h5>
 
                                 <div class="d-flex gap-2">

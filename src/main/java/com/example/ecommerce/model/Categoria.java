@@ -33,6 +33,8 @@ public class Categoria
     @NotBlank(message = "El nombre de la categoría no puede estar vacío")
     private String nombre;
 
+    private Boolean destacado;
+
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
     @Valid
     @OrderBy("nombre ASC")
