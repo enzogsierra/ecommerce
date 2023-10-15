@@ -54,6 +54,9 @@ public class Orden
     @Min(value = 0, message = "El descuento total de la orden no puede ser menor a $ {value}")
     private Double descuentoTotal;
 
+    @NotNull(message = "Debes añadir un ID de Payment")
+    private Long paymentId;
+
     @CreationTimestamp
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt;

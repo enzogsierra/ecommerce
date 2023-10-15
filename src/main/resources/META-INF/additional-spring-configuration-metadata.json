@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "mercadopago.access.token",
+    "type": "java.lang.String",
+    "description": "Access Token que obtienes al crear tu integración de MercadoPago"
+  },
+  {
+    "name": "mercadopago.public.key",
+    "type": "java.lang.String",
+    "description": "Public Key que obtienes al crear tu integración de MercadoPago"
+  }
+]}
