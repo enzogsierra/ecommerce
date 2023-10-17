@@ -36,7 +36,8 @@ public class SecurityConfig
             "/images/**", // Imagenes de productos
             "/productos/**", // Vista de un producto especifico
             "/buscar", // Buscador de productos
-            "/signup"
+            "/signup",
+            "/mercadopago/webhook", // Endpoint donde MercadoPago envia Webhooks
         };
 
         return http

@@ -46,6 +46,7 @@ public class CarritoController
     {
         Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get(); // Obtener el usuario a través de la sesión
         List<Carrito> carrito = carritoRepository.findByUsuario(usuario); // Obtener el carrito de compras del usuario
+        session.setAttribute("carritoSize", carrito.size());
 
         // Calcular precios, descuentos y unidades
         Double precioTotal = 0.0;

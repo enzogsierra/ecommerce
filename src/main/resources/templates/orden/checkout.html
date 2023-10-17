@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <header th:replace="layout::header">
+
+        </header>
+
+        <main class="container">
+            <h2>Finalizar compra</h2>
+
+            <div class="row row-cols-1 row-cols-lg-2 g-3">
+                <div class="col col-lg-8">
+                    <div class="p-3 bg-white rounded shadow">
+                        <div class="mb-4">
+                            <small class="text-muted">Dirección de envío</small>
+
+                            <div class="p-3 bg-secondary-subtle rounded d-flex align-items-center justify-content-between gap-3">
+                                <div class="d-flex align-items-center gap-4">
+                                    <div class="d-flex align-items-center justify-content-center bg-dark-subtle rounded-circle" style="width: 4rem; height: 4rem;">
+                                        <i class="fs-2 fa-solid fa-truck-fast text-primary"></i>
+                                    </div>
+
+                                    <div>
+                                        <h5 class="mb-0">
+                                            <span th:text="${domicilio.localidad.nombre}"></span>, <span th:text="${domicilio.localidad.provincia.nombre}"></span>
+                                        </h5>
+                                        <p class="mb-0">
+                                            Calle <span th:text="${domicilio.calle}"></span>, <span th:text="${domicilio.numeroCalle}"></span>
+
+                                            <span th:if="${!#strings.isEmpty(domicilio.entrecalle1)}">
+                                                (entre <span th:text="${domicilio.entrecalle1}"></span> y <span th:text="${domicilio.entrecalle2}"></span>)
+                                            </span>
+                                        </p>
+                                        <p class="mb-0">
+                                            Código postal: <span th:text="${domicilio.codigoPostal}" class="fw-semibold"></span>
+                                        </p>
+                                        <p class="mb-0" th:if="${!#strings.isEmpty(domicilio.piso_dpto)}">
+                                            Piso/departamento: <span th:text="${domicilio.piso_dpto}"></span>
+                                        </p>
+                                        <p class="mb-0" th:if="${!#strings.isEmpty(domicilio.indicaciones)}">
+                                            Indicaciones: <span th:text="${domicilio.indicaciones}"></span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <a th:href="@{/orden/envio}" class="btn btn-outline-primary text-nowrap"><i class="fa-solid fa-chevron-left"></i> Cambiar dirección</a>
+                            </div>
+                        </div>
+
+                        <div>
+                            <small class="text-muted">Tus productos</small>
+                            <table class="w-100">
+                                <tbody>
+                                    <tr th:each="item, iter: ${carrito}" th:classappend="${!iter.last}? border-bottom">
+                                        <td class="py-3 pe-2">
+                                            <img th:src="@{/images/{img} (img = ${item.producto.imagen})}" class="border rounded object-fit-contain" alt="Imagen del producto" style="width: 5rem; height: 5rem;">
+                                        </td>
+                                        <td class="pe-2">
+                                            <div class="d-flex flex-column gap-1">
+                                                <a th:href="@{/productos/{id} (id = ${item.producto.id})}" class="fw-medium text-decoration-none text-dark" th:text="${item.producto.nombre}"></a>
+                                                
+                                                <small class="text-muted" th:if="${item.cantidad == 1}">1 unidad</small>
+                                                <small class="text-muted" th:unless="${item.cantidad == 1}"><span th:text="${item.cantidad}"></span> unidades</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div th:if="${item.producto.precioDescuento > 0.0}" class="d-flex align-items-center justify-content-end gap-2">
+                                                <small class="text-muted text-decoration-line-through">
+                                                    $ <span th:text="${#numbers.formatDecimal(item.calcularPrecioTotal(), 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                                </small>
+                                            </div>
+                                            <p class="mb-0 fs-5 text-end">
+                                                $ <span th:text="${#numbers.formatDecimal(item.calcularPrecioFinal(), 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-text">Resumen de tu compra</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <p class="mb-0 d-flex justify-content-between gap-3">
+                                    <span>Productos</span>
+                                    <span th:text="${carrito.size()}"></span>
+                                </p>
+                                <p class="mb-3 d-flex justify-content-between gap-3">
+                                    <span>Total de unidades</span>
+                                    <span th:text="${totalUnidades}"></span>
+                                </p>
+                                <h6 th:if="${precioFinal < precioTotal}" class="mb-1 d-flex justify-content-between gap-3 fw-semibold text-success">
+                                    <span>Ahorras</span>
+                                    <span>
+                                        $ <span th:text="${#numbers.formatDecimal(precioTotal - precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                    </span>
+                                </h6>
+                                <h4 class="mb-0 d-flex justify-content-between gap-3">
+                                    <span>Total</span>
+                                    <span class="fw-semibold">
+                                        $ <span th:text="${#numbers.formatDecimal(precioFinal, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                    </span>
+                                </h4>
+                            </div>
+
+                            <div class="mt-4 d-flex align-items-center justify-content-center gap-3" id="wallet_placeholder">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mb-0 text-muted">Cargando...</p>
+                            </div>
+
+                            <div id="wallet_container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer y scripts -->
+        <footer th:replace="layout::footer"></footer>
+
+        <!-- MercadoPago scripts -->
+        <script src="https://sdk.mercadopago.com/js/v2"></script>
+
+        <script th:inline="javascript">
+            const mp = new MercadoPago(/*[[${publicKey}]]*/);
+
+            mp.bricks().create("wallet", "wallet_container", 
+            {
+                initialization: 
+                {
+                    preferenceId: /*[[${preferenceId}]]*/ + "",
+                },
+                callbacks:
+                {
+                    onReady: () =>
+                    {
+                        const placeholder = document.querySelector("#wallet_placeholder");
+                        placeholder.remove();
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

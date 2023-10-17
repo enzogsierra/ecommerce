@@ -1,5 +1,6 @@
 package com.example.ecommerce.controller;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,35 +12,43 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.example.ecommerce.dto.PaymentCreateRequestDTO;
+import com.example.ecommerce.dto.WebhookNotificationDTO;
 import com.example.ecommerce.model.Carrito;
 import com.example.ecommerce.model.Domicilio;
 import com.example.ecommerce.model.Envio;
 import com.example.ecommerce.model.Orden;
 import com.example.ecommerce.model.OrdenItem;
+import com.example.ecommerce.model.Producto;
 import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.repository.CarritoRepository;
 import com.example.ecommerce.repository.DomicilioRepository;
 import com.example.ecommerce.repository.OrdenRepository;
+import com.example.ecommerce.repository.ProductoRepository;
 import com.example.ecommerce.repository.UsuarioRepository;
-import com.mercadopago.client.common.IdentificationRequest;
 import com.mercadopago.client.payment.PaymentClient;
-import com.mercadopago.client.payment.PaymentCreateRequest;
-import com.mercadopago.client.payment.PaymentPayerRequest;
+import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
+import com.mercadopago.client.preference.PreferenceClient;
+import com.mercadopago.client.preference.PreferenceItemRequest;
+import com.mercadopago.client.preference.PreferencePaymentMethodRequest;
+import com.mercadopago.client.preference.PreferencePaymentMethodsRequest;
+import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.payment.Payment;
+import com.mercadopago.resources.preference.Preference;
 
 
 @Controller
@@ -56,6 +65,9 @@ public class OrdenController
     
     @Autowired
     private CarritoRepository carritoRepository;
+
+    @Autowired 
+    private ProductoRepository productoRepository;
 
     @Autowired
     private HttpSession session;
@@ -127,9 +139,9 @@ public class OrdenController
     }
 
 
-    // Seleccionar los modos de pago
-    @PostMapping("/orden/pago")
-    public String pago(@RequestParam Integer domicilioId, Model model, Principal principal, RedirectAttributes redirect) throws MPException, MPApiException
+    // Mostrar resumen de la orden y generar boton de pago
+    @PostMapping("/orden/checkout")
+    public String checkout(@RequestParam Integer domicilioId, Model model, Principal principal, RedirectAttributes redirect) throws MPException, MPApiException
     {
         Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
 
@@ -147,7 +159,7 @@ public class OrdenController
             return "redirect:/orden/envio";
         }
 
-        // Calcular precios, descuentos y unidades
+        // Calcular precios y unidades
         Double precioTotal = 0.0;
         Double precioFinal = 0.0;
         Integer totalUnidades = 0;
@@ -158,201 +170,175 @@ public class OrdenController
             precioFinal += item.calcularPrecioFinal();
             totalUnidades += item.getCantidad();
         }
-        
-        session.setAttribute("orden_domicilioId", domicilio.getId());
 
-        model.addAttribute("publicKey", publicKey);
+        // Generar Preference (pago)
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
+
+        List<PreferenceItemRequest> preferenceItems = new ArrayList<>();
+        for(Carrito item: carrito)
+        {
+            PreferenceItemRequest preferenceItem = 
+                PreferenceItemRequest.builder()
+                    .title(item.getProducto().getNombre())
+                    .quantity(item.getCantidad())
+                    .unitPrice(new BigDecimal(item.getProducto().getPrecioFinal()))
+                    .currencyId("ARS")
+                    .pictureUrl(baseUrl + "/images/" + item.getProducto().getImagen())
+                    .build();
+
+            preferenceItems.add(preferenceItem);
+        }
+
+        // Configurar los back urls
+        PreferenceBackUrlsRequest backUrls =
+            PreferenceBackUrlsRequest.builder()
+                .success(baseUrl + "/compras")
+                .pending(baseUrl + "/compras")
+                .failure(baseUrl + "/carrito")
+                .build();
+
+        // Metadata
+        Map<String, Object> metadata = new HashMap<>();
+        List<Map<String, Object>> metadataCarrito = new ArrayList<>();
+
+        for(Carrito item: carrito)
+        {
+            Map<String, Object> metadataItem = new HashMap<>();
+            metadataItem.put("producto_id", item.getProducto().getId());
+            metadataItem.put("cantidad", item.getCantidad());
+            metadataCarrito.add(metadataItem);
+        }
+
+        metadata.put("carrito", metadataCarrito);
+        metadata.put("domicilio_id", domicilio.getId());
+        metadata.put("usuario_id", usuario.getId());
+
+        // Lista de tarjetas de pago excluidas
+        List<PreferencePaymentMethodRequest> excludedPaymentMethods = new ArrayList<>();
+        String[] excludedCards = {"amex", "argencard", "cmr", "cencosud", "cordobesa", "diners", "tarshop"};
+        for(String card: excludedCards)
+        {
+            excludedPaymentMethods.add(PreferencePaymentMethodRequest.builder().id(card).build());    
+        }
+
+        // Construir Preference
+        PreferenceRequest preferenceRequest = 
+            PreferenceRequest.builder()
+                .paymentMethods(
+                    PreferencePaymentMethodsRequest.builder()
+                        .installments(1)
+                        .excludedPaymentMethods(excludedPaymentMethods)
+                        .build()
+                )
+                .items(preferenceItems)
+                .metadata(metadata)
+                .backUrls(backUrls)
+                .build();
+
+        PreferenceClient client = new PreferenceClient();
+        Preference preference = client.create(preferenceRequest);
+
+
         model.addAttribute("carrito", carrito);
+        model.addAttribute("domicilio", domicilio);
         model.addAttribute("precioTotal", precioTotal);
         model.addAttribute("precioFinal", precioFinal);
         model.addAttribute("totalUnidades", totalUnidades);
-        return "orden/pago";
+        model.addAttribute("publicKey", publicKey);
+        model.addAttribute("preferenceId", preference.getId());
+        return "orden/checkout";
     }
+    
 
-    @PostMapping("/orden/procesarPago")
-    public ResponseEntity<?> procesarPago(@RequestBody PaymentCreateRequestDTO request, Principal principal) throws MPException, MPApiException
+    // Endpoint donde MercadoPago enviara sus Webhooks (notificaciones de pagos)
+    @CrossOrigin(origins = "https://api.mercadopago.com")
+    @PostMapping("/mercadopago/webhook")
+    public @ResponseBody ResponseEntity<?> webhookNotification(@RequestBody WebhookNotificationDTO request) throws MPException, MPApiException
     {
-        Map<String, Object> response = new HashMap<>();
-        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
+        if(request.getType().equals("payment"))
+        {
+            Long paymentId = Long.parseLong(request.getData().getId());
+            PaymentClient client = new PaymentClient();
+            Payment payment = client.get(paymentId);
             
-        // Verificar si el domicilio existe y si pertenece al usuario
-        Integer domicilioId = (Integer) session.getAttribute("orden_domicilioId");
-        Domicilio domicilio = domicilioRepository.findById(domicilioId).orElse(null);
-        if(!(domicilio != null && domicilio.getUsuario().getId().equals(usuario.getId())))
-        {
-            response.put("status", "badRequest");
-            response.put("detail", "Selecciona una dirección de envío válida");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-
-        // Verificar que el usuario tenga productos añadidos a su carrito
-        List<Carrito> carritoList = carritoRepository.findByUsuario(usuario);
-        if(carritoList.size() == 0)
-        {
-            response.put("status", "badRequest");
-            response.put("detail", "No tienes productos añadidos a tu carrito. No puedes hacer una orden");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-
-        PaymentCreateRequest paymentCreateRequest =
-            PaymentCreateRequest.builder()
-                .transactionAmount(request.getTransaction_amount())
-                .token(request.getToken())
-                .description("Compra de productos a Spring eCommerce")
-                .installments(request.getInstallments())
-                .issuerId(request.getIssuer_id())
-                .paymentMethodId(request.getPayment_method_id())
-                .payer(PaymentPayerRequest.builder()
-                    .email(request.getPayer().getEmail())
-                    .identification(IdentificationRequest.builder()
-                        .type(request.getPayer().getIdentification().getType())
-                        .number(request.getPayer().getIdentification().getNumber())
-                        .build())
-                    .build())
-                .binaryMode(true)
-                .build();
-
-        PaymentClient client = new PaymentClient();
-        Payment payment = client.create(paymentCreateRequest);
-        response.put("status", payment.getStatus());
-        response.put("detail", payment.getStatusDetail());
-
-        // Pago aprobado - crear orden 
-        if(payment.getStatus().equals("approved"))
-        {
-            // Generar orden
-            Orden orden = new Orden();
-            Envio envio = new Envio();
-            List<OrdenItem> items = new ArrayList<>();
-
-            // Crear objeto de envio
-            envio.setCalle(domicilio.getCalle());
-            envio.setCodigoPostal(domicilio.getCodigoPostal());
-            envio.setEntrecalle1(domicilio.getEntrecalle1());
-            envio.setEntrecalle2(domicilio.getEntrecalle2());
-            envio.setIndicaciones(domicilio.getIndicaciones());
-            envio.setLocalidad(domicilio.getLocalidad());
-            envio.setNumeroCalle(domicilio.getNumeroCalle());
-            envio.setPiso_dpto(domicilio.getPiso_dpto());
-            envio.setOrden(orden);
-            
-            // Crear lista de items para la orden
-            for(Carrito carrito: carritoList)
+            if(payment.getStatus().equals("approved")) // Pago aprobado, generar orden
             {
-                OrdenItem item = new OrdenItem();
-                item.setProducto(carrito.getProducto());
-                item.setCantidad(carrito.getCantidad());
-                item.setPrecioFinal(carrito.calcularPrecioFinal());
-                item.setDescuentoTotal(carrito.calcularPrecioTotal() - carrito.calcularPrecioFinal());
-                item.setOrden(orden);
-                items.add(item);
+                Map<String, Object> metadata = payment.getMetadata();
+                System.out.println(metadata);
+
+                // Obtener valores del metadata
+                Double d_usuarioId = Double.parseDouble(metadata.get("usuario_id").toString());
+                Double d_domicilioId = Double.parseDouble(metadata.get("domicilio_id").toString());
+                
+                Integer usuarioId = d_usuarioId.intValue();
+                Integer domicilioId = d_domicilioId.intValue();
+                @SuppressWarnings("unchecked") List<Map<String, Object>> carritoMetadata = (List<Map<String, Object>>) metadata.get("carrito");
+                
+                // Obtener entidades
+                Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
+                Domicilio domicilio = domicilioRepository.findById(domicilioId).orElse(null);
+                List<Carrito> carritoList = new ArrayList<>();
+
+                for(Map<String, Object> metadataItem: carritoMetadata)
+                {
+                    Double d_productoId = Double.parseDouble(metadataItem.get("producto_id").toString());
+                    Double d_cantidad = Double.parseDouble(metadataItem.get("cantidad").toString());
+
+                    Integer productoId = d_productoId.intValue();
+                    Integer cantidad = d_cantidad.intValue();
+                    Producto producto = productoRepository.findById(productoId).orElse(null);
+
+                    Carrito item = new Carrito();
+                    item.setProducto(producto);
+                    item.setCantidad(cantidad);
+                    carritoList.add(item);
+                }
+
+                // Generar orden
+                Orden orden = new Orden();
+                Envio envio = new Envio();
+                List<OrdenItem> items = new ArrayList<>();
+
+                // Envio
+                envio.setCalle(domicilio.getCalle());
+                envio.setCodigoPostal(domicilio.getCodigoPostal());
+                envio.setEntrecalle1(domicilio.getEntrecalle1());
+                envio.setEntrecalle2(domicilio.getEntrecalle2());
+                envio.setIndicaciones(domicilio.getIndicaciones());
+                envio.setLocalidad(domicilio.getLocalidad());
+                envio.setNumeroCalle(domicilio.getNumeroCalle());
+                envio.setPiso_dpto(domicilio.getPiso_dpto());
+                envio.setOrden(orden);
+                
+                // Lista de items de la orden
+                for(Carrito carrito: carritoList)
+                {
+                    OrdenItem item = new OrdenItem();
+                    item.setProducto(carrito.getProducto());
+                    item.setCantidad(carrito.getCantidad());
+                    item.setPrecioFinal(carrito.calcularPrecioFinal());
+                    item.setDescuentoTotal(carrito.calcularPrecioTotal() - carrito.calcularPrecioFinal());
+                    item.setOrden(orden);
+                    items.add(item);
+                }
+                
+                // Crear orden
+                orden.setUsuario(usuario);
+                orden.setItems(items);
+                orden.setPrecioFinal(orden.calcularPrecioFinal());
+                orden.setDescuentoTotal(orden.calcularDescuentoTotal());
+                orden.setEnvio(envio);
+                orden.setPaymentId(payment.getId());
+                ordenRepository.save(orden);
+
+                // Limpiar carrito del usuario
+                List<Carrito> carrito = carritoRepository.findByUsuario(usuario);
+                for(Carrito item: carrito)
+                {
+                    carritoRepository.delete(item);
+                }
             }
-
-            // Crear orden
-            orden.setUsuario(usuario);
-            orden.setItems(items);
-            orden.setPrecioFinal(orden.calcularPrecioFinal());
-            orden.setDescuentoTotal(orden.calcularDescuentoTotal());
-            orden.setEnvio(envio);
-            orden.setPaymentId(payment.getId());
-            ordenRepository.save(orden);
-            
-            response.put("ordenId", orden.getId());
-
-            // Limpiar carrito
-            for(Carrito carrito: carritoList) {
-                carritoRepository.delete(carrito);
-            }
-
-            session.setAttribute("carritoSize", 0);
-            session.removeAttribute("orden_domicilioId");
-            
-            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
-        else // Ocurrio algun error al crear el pago
-        {
-            response.put("status", payment.getStatus());
-            response.put("detail", payment.getStatusDetail());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        return ResponseEntity.ok().build();
     }
-
-
-    /*
-    // Confirmar compra y generar orden
-    @PostMapping("/orden/generar")
-    public String generar(Model model, RedirectAttributes redirect, Principal principal, @RequestParam(required = false) Integer domicilioId)
-    {
-        Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
-
-        // Verificar si seleccionó un domicilio
-        if(domicilioId == null)
-        {
-            redirect.addFlashAttribute("error", "Debes seleccionar una dirección para el envío");
-            return "redirect:/orden/envio";
-        }
-
-        // Verificar si el domicilio existe y si pertenece al usuario
-        Domicilio domicilio = domicilioRepository.findById(domicilioId).orElse(null);
-        if(!(domicilio != null && domicilio.getUsuario().getId().equals(usuario.getId())))
-        {
-            redirect.addFlashAttribute("error", "Debes seleccionar una dirección para el envío");
-            return "redirect:/orden/envio";
-        }
-
-        // Verificar que el usuario tenga productos añadidos a su carrito
-        List<Carrito> carritoList = carritoRepository.findByUsuario(usuario);
-        if(carritoList.size() == 0)
-        {
-            redirect.addFlashAttribute("error", "No tienes productos añadidos a tu carrito. No puedes hacer una orden");
-            return "redirect:/orden/envio";
-        }
-
-
-        // Generar orden
-        Orden orden = new Orden();
-        Envio envio = new Envio();
-        List<OrdenItem> items = new ArrayList<>();
-
-        // Crear objeto de envio
-        envio.setCalle(domicilio.getCalle());
-        envio.setCodigoPostal(domicilio.getCodigoPostal());
-        envio.setEntrecalle1(domicilio.getEntrecalle1());
-        envio.setEntrecalle2(domicilio.getEntrecalle2());
-        envio.setIndicaciones(domicilio.getIndicaciones());
-        envio.setLocalidad(domicilio.getLocalidad());
-        envio.setNumeroCalle(domicilio.getNumeroCalle());
-        envio.setPiso_dpto(domicilio.getPiso_dpto());
-        envio.setOrden(orden);
-        
-        // Crear lista de items para la orden
-        for(Carrito carrito: carritoList)
-        {
-            OrdenItem item = new OrdenItem();
-            item.setProducto(carrito.getProducto());
-            item.setCantidad(carrito.getCantidad());
-            item.setPrecioFinal(carrito.calcularPrecioFinal());
-            item.setDescuentoTotal(carrito.calcularPrecioTotal() - carrito.calcularPrecioFinal());
-            item.setOrden(orden);
-            items.add(item);
-        }
-
-        // Crear orden
-        orden.setUsuario(usuario);
-        orden.setItems(items);
-        orden.setPrecioFinal(orden.calcularPrecioFinal());
-        orden.setDescuentoTotal(orden.calcularDescuentoTotal());
-        orden.setEnvio(envio);
-        ordenRepository.save(orden);
-
-        // Limpiar carrito
-        for(Carrito carrito: carritoList) {
-            carritoRepository.delete(carrito);
-        }
-        session.setAttribute("carritoSize", 0);
-
-        // Redirigir
-        return "redirect:/";
-    }
-    */
 }

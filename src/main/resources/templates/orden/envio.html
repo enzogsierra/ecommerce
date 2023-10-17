@@ -44,7 +44,7 @@
                                 </div>
 
                                 <div>
-                                    <form th:action="@{/orden/pago}" method="POST">
+                                    <form th:action="@{/orden/checkout}" method="POST">
                                         <input type="hidden" name="domicilioId" th:value="${domicilio.id}">
                                         <button type="submit" class="btn btn-outline-primary text-nowrap">Enviar a esta dirección <i class="fa-solid fa-chevron-right"></i></button>
                                     </form>
