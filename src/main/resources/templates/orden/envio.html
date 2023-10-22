@@ -24,7 +24,14 @@
                     <div class="p-4 bg-white rounded shadow">
                         <p th:if="${error}" class="text-danger" th:text="${error}"></p>
 
-                        <th:block th:each="domicilio, iter: ${domicilios}"> 
+                        <div th:if="${domicilios.size() == 0}" class="text-center">
+                            <p class="mb-1 fs-2">No tienes domicilios agregados</p>
+                            <p class="text-muted">Agrega tu domicilio para saber dónde enviar tus productos <i class="fa-solid fa-truck"></i></p>
+
+                            <a th:href="@{/perfil/domicilios/form}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Añadir domicilio</a>
+                        </div>
+
+                        <th:block th:unless="${domicilios.size() == 0}" th:each="domicilio, iter: ${domicilios}"> 
                             <div class="d-flex align-items-center justify-content-between gap-3">
                                 <div> 
                                     <div class="d-flex align-items-center gap-2 flex-wrap">

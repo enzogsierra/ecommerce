@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -69,9 +67,6 @@ public class OrdenController
     @Autowired 
     private ProductoRepository productoRepository;
 
-    @Autowired
-    private HttpSession session;
-
     @Value("${mercadopago.public.key}")
     private String publicKey;
 
@@ -116,7 +111,6 @@ public class OrdenController
         }
 
         List<Domicilio> domicilios = domicilioRepository.findByUsuarioOrderByPrincipalDesc(usuario);
-        session.removeAttribute("orden_domicilioId");
 
         // Calcular precios, descuentos y unidades
         Double precioTotal = 0.0;
@@ -140,7 +134,7 @@ public class OrdenController
 
 
     // Mostrar resumen de la orden y generar boton de pago
-    @PostMapping("/orden/checkout")
+    @GetMapping("/orden/checkout")
     public String checkout(@RequestParam Integer domicilioId, Model model, Principal principal, RedirectAttributes redirect) throws MPException, MPApiException
     {
         Usuario usuario = usuarioRepository.findByEmail(principal.getName()).get();
