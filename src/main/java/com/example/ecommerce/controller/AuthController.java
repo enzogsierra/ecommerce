@@ -50,6 +50,12 @@ public class AuthController
             result.rejectValue("email", "usuario.email", "Este email ya está registrado, ¿deseas iniciar sesión?"); // Añadir mensaje de error al campo "email"
         }
 
+        // Verificar contraseña
+        if(usuario.getPassword() == null || usuario.getPassword().length() < 3)
+        {
+            result.rejectValue("password", "usuario.password", "La contraseña debe tener al menos 3 caracteres");
+        }
+
         // Verificar errores de formulario
         if(result.hasErrors()) {
             return "public/signup";

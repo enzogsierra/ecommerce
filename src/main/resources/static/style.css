@@ -54,5 +54,15 @@ body
 
 .cursor-pointer { cursor: pointer; }
 
+.btn-oauth2
+{
+    background-color: #eee;
+    transition: background-color .3s ease;
+}
+.btn-oauth2:hover
+{
+    background-color: #ddd;
+}
+
 /* Fixes */
 button i, a i { pointer-events: none; }

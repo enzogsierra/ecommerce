@@ -43,18 +43,22 @@ public class UserDetailsServiceImpl implements UserDetailsService
         {
             Usuario usuario = opt.get(); // Obtener usuario
 
-            // Variable de sesion
-            List<Carrito> carrito = carritoRepository.findByUsuario(usuario);
-            session.setAttribute("usuarioNombre", usuario.getNombre());
-            session.setAttribute("carritoSize", carrito.size());
-            
-
-            // Añadir roles al usuario (en este sistema, cada usuario solo puede tener 1 rol)
-            List<GrantedAuthority> roles = new ArrayList<>(); // Lista que almacena los roles del usuario
-            GrantedAuthority role = new SimpleGrantedAuthority(usuario.getRole()); // Obtener rol del usuario
-            roles.add(role); // Añadir 1 unico rol a la lista
-
-            return new User(username, usuario.getPassword(), roles); // Crear usuario
+            // Verificar que la contraseña no sea null
+            // Si la contraseña es null, significa que se registró usando OAuth2, entonces no puede iniciar sesión usando el formulario
+            if(usuario.getPassword() != null) 
+            {
+                // Variable de sesion
+                List<Carrito> carrito = carritoRepository.findByUsuario(usuario);
+                session.setAttribute("usuarioNombre", usuario.getNombre());
+                session.setAttribute("carritoSize", carrito.size());
+    
+                // Añadir roles al usuario (en este sistema, cada usuario solo puede tener 1 rol)
+                List<GrantedAuthority> roles = new ArrayList<>(); // Lista que almacena los roles del usuario
+                GrantedAuthority role = new SimpleGrantedAuthority(usuario.getRole()); // Obtener rol del usuario
+                roles.add(role); // Añadir 1 unico rol a la lista
+    
+                return new User(username, usuario.getPassword(), roles); // Crear usuario
+            }
         }
         throw new UsernameNotFoundException("Usuario '" + username + "' no encontrado");
     }

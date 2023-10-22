@@ -17,12 +17,33 @@
         <main class="container">
             <div class="mb-4 text-center">
                 <h5 class="fs-2 text-center">Iniciar sesión</h5>
-                <p class="text-muted">Escribe las credenciales de tu cuenta</p>
             </div>
             
             <div class="m-auto p-4 bg-white rounded-3" style="max-width: 32rem;">
-                <small th:if="${param.error}" class="mb-4 text-danger">Correo electrónico o contraseña incorrectos.</small>
+                <div class="d-flex flex-column gap-2">
+                    <a href="/oauth2/authorization/google" class="btn btn-oauth2">
+                        <div class="d-flex align-items-center justify-content-between gap-2">
+                            <img th:src="@{/icons/google.png}" style="width: 16px; height: 16px;">
+                            <span class="fw-medium">Google</span>
+                            <span></span>
+                        </div>
+                    </a>
+
+                    <a href="/oauth2/authorization/facebook" class="btn btn-oauth2">
+                        <div class="d-flex align-items-center justify-content-between gap-2">
+                            <img th:src="@{/icons/facebook.png}" style="width: 16px; height: 16px;">
+                            <span class="fw-medium">Facebook</span>
+                            <span></span>
+                        </div>
+                    </a>
+                </div>
                 
+                <div class="my-4 border-bottom"></div>
+
+                <p class="text-muted text-center">O ingresa tus credenciales</p>
+
+                <p th:if="${param.error}" class="small text-danger">Correo electrónico o contraseña incorrectos.</p>
+
                 <form th:action="@{/login}" method="POST">
                     <div class="mb-3">
                         <label class="form-label" for="email">Correo electrónico *</label>
@@ -36,7 +57,7 @@
                     
                     <button type="submit" class="my-2 btn btn-primary w-100">Iniciar sesión</button>
                     <a th:href="@{/signup}" class="btn btn-outline-success w-100">Regístrate!</a>
-                </form> 
+                </form>
             </div>
         </main>
 

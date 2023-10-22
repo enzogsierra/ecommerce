@@ -51,11 +51,15 @@
                                 </div>
 
                                 <div>
+                                    <a th:href="@{/orden/checkout?domicilioId={id} (id = ${domicilio.id})}" class="btn btn-outline-primary text-nowrap">Enviar a esta dirección <i class="fa-solid fa-chevron-right"></i></a>
+                                </div>
+
+                                <!-- <div>
                                     <form th:action="@{/orden/checkout}" method="POST">
                                         <input type="hidden" name="domicilioId" th:value="${domicilio.id}">
                                         <button type="submit" class="btn btn-outline-primary text-nowrap">Enviar a esta dirección <i class="fa-solid fa-chevron-right"></i></button>
                                     </form>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div th:if="${!iter.last}" class="my-4 border-top"></div>
